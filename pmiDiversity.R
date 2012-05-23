@@ -1,11 +1,13 @@
-# pmiDiversity: calculate PMI statistics (Grivet et al. 2005, Scofield et al.
-# 2010, 2011) as well as alpha, beta, gamma based on both q_qq and r_gg
-# (Scofield et al. in prep), as well as q_gg adjusted following Nielsen et al.
-# 2003.  The single argument is a table of counts in sites (rows) X sources
-# (columns) format.  If the argument is not a matrix, it is converted to one,
-# and rows are ordered numerically by rowname if the rownames are numeric.
+# pmiDiversity.R
 #
-# Version 0.2
+# Calculate PMI statistics (Grivet et al. 2005, Scofield et al.  2010, 2011) as
+# well as alpha, beta, gamma based on both q_qq and r_gg (Scofield et al. in
+# prep), as well as q_gg adjusted following Nielsen et al.  2003.  The single
+# argument is a table of counts in sites (rows) X sources (columns) format.  If
+# the argument is not a matrix, it is converted to one, and rows are ordered
+# numerically by rowname if the rownames are numeric.
+#
+# Version 0.3
 #
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
@@ -17,9 +19,17 @@
 #
 # CHANGELOG
 #
+# 0.3: Pull Nielsen et al. out into separate function for use in diversity tests
 # 0.2: Finalize Nielsen et al. calculations of diversity measures
 # 0.1: First release
-#
+
+
+nielsenTransform = function(q.gg, n.g)
+{  
+    # better bias correction, Nielsen et al. 2003 Mol.Ecol.
+    (((q.gg*(n.g+1)*(n.g-2))+(3-n.g))/((n.g-1)^2))
+}
+
 
 pmiDiversity <- function(tab)
 {
@@ -32,9 +42,9 @@ pmiDiversity <- function(tab)
   N <- sum(tab)
   n.g <- apply(tab, 1, sum)
   # PMI statistics (Grivet et al. 2005 Mol.Ecol., Scofield et al. 2010 J.Ecol.)
-  nielsenify = function(q.gg, n.g) {  # better bias correction, Nielsen et al. 2003 Mol.Ecol.
-    (((q.gg*(n.g+1)*(n.g-2))+(3-n.g))/((n.g-1)^2))
-  }
+  #nielsenTransform = function(q.gg, n.g) {  # better bias correction, Nielsen et al. 2003 Mol.Ecol.
+  #  (((q.gg*(n.g+1)*(n.g-2))+(3-n.g))/((n.g-1)^2))
+  #}
 
   r.gg <- numeric(G)
   for (g in 1:G) {
@@ -47,7 +57,7 @@ pmiDiversity <- function(tab)
   Q.mat <- reltab %*% t(reltab)
   q.gg <- diag(Q.mat) # note biased estimator is diagonal of this matrix
   names(r.gg) <- names(q.gg)
-  q.nielsen.gg <- nielsenify(q.gg, n.g)
+  q.nielsen.gg <- nielsenTransform(q.gg, n.g)
   q.bar.0 <- sum(n.g * n.g * q.gg) / sum(n.g * n.g)
   q.nielsen.bar.0 <- sum(n.g * n.g * q.nielsen.gg) / sum(n.g * n.g)
   r.bar.0 <- sum((n.g*n.g*r.gg) - (n.g*r.gg)) / sum((n.g*n.g) - n.g)
@@ -88,7 +98,7 @@ pmiDiversity <- function(tab)
   n.k <- apply(tab, 2, sum)
   Q.k <- n.k / N
   d.gamma.q <- 1/sum(Q.k * Q.k)
-  d.gamma.q.nielsen <- 1/nielsenify(sum(Q.k * Q.k), N)
+  d.gamma.q.nielsen <- 1/nielsenTransform(sum(Q.k * Q.k), N)
   d.gamma.r <- 1/sum((n.k*(n.k - 1)) / (N*(N-1)))
 
   # form pairwise omega matrix, replace its diagonal with alpha
