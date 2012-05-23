@@ -7,7 +7,7 @@
 # the argument is not a matrix, it is converted to one, and rows are ordered
 # numerically by rowname if the rownames are numeric.
 #
-# Version 0.3
+.pmiDiversityVersion = "0.3"
 #
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
@@ -33,7 +33,7 @@ nielsenTransform = function(q.gg, n.g)
 
 pmiDiversity <- function(tab)
 {
-  .thisis = "pmiDiversity v0.2, Douglas G. Scofield, douglasgscofield@gmail.com"
+  .thisis = paste("pmiDiversity v", .pmiDiversityVersion, "Douglas G. Scofield, douglasgscofield@gmail.com")
   tab = as.matrix(tab)
   #if (! any(is.na(suppressWarnings(as.numeric(rownames(tab))))))
   #  tab <- tab[order(as.numeric(rownames(tab))), ]
