@@ -27,6 +27,8 @@ These statistical tools were developed in collaboration with Peter Smouse
 (Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
 Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
 
+* * *
+
 ### pmiDiversity.R
 
 Defines the R function `pmiDiversity()` which takes a site-by-source table and
