@@ -18,7 +18,7 @@ and this can be used separately.
 Put all the source files in the same directory, and within your R session
 simply
 
-    source diversityTests.R
+    source("diversityTests.R")
 
 
 ### pmiDiversity.R
