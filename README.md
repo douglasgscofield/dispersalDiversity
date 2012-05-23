@@ -10,10 +10,11 @@ themselves should be useful for any diversity data (such as biodiversity of
 plant communities, etc.) that can be expressed with this same data structure.
 
 All source files are required for performing diversity tests.  If all that is
-desired are PMI (Grivet et al. 2005) and diversity (Scofield et al. in review)
-statistics (<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.) the source
-file `pmiDiversity.R` contains the `pmiDiversity()` function that provides these
-and this can be used separately.
+desired are PMI (Grivet et al. 2005, Scofield et al. 2010, Scofield et al.
+2011) and diversity (Scofield et al. in review) statistics
+(<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.) the source file
+`pmiDiversity.R` contains the `pmiDiversity()` function that provides these and
+this can be used separately.
 
 Put all the source files in the same directory, and within your R session
 simply
@@ -25,7 +26,7 @@ simply
 
 Defines the R function `pmiDiversity()` which takes a site-by-source table and
 produces statistics for Probability of Maternal Identity aka PMI (Grivet et al.
-2005 Mol Ecol, Scofield et al. 2010 J Ecol, Scofield et al. 2011) and dispersal
+2005, Scofield et al. 2010, Scofield et al. 2011) and dispersal
 diversity (Scofield et al. in review).  Three different PMI and diversity
 statistics are calculated:
 
