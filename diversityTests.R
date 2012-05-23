@@ -4,7 +4,7 @@
 # in review).  Tests require as input one or more tables of counts in sites
 # (rows) X sources (columns) format.
 #
-# Version 0.1
+# Version 0.2
 #
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
@@ -17,7 +17,9 @@
 #
 # FUNCTIONS PROVIDED 
 #
+# 
 # See Scofield et al. in review for methodological details
+# 
 #
 # alphaDiversityTest(tab) : Test for differences in alpha diversity among sites
 #                           within a single dataset
@@ -30,14 +32,14 @@
 #                         : Test whether there is a difference in the alpha
 #                           diversity among three datasets
 # 
+# plotAlphaTest(result)   : Plot the list returned from alphaDiversityTest()
+#                           or alphaContrastTest() for evaluation
+# 
 # pairwiseMeanTest(tab)   : Test whether mean pairwise divergence/overlap among 
 #                           sites is different from the null espectation
 #
 # plotPairwiseMeanTest()  : Plot the list returned from the above test for
 #                           evaluation
-# 
-# plotAlphaTest(result)   : Plot the list returned from alphaDiversityTest()
-#                           or alphaContrastTest() for evaluation
 # 
 # gammaContrastTest(tab.a, tab.b)
 #                         : Test whether there is a difference in the gamma
@@ -51,13 +53,12 @@
 #
 # CHANGELOG
 #
+# 0.2: Add q.nielsen to pairwiseMeanTest.
 # 0.1: First release
 #
 #
 # TODO
 #
-# * Check whether any changes are required to use r- vs. q- vs. q.nielsen-based
-#   diversities.
 # * Turn this into an actual R package
 
 
@@ -357,18 +358,14 @@ pairwiseMeanTest <- function(tab,
   names.g <- rownames(tab)
   G <- length(n.g)
   K <- length(gammafreq)
-  obs <- if (method == "q") {
-    if (statistic == "divergence") {
-      pmiresults$q.divergence
-    } else {
-      pmiresults$q.overlap
-    }
+  obs <- if (method == "r") {
+    if (statistic == "divergence") { pmiresults$r.divergence } else { pmiresults$r.overlap }
+  } else if (method == "q") { 
+    if (statistic == "divergence") { pmiresults$q.divergence } else { pmiresults$q.overlap }
+  } else if (method == "q.nielsen") { 
+    if (statistic == "divergence") { pmiresults$q.nielsen.divergence } else { pmiresults$q.nielsen.overlap }
   } else {
-    if (statistic == "divergence") {
-      pmiresults$r.divergence
-    } else {
-      pmiresults$r.overlap
-    }
+    stop("unimplemented method")
   }
   nulldist <- numeric(n.iter)
   for (i in 1:(n.iter - 1)) {

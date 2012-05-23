@@ -44,7 +44,7 @@ statistics are calculated:
 
 Defines several R functions which, like `pmiDiversity()`, take a site-by-source
 table (one or more) and test diversity statistics within and among them.  See
-Scofield et al. in review for methodological details.  The file pmiDiversity.R
+Scofield et al. in review for methodological details.  The file `pmiDiversity.R`
 (see above) is required to be in the same directory, as it provides functions
 used here.
 
@@ -57,14 +57,14 @@ used here.
 `alphaContrastTest.3(tab.a, tab.b, tab.c)`
 : Test whether there is a difference in the alpha diversity among three datasets
 
+`plotAlphaTest(result)`
+: Plot the list returned from `alphaDiversityTest()` or `alphaContrastTest()` for evaluation
+
 `pairwiseMeanTest(tab)`
 : Test whether mean pairwise divergence/overlap among sites is different from the null espectation
 
 `plotPairwiseMeanTest()`
 : Plot the list returned from the above test for evaluation
-
-`plotAlphaTest(result)`
-: Plot the list returned from `alphaDiversityTest()` or `alphaContrastTest()` for evaluation
 
 `gammaContrastTest(tab.a, tab.b)`
 : Test whether there is a difference in the gamma diversity between two datasets
