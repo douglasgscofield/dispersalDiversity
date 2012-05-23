@@ -71,3 +71,24 @@ used here.
 `gammaContrastTest.3(tab.a, tab.b, tab.c)`
 : Test whether there is a difference in the gamma diversity among three datasets
 
+
+* * *
+
+### References
+
+Grivet, D., P. E. Smouse, and V. L. Sork. 2005. A novel approach to an old
+problem: tracking dispersed seeds. _Molecular Ecology_ 14:3585-3595.
+
+Scofield, D. G., V. L. Sork, and P. E. Smouse. 2010. Influence of acorn
+woodpecker social behaviour on transport of coast live oak (_Quercus agrifolia_)
+acorns in a southern California oak savanna. _Journal of Ecology_ 98:561-572.
+
+Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
+R. Pluess et al. 2011. Foraging patterns of acorn woodpeckers (_Melanerpes
+formicivorus_) on valley oak (_Quercus lobata_ Née) in two California oak
+savanna-woodlands. _Oecologia_ 166:187-196.
+
+Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  In review.  Using
+_&alpha;_, _&beta;_ and _&gamma;_ diversity to characterize seed dispersal by
+animals.
+
