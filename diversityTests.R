@@ -4,12 +4,16 @@
 # in review).  Tests require as input one or more tables of counts in sites
 # (rows) X sources (columns) format.
 #
-# Version 0.2
+.diversityTestsVersion = "0.3"
 #
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
 # douglas.scofield@plantphys.umu.se
 # douglasgscofield@gmail.com
+#
+# These statistical tools were developed in collaboration with Peter Smouse
+# (Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
+# Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
 #
 # Use as you see fit.  No warranty regarding this code is implied nor should be
 # assumed.  Send bug reports etc. to one of the above email addresses.
@@ -53,6 +57,7 @@
 #
 # CHANGELOG
 #
+# 0.3: Versioning and collaborators/funding statement.
 # 0.2: Add q.nielsen to pairwiseMeanTest.
 # 0.1: First release
 #
@@ -115,6 +120,7 @@ alphaDiversityTest <- function(tab,
   ans$quants <- q2
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
+  ans$version <- .diversityTestsVersion
   ####
   class(ans) <- c(class(ans), "diversityTest")
   invisible(ans)
@@ -188,6 +194,7 @@ alphaContrastTest = function(tab.a, tab.b,
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
   ans$a.b.vardist = a.b.vardist
+  ans$version <- .diversityTestsVersion
   .diversityTest.ReverseTerms = .RT
   ####
   class(ans) <- c(class(ans), "diversityTest.AlphaContrast")
@@ -278,6 +285,7 @@ alphaContrastTest.3 = function(tab.a, tab.b, tab.c,
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
   ans$a.b.c.vardist = a.b.c.vardist
+  ans$version <- .diversityTestsVersion
   .diversityTest.ReverseTerms = .RT
   ####
   class(ans) <- c(class(ans), "diversityTest.AlphaContrast.3")
@@ -394,6 +402,7 @@ pairwiseMeanTest <- function(tab,
   ans <- list(n.cache=G, n.source=K, n.seed=sum(n.g),
               obs=obs, n.iter=n.iter, nulldist=nulldist, 
               P.lower=P.lower, P.upper=P.upper, method=method, statistic=statistic)
+  ans$version <- .diversityTestsVersion
   class(ans) <- c(class(ans), "class.PairwiseMeanTest")
   ####
   ans
@@ -524,6 +533,7 @@ gammaContrastTest = function(tab.a, tab.b,
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
   ans$a.b.vardist = a.b.vardist
+  ans$version <- .diversityTestsVersion
   ####
   class(ans) <- c(class(ans), "diversityTest.GammaContrast")
   invisible(ans)
@@ -621,6 +631,7 @@ gammaContrastTest.3 = function(tab.a, tab.b, tab.c,
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
   ans$a.b.c.vardist = a.b.c.vardist
+  ans$version <- .diversityTestsVersion
   ####
   class(ans) <- c(class(ans), "diversityTest.GammaContrast.3")
   invisible(ans)

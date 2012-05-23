@@ -21,6 +21,11 @@ simply
 
     source("diversityTests.R")
 
+* * *
+
+These statistical tools were developed in collaboration with Peter Smouse
+(Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
+Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
 
 ### pmiDiversity.R
 
@@ -71,7 +76,6 @@ used here.
 
 `gammaContrastTest.3(tab.a, tab.b, tab.c)`
 : Test whether there is a difference in the gamma diversity among three datasets
-
 
 * * *
 

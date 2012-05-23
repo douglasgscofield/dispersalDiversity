@@ -14,12 +14,17 @@
 # douglas.scofield@plantphys.umu.se
 # douglasgscofield@gmail.com
 #
+# These statistical tools were developed in collaboration with Peter Smouse
+# (Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
+# Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
+#
 # Use as you see fit.  No warranty regarding this code is implied nor should be
 # assumed.  Send bug reports etc. to one of the above email addresses.
 #
 # CHANGELOG
 #
-# 0.3: Pull Nielsen et al. out into separate function for use in diversity tests
+# 0.3: Pull Nielsen et al. out into separate function for use in diversity tests,
+#      add collaborators/funding statement
 # 0.2: Finalize Nielsen et al. calculations of diversity measures
 # 0.1: First release
 
