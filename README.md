@@ -105,15 +105,17 @@ Scofield et al. _Am. Nat._.
 
 `plotPairwiseMatrix()`
 : Create a visual plot of pairwise divergence or overlap values as calculated by
-`pmiDiversity()`.  For example, with `tab` defined as above, plot the divergence matrix 
-based on <i>r<sub>gg</sub></i> calculations, labelling the axes "Seed Pool", using the 
+`pmiDiversity()`
+
+For example, with `tab` defined as above, plot the divergence matrix based on
+<i>r<sub>gg</sub></i> calculations, labelling the axes "Seed Pool", using the
 following code: 
 
-      pmiD = pmiDiversity(tab)
-      plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
-                         pairwise.mean=pmiD$r.divergence, 
-                         statistic="divergence", 
-                         axis.label="Seed Pool")
+    pmiD = pmiDiversity(tab)
+    plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
+                       pairwise.mean=pmiD$r.divergence, 
+                       statistic="divergence", 
+                       axis.label="Seed Pool")
 
 
 
@@ -125,29 +127,29 @@ et al. _Am. Nat._.  The file `pmiDiversity.R` (see above) is required to be in
 the same directory, as it provides functions used here.
 
 `runGammaAccum(tab)`
+: Perform a gamma diversity accumulation on the site-by-source data in `tab`
 
-: Perform a gamma diversity accumulation on the site-by-source data in `tab`.
 Several arguments control the method of accumulation and value of gamma
 calculated.  Only the defaults have been tested; the others were developed
 while exploring the data and must be considered experimental.  The result is
-returned in a list, which may be passed to plotGammaAccum() to plot the result.
+returned in a list, which may be passed to `plotGammaAccum()` to plot the result.
 
-           tab 
-                 Site-by-source table, as passed to pmiDiversity()
-           accum.method
-                 "random" (default) or "proximity".  If "proximity" is used,
-                 then distance.file must be supplied (see below)
-           resample.method
-                 "permute" (default) or "bootstrap"; whether to resample sites
-                 without ("permute") or with ("bootstrap") replacement
-           distance.file
-                 A file or data.frame containing three columns of data, with
-                 the header/column names being "pool", "X", and "Y",
-                 containing the spatial locations of the seed pools named in
-                 the row names of tab.  Only used if the
-                 accum.method=="proximity"
-           gamma.method
-                 Calculate gamma using "r" (default) or "q" method (see paper).
+      tab 
+            Site-by-source table, same format as that passed to pmiDiversity()
+      accum.method
+            "random" (default) or "proximity".  If "proximity" is used,
+            then distance.file must be supplied (see below)
+      resample.method
+            "permute" (default) or "bootstrap"; whether to resample sites
+            without ("permute") or with ("bootstrap") replacement
+      distance.file
+            A file or data.frame containing three columns of data, with
+            the header/column names being "pool", "X", and "Y",
+            containing the spatial locations of the seed pools named in
+            the row names of tab.  Only used if the
+            accum.method=="proximity"
+      gamma.method
+            Calculate gamma using "r" (default) or "q" method (see paper).
 
 
 `plotGammaAccum(rga.result)`
@@ -155,8 +157,8 @@ returned in a list, which may be passed to plotGammaAccum() to plot the result.
 
 A typical workflow using these functions would be:
 
-      rga.result = runGammaAccum(tab)
-      plotGammaAccum(rga.result)
+    rga.result = runGammaAccum(tab)
+    plotGammaAccum(rga.result)
 
 
 The following functions typically won't be used separately, use `runGammaAccum()`
