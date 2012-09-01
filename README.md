@@ -9,17 +9,26 @@ diversity tests to understand seed dispersal in plant populations, the tests
 themselves should be useful for any diversity data (such as biodiversity of
 plant communities, etc.) that can be expressed with this same data structure.
 
-All source files are required for performing diversity tests.  If all that is
-desired are PMI (Grivet et al. 2005, Scofield et al. 2010, Scofield et al.
-2011) and diversity (Scofield et al. in review) statistics
-(<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.) the source file
-`pmiDiversity.R` contains the `pmiDiversity()` function that provides these and
-this can be used separately.
+The `pmiDiversity.R` and `diversityTest.r` source files are required for
+performing diversity tests.  If all that is desired are PMI (Grivet et al.
+2005, Scofield et al. 2010, Scofield et al.  2011) and diversity (Scofield et
+al. _Am. Nat._) statistics (<i>q<sub>gg</sub></i>,
+<i>&alpha;<sub>g</sub></i>, etc.) the source file `pmiDiversity.R` contains the
+`pmiDiversity()` function that provides these and this can be used separately.
 
 Put all the source files in the same directory, and within your R session
 simply
 
     source("diversityTests.R")
+
+An additional source file `plotPairwiseAndGamma.R` is available for plotting
+pairwise divergence/overlap matrices, and for collecting gamma diversity
+accumulation information and plotting this.  Examples can be seen in Figure 4
+of Scofield et al. _Am.  Nat._.  This file requires the `pmiDiversity.R` source
+file to be available within the same directory.  Then simply
+
+    source("plotPairwiseAndGamma.R")
+
 
 * * *
 
@@ -79,13 +88,88 @@ used here.
 `gammaContrastTest.3(tab.a, tab.b, tab.c)`
 : Test whether there is a difference in the gamma diversity among three datasets
 
+
+### plotPairwiseMatrix.R
+
+Provides a function for plotting pairwise diversity matrices as returned by the
+`pmiDiversity()` function, examples of which can be seen in Figure 4A-C of
+Scofield et al. _Am. Nat._.
+
+`plotPairwiseMatrix()`
+: Create a visual plot of pairwise divergence or overlap values as calculated by
+`pmiDiversity()`.  For example, with `tab` defined as above, plot the divergence matrix 
+based on <i>r<sub>gg</sub></i> calculations, labelling the axes "Seed Pool", using the 
+following code: 
+
+      pmiD = pmiDiversity(tab)
+      plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
+                         pairwise.mean=pmiD$r.divergence, 
+                         statistic="divergence", 
+                         axis.label="Seed Pool")
+
+
+
+### gammaAccum.R
+
+Provides functions for calculating gamma accumulation across sites, and
+plotting the result, examples of which can be seen in Figure 4D-F of Scofield
+et al. _Am. Nat._.  The file `pmiDiversity.R` (see above) is required to be in
+the same directory, as it provides functions used here.
+
+`runGammaAccum(tab)`
+
+: Perform a gamma diversity accumulation on the site-by-source data in `tab`.
+Several arguments control the method of accumulation and value of gamma
+calculated.  Only the defaults have been tested; the others were developed
+while exploring the data and must be considered experimental.  The result is
+returned in a list, which may be passed to plotGammaAccum() to plot the result.
+
+           tab 
+                 Site-by-source table, as passed to pmiDiversity()
+           accum.method
+                 "random" (default) or "proximity".  If "proximity" is used,
+                 then distance.file must be supplied (see below)
+           resample.method
+                 "permute" (default) or "bootstrap"; whether to resample sites
+                 without ("permute") or with ("bootstrap") replacement
+           distance.file
+                 A file or data.frame containing three columns of data, with
+                 the header/column names being "pool", "X", and "Y",
+                 containing the spatial locations of the seed pools named in
+                 the row names of tab.  Only used if the
+                 accum.method=="proximity"
+           gamma.method
+                 Calculate gamma using "r" (default) or "q" method (see paper).
+
+
+`plotGammaAccum(rga.result)`
+: Create a visual plot of gamma accumulation results from `runGammaAccum()`.
+
+A typical workflow using these functions would be:
+
+      rga.result = runGammaAccum(tab)
+      plotGammaAccum(rga.result)
+
+
+The following functions typically won't be used separately, use `runGammaAccum()`
+instead.
+
+`gammaAccum()`
+: Workhorse function for gamma accumulation
+`gammaAccumStats()`
+: Extracts stats from the result of `gammaAccum()`
+`runGammaAccumSimple()`
+: Wrapper that runs and then returns stats from `gammaAccum()`
+
+
+
 * * *
 
 ### References
 
-Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  In review.  Using
+Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Using
 _&alpha;_, _&beta;_ and _&gamma;_ diversity to characterize seed dispersal by
-animals.
+animals.  _American Naturalist_.
 
 Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
 R. Pluess et al. 2011. Foraging patterns of acorn woodpeckers (_Melanerpes
