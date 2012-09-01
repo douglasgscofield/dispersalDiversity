@@ -21,13 +21,21 @@ simply
 
     source("diversityTests.R")
 
-An additional source file `plotPairwiseAndGamma.R` is available for plotting
-pairwise divergence/overlap matrices, and for collecting gamma diversity
-accumulation information and plotting this.  Examples can be seen in Figure 4
-of Scofield et al. _Am.  Nat._.  This file requires the `pmiDiversity.R` source
-file to be available within the same directory.  Then simply
+Additional source files are provided to perform other tasks.
+`plotPairwiseMatrix.R` is available for plotting pairwise divergence/overlap
+matrices.  More information is available below.  This file requires the
+`pmiDiversity.R` source file to be available within the same directory.  Then
+simply
 
-    source("plotPairwiseAndGamma.R")
+    source("plotPairwiseMatrix.R")
+
+
+`gammaAccum.R` is available for collecting gamma diversity accumulation
+information and plotting this.  More information is avaialble below.  This file
+requires the `pmiDiversity.R` source file to be available within the same
+directory.  Then simply
+
+    source("gammaAccum.R")
 
 
 * * *
