@@ -164,8 +164,10 @@ instead.
 
 `gammaAccum()`
 : Workhorse function for gamma accumulation
+
 `gammaAccumStats()`
 : Extracts stats from the result of `gammaAccum()`
+
 `runGammaAccumSimple()`
 : Wrapper that runs and then returns stats from `gammaAccum()`
 
