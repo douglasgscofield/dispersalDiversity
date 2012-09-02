@@ -6,7 +6,7 @@
 #    rga.result = runGammaAccum(tab)  # where tab is site-by-source
 #    plotGammaAccum(rga.result)
 #
-.gammaAccum.Version = "0.1"
+.gammaAccum.Version = "0.1.1"
 #
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
@@ -65,6 +65,7 @@
 #
 # CHANGELOG
 #
+# 0.1.1: Minor bugfix for runGammaAccum arguments
 # 0.1: First release
 #
 #
@@ -142,15 +143,18 @@ runGammaAccum <- function(tab,
                           distance.file=NA,
                           ...)
 {
+  accum.method = match.arg(accum.method)
+  resample.method = match.arg(resample.method)
+  gamma.method = match.arg(gamma.method)
   pmiD = pmiDiversity(tab)
   ans = list()
   ans$obs.gamma <- pmiD[[paste(sep="", "d.gamma.", gamma.method)]]
   ans$obs.omega.mean <- pmiD[[paste(sep="", gamma.method, ".overlap")]]
   ans$obs.delta.mean <- pmiD[[paste(sep="", gamma.method, ".divergence")]]
   ans$simple.results <- runGammaAccumSimple(tab,
-                                            accum.method=am,
-                                            resample.method=rm,
-                                            gamma.method=gm,
+                                            accum.method=accum.method,
+                                            resample.method=resample.method,
+                                            gamma.method=gamma.method,
                                             distance.file=distance.file,
                                             ...)
   ####          

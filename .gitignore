@@ -1,3 +1,7 @@
+.RData
+.Rhistory
+*.csv
+*.txt
 *.RData
 *.Rhistory
 *.swp
