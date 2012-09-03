@@ -4,7 +4,7 @@
 # in review).  Tests require as input one or more tables of counts in sites
 # (rows) X sources (columns) format.
 #
-.diversityTestsVersion = "0.3"
+.diversityTestsVersion = "0.3.1"
 #
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
@@ -57,6 +57,7 @@
 #
 # CHANGELOG
 #
+# 0.3.1: Modify plotAlphaTest to take n.resample into account
 # 0.3: Versioning and collaborators/funding statement.
 # 0.2: Add q.nielsen to pairwiseMeanTest.
 # 0.1: First release
@@ -310,20 +311,20 @@ plotAlphaTest <- function(result,
     eps("pBDT.eps", width=8, height=3)
   par(mar=c(3.5, 3.5, 1.5, 1), mgp=c(2, 0.5, 0))
   plotted.observed.ln.LR <- result$observed.ln.LR
-  empdist.range <- diff(range(result$empdist[-10000]))
+  empdist.range <- diff(range(result$empdist[-result$n.resample]))
   full.range <- diff(range(result$empdist))
   breaks <- 50
   compressed.ratio <- 1.2
   if (compress.x && full.range > empdist.range * compressed.ratio) {
-    xlim <- range(result$empdist[-10000])
-    h <- hist(result$empdist[-10000], 
+    xlim <- range(result$empdist[-result$n.resample])
+    h <- hist(result$empdist[-result$n.resample], 
               breaks=seq(xlim[1], xlim[2], length.out=breaks), 
               plot=FALSE)
     xlim <- xlim * c(1, compressed.ratio)
     plotted.observed.ln.LR <- xlim[2]
   } else {
-    h <- hist(result$empdist[-10000], breaks=50, plot=FALSE)
-    xlim <- range(c(h$breaks, result$empdist[10000]))
+    h <- hist(result$empdist[-result$n.resample], breaks=50, plot=FALSE)
+    xlim <- range(c(h$breaks, result$empdist[result$n.resample]))
   }
   if (add.analytic) {
     analytic.x <- seq(xlim[1], xlim[2], length.out=200)
