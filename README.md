@@ -1,5 +1,5 @@
 Dispersal Diversity : Statistics and Tests
-------------------------------------------
+==========================================
 
 R functions for calculating dispersal diversity statistics and making
 comparisons involving dispersal diversity statistics (Scofield et al.
@@ -46,7 +46,8 @@ Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
 
 * * *
 
-### pmiDiversity.R
+pmiDiversity.R
+--------------
 
 Defines the R function `pmiDiversity()` which takes a site-by-source table and
 produces statistics for Probability of Maternal Identity aka PMI (Grivet et al.
@@ -64,7 +65,8 @@ statistics are calculated:
 (Scofield et al. 2010, Scofield et al. 2011, Scofield et al. accepted).
 
 
-### diversityTests.R
+diversityTests.R
+----------------
 
 Defines several R functions which, like `pmiDiversity()`, take a site-by-source
 table (one or more) and test diversity statistics within and among them.  See
@@ -97,7 +99,8 @@ used here.
 : Test whether there is a difference in the gamma diversity among three datasets
 
 
-### plotPairwiseMatrix.R
+plotPairwiseMatrix.R
+--------------------
 
 Provides a function for plotting pairwise diversity matrices as returned by the
 `pmiDiversity()` function, examples of which can be seen in Figure 4A-C of
@@ -119,7 +122,8 @@ following code:
 
 
 
-### gammaAccum.R
+gammaAccum.R
+------------
 
 Provides functions for calculating gamma accumulation across sites, and
 plotting the result, examples of which can be seen in Figure 4D-F of Scofield
@@ -131,8 +135,6 @@ A typical workflow using these functions would be:
     rga.result = runGammaAccum(tab)
     plotGammaAccum(rga.result)
 
-* * *
-
 `runGammaAccum(tab)`
 : Perform a gamma diversity accumulation on the site-by-source data in `tab`
 
@@ -141,34 +143,25 @@ plot the result.  Several arguments control the method of accumulation and
 value of gamma calculated.  Only the defaults have been tested; the others were
 developed while exploring the data and must be considered experimental.
 
-#### Arguments
+    `tab` : Site-by-source table, same format as that passed to `pmiDiversity()`
 
-`tab`
-: Site-by-source table, same format as that passed to `pmiDiversity()`
+    `gamma.method` : Calculate gamma using `"r"` (default), `"q.nielsen"` or `"q"`
+    method (see paper)
 
-`gamma.method`
-: Calculate gamma using `"r"` (default), `"q.nielsen"` or `"q"` method (see
-paper)
+    `resample.method` : `"permute"` (default) or `"bootstrap"`; whether to resample
+    sites without (`"permute"`) or with (`"bootstrap"`) replacement
 
-`resample.method`
-: `"permute"` (default) or `"bootstrap"`; whether to resample sites
-without (`"permute"`) or with (`"bootstrap"`) replacement
+    `accum.method` : `"random"` (default) or `"proximity"`.  If `proximity` is
+    used, then `distance.file` must be supplied
 
-`accum.method`
-: `"random"` (default) or `"proximity"`.  If `proximity` is used, then
-`distance.file` must be supplied
+    `distance.file` : A file or data.frame containing three columns of data, with
+    the header/column names being `pool`, `X`, and `Y`, containing the spatial
+    locations of the seed pools named in the row names of tab; only used when
+    `accum.method=="proximity"`
 
-`distance.file`
-: A file or data.frame containing three columns of data, with the header/column
-names being `pool`, `X`, and `Y`, containing the spatial locations of the seed
-pools named in the row names of tab; only used when `accum.method=="proximity"`
-
-* * *
 
 `plotGammaAccum(rga.result)`
 : Create a visual plot of gamma accumulation results from `runGammaAccum()`.
-
-* * *
 
 The following functions typically won't be used separately, use `runGammaAccum()`
 instead.
@@ -184,9 +177,8 @@ instead.
 
 
 
-* * *
-
-### References
+References
+----------
 
 Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Using
 alpha, beta and gamma diversity to characterize seed dispersal by animals.
