@@ -6,7 +6,7 @@
 #    rga.result = runGammaAccum(tab)  # where tab is site-by-source
 #    plotGammaAccum(rga.result)
 #
-.gammaAccum.Version = "0.1.1"
+.gammaAccum.Version = "0.1.2"
 #
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
@@ -52,7 +52,8 @@
 #                 the row names of tab.  Only used if the
 #                 accum.method=="proximity"
 #           gamma.method
-#                 Calculate gamma using "r" (default) or "q" method (see paper).
+#                 Calculate gamma using "r" (default), "q" or "q.nielsen" method
+#                 (see paper).
 #
 # plotGammaAccum(rga.result)
 #                         : plot the gamma accumulation result from runGammaAccum()
@@ -65,6 +66,7 @@
 #
 # CHANGELOG
 #
+# 0.1.2: Add calculation of gamma via Nielsen et al. transform of q_gg
 # 0.1.1: Minor bugfix for runGammaAccum arguments
 # 0.1: First release
 #
@@ -139,7 +141,7 @@ plotGammaAccum <- function(gamma.accum,
 runGammaAccum <- function(tab, 
                           accum.method=c("random", "proximity"),
                           resample.method=c("permute", "bootstrap"),
-                          gamma.method=c("r", "q"),
+                          gamma.method=c("r", "q.nielsen", "q"),
                           distance.file=NA,
                           ...)
 {
@@ -197,7 +199,7 @@ gammaAccum <- function(tab,
                        accum.method=c("random", "proximity"),
                        resample.method=c("permute", "bootstrap"),
                        distance.file=NA,
-                       gamma.method=c("r", "q"))
+                       gamma.method=c("r", "q.nielsen", "q"))
 {
   # If used, the distance.file has three columns, with the header line pool, X, Y
   accum.method <- match.arg(accum.method)
@@ -246,13 +248,10 @@ gammaAccum <- function(tab,
       sum.accum <- sum(this.accum)
       this.prop <- this.accum / sum.accum
       sum.prop <- sum(this.prop * this.prop)
-      if (gamma.method == "q") {
-        # biased Q version
-        ans[[g]] <- c(ans[[g]], sum.prop)
-      } else if (gamma.method == "r") {
-        # unbiased R version
-        ans[[g]] <- c(ans[[g]], ((sum.accum * sum.prop) - 1) / (sum.accum - 1))
-      }
+      ans[[g]] <- c(ans[[g]], switch(gamma.method,
+        q         = sum.prop,
+        q.nielsen = nielsenTransform(sum.prop, sum.accum),
+        r         = (((sum.accum * sum.prop) - 1) / (sum.accum - 1))))
     }
   }
   return(ans)
