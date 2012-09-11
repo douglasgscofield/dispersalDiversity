@@ -161,8 +161,8 @@ used, then `distance.file` must be supplied
 `distance.file` 
 : A file or data.frame containing three columns of data, with
 the header/column names being `pool`, `X`, and `Y`, containing the spatial
-locations of the seed pools named in the row names of tab; only used when
-`accum.method=="proximity"`
+locations of the seed pools named in the row names of tab; only used with
+`accum.method="proximity"`
 
 
 #### plotGammaAccum(rga.result)
