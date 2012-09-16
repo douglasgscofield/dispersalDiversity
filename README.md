@@ -12,14 +12,16 @@ plant communities, etc.) that can be expressed with this same data structure.
 The `pmiDiversity.R` and `diversityTest.r` source files are required for
 performing diversity tests.  If all that is desired are PMI (Grivet et al.
 2005, Scofield et al. 2010, Scofield et al.  2011) and diversity (Scofield et
-al. _Am. Nat._) statistics (<i>q<sub>gg</sub></i>,
+al. _Am Nat_) statistics (<i>q<sub>gg</sub></i>,
 <i>&alpha;<sub>g</sub></i>, etc.) the source file `pmiDiversity.R` contains the
 `pmiDiversity()` function that provides these and this can be used separately.
 
 Put all the source files in the same directory, and within your R session
 simply
 
-    source("diversityTests.R")
+```R
+source("diversityTests.R")
+```
 
 Additional source files are provided to perform other tasks.
 `plotPairwiseMatrix.R` is available for plotting pairwise divergence/overlap
@@ -27,15 +29,18 @@ matrices.  More information is available below.  This file requires the
 `pmiDiversity.R` source file to be available within the same directory.  Then
 simply
 
-    source("plotPairwiseMatrix.R")
-
+```R
+source("plotPairwiseMatrix.R")
+```
 
 `gammaAccum.R` is available for collecting gamma diversity accumulation
 information and plotting this.  More information is avaialble below.  This file
 requires the `pmiDiversity.R` source file to be available within the same
 directory.  Then simply
 
-    source("gammaAccum.R")
+```R
+source("gammaAccum.R")
+```
 
 
 * * *
@@ -104,7 +109,7 @@ plotPairwiseMatrix.R
 
 Provides a function for plotting pairwise diversity matrices as returned by the
 `pmiDiversity()` function, examples of which can be seen in Figure 4A-C of
-Scofield et al. _Am. Nat._.
+Scofield et al. _Am Nat_.
 
 `plotPairwiseMatrix()`
 : Create a visual plot of pairwise divergence or overlap values as calculated by
@@ -114,12 +119,14 @@ For example, with `tab` defined as above, plot the divergence matrix based on
 <i>r<sub>gg</sub></i> calculations, labelling the axes "Seed Pool", using the
 following code: 
 
-    pmiD = pmiDiversity(tab)
-    plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
-                       pairwise.mean=pmiD$r.divergence, 
-                       statistic="divergence", 
-                       axis.label="Seed Pool")
+```R
+pmiD = pmiDiversity(tab)
+plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
+                   pairwise.mean=pmiD$r.divergence, 
+                   statistic="divergence", 
+                   axis.label="Seed Pool")
 
+```
 
 
 gammaAccum.R
@@ -127,13 +134,15 @@ gammaAccum.R
 
 Provides functions for calculating gamma accumulation across sites, and
 plotting the result, examples of which can be seen in Figure 4D-F of Scofield
-et al. _Am. Nat._.  The file `pmiDiversity.R` (see above) is required to be in
+et al. _Am Nat_.  The file `pmiDiversity.R` (see above) is required to be in
 the same directory, as it provides functions used here.
 
 A typical workflow using these functions would be:
 
-    rga.result = runGammaAccum(tab)
-    plotGammaAccum(rga.result)
+```R
+rga.result = runGammaAccum(tab)
+plotGammaAccum(rga.result)
+```
 
 #### runGammaAccum(tab)
 
