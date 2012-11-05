@@ -59,17 +59,17 @@ pmiDiversity.R
 Defines the R function `pmiDiversity()` which takes a site-by-source table and
 produces statistics for Probability of Maternal Identity aka PMI (Grivet _et al._
 2005, Scofield _et al._ 2010, Scofield _et al._ 2011) and dispersal
-diversity (Scofield _et al._ _American Naturalist_).  Three different PMI and diversity
+diversity (Scofield _et al._ _Am Nat_).  Three different PMI and diversity
 statistics are calculated:
 
 * <i>q<sub>gg</sub></i>-based, known to be biased (Grivet _et al._ 2005)
 
 * <i>r<sub>gg</sub></i>-based, unbiased but poor performers at low sample sizes
-  (Grivet _et al._ 2005, Scofield _et al._ _American Naturalist_)
+  (Grivet _et al._ 2005, Scofield _et al._ _Am Nat_)
 
 * <i>q<sup>*</sup><sub>gg</sub></i>-based, which apply the transformation
   developed by Nielsen _et al._ (2003) to be unbiased and seem to perform well
-(Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et al._ _American Naturalist_).
+(Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et al._ _Am Nat_).
 
 
 diversityTests.R
@@ -77,7 +77,7 @@ diversityTests.R
 
 Defines several R functions which, like `pmiDiversity()`, take a site-by-source
 table (one or more) and test diversity statistics within and among them.  See
-(Scofield _et al._ _American Naturalist_) for methodological details.  The file `pmiDiversity.R`
+(Scofield _et al._ _Am Nat_) for methodological details.  The file `pmiDiversity.R`
 (see above) is required to be in the same directory, as it provides functions
 used here.
 
@@ -202,8 +202,7 @@ References
 
 Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Using
 alpha, beta and gamma diversity to characterize seed dispersal by animals.
-[<I>American Naturalist</I> ahead of
-print](http://www.jstor.org/stable/10.1086/668202, [data](http://dx.doi.org/10.5061/dryad.40kq7).
+[_American Naturalist_](http://www.jstor.org/stable/10.1086/668202), [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
 Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
 R. Pluess _et al._ 2011. Foraging patterns of acorn woodpeckers (<I>Melanerpes
