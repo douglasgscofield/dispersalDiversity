@@ -35,7 +35,7 @@ simply
 source("plotPairwiseMatrix.R")
 ```
 
-`gammaAccum.R` is available for collecting gamma diversity accumulation
+`gammaAccum.R` is available for collecting &gamma; diversity accumulation
 information and plotting this.  More information is avaialble below.  This file
 requires the `pmiDiversity.R` source file to be available within the same
 directory.  Then simply
@@ -82,13 +82,13 @@ table (one or more) and test diversity statistics within and among them.  See
 used here.
 
 `alphaDiversityTest(tab)`
-: Test for differences in alpha diversity among sites within a single dataset
+: Test for differences in &alpha; diversity among sites within a single dataset
  
 `alphaContrastTest(tab.a, tab.b)`
-: Test whether there is a difference in the alpha diversity between two datasets
+: Test whether there is a difference in the &alpha; diversity between two datasets
 
 `alphaContrastTest.3(tab.a, tab.b, tab.c)`
-: Test whether there is a difference in the alpha diversity among three datasets
+: Test whether there is a difference in the &alpha; diversity among three datasets
 
 `plotAlphaTest(result)`
 : Plot the list returned from `alphaDiversityTest()` or `alphaContrastTest()` for evaluation
@@ -100,10 +100,10 @@ used here.
 : Plot the list returned from the above test for evaluation
 
 `gammaContrastTest(tab.a, tab.b)`
-: Test whether there is a difference in the gamma diversity between two datasets
+: Test whether there is a difference in the &gamma; diversity between two datasets
 
 `gammaContrastTest.3(tab.a, tab.b, tab.c)`
-: Test whether there is a difference in the gamma diversity among three datasets
+: Test whether there is a difference in the &gamma; diversity among three datasets
 
 
 plotPairwiseMatrix.R
@@ -134,7 +134,7 @@ plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat,
 gammaAccum.R
 ------------
 
-Provides functions for calculating gamma accumulation across sites, and
+Provides functions for calculating &gamma; accumulation across sites, and
 plotting the result, examples of which can be seen in Figure 4D-F of Scofield
 _et al._ <I>Am Nat</I>.  The file `pmiDiversity.R` (see above) is required to be in
 the same directory, as it provides functions used here.
@@ -148,17 +148,17 @@ plotGammaAccum(rga.result)
 
 #### runGammaAccum(tab)
 
-Perform a gamma diversity accumulation on the site-by-source data in `tab`.
+Perform a &gamma; diversity accumulation on the site-by-source data in `tab`.
 The result is returned in a list, which may be passed to `plotGammaAccum()` to
 plot the result.  Several arguments control the method of accumulation and
-value of gamma calculated.  Only the defaults have been tested; the others were
+value of &gamma; calculated.  Only the defaults have been tested; the others were
 developed while exploring the data and must be considered experimental.
 
 `tab` 
 : Site-by-source table, same format as that passed to `pmiDiversity()`
 
 `gamma.method` 
-: Calculate gamma using `"r"` (default), `"q.nielsen"` or `"q"`
+: Calculate &gamma; using `"r"` (default), `"q.nielsen"` or `"q"`
 method (see paper)
 
 `resample.method` 
@@ -178,7 +178,7 @@ locations of the seed pools named in the row names of tab; only used with
 
 #### plotGammaAccum(rga.result)
 
-Create a visual plot of gamma accumulation results from `runGammaAccum()`.
+Create a visual plot of &gamma; accumulation results from `runGammaAccum()`.
 
 
 #### Additional functions
@@ -187,7 +187,7 @@ The following functions typically won't be used separately, use `runGammaAccum()
 instead.
 
 `gammaAccum()`
-: Workhorse function for gamma accumulation
+: Workhorse function for &gamma; accumulation
 
 `gammaAccumStats()`
 : Extracts stats from the result of `gammaAccum()`
@@ -201,7 +201,7 @@ References
 ----------
 
 Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Using
-alpha, beta and gamma diversity to characterize seed dispersal by animals.
+&alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
 [_American Naturalist_](http://www.jstor.org/stable/10.1086/668202), [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
 Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
