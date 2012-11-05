@@ -200,7 +200,7 @@ instead.
 References
 ----------
 
-Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Using
+Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Use of
 &alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
 [_American Naturalist_](http://www.jstor.org/stable/10.1086/668202), [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
