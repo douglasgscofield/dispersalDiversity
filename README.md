@@ -203,8 +203,7 @@ References
 Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Using
 alpha, beta and gamma diversity to characterize seed dispersal by animals.
 [<I>American Naturalist</I> ahead of
-print](http://www.jstor.org/stable/10.1086/668202).  
-([Data](http://dx.doi.org/10.5061/dryad.40kq7))
+print](http://www.jstor.org/stable/10.1086/668202, [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
 Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
 R. Pluess et al. 2011. Foraging patterns of acorn woodpeckers (<I>Melanerpes
