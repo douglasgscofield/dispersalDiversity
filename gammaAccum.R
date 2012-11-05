@@ -1,13 +1,18 @@
 # gammaAccum.R
-#
-# Provide functions for calculating gamma accumulation across sites, and plotting
-# the results.  A typical workflow might look like
+
+# Provide functions for calculating gamma accumulation across sites, and
+# plotting the results.  Used during data analysis for Scofield et al
+# American Naturalist, http://www.jstor.org/stable/10.1086/668202.  Requires as
+# input one or more tables of counts in sites (rows) X sources (columns)
+# format.
+
+# A typical workflow might look like
 #
 #    rga.result = runGammaAccum(tab)  # where tab is site-by-source
 #    plotGammaAccum(rga.result)
-#
+
 .gammaAccum.Version = "0.1.2"
-#
+
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
 # douglas.scofield@plantphys.umu.se

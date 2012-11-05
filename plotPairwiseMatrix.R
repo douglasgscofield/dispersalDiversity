@@ -1,10 +1,13 @@
 # plotPairwiseMatrix.R
-#
-# Provide function for plotting pairwise diversity matrices as returned
-# by the pmiDiversity() function.
-#
+
+# Provide function for plotting pairwise diversity matrices as returned by the
+# pmiDiversity() function.  Used during data analysis for Scofield et al
+# American Naturalist, http://www.jstor.org/stable/10.1086/668202.  Requires as
+# input one or more tables of counts in sites (rows) X sources (columns)
+# format.
+
 .plotPairwiseMatrix.Version = "0.1"
-#
+
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
 # douglas.scofield@plantphys.umu.se

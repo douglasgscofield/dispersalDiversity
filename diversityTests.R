@@ -1,11 +1,12 @@
 # diversityTests.R
-#
-# Provide functions for performing dispersal diversity tests (Scofield et al.
-# in review).  Tests require as input one or more tables of counts in sites
-# (rows) X sources (columns) format.
-#
+
+# Provide functions for performing dispersal diversity tests (Scofield et al
+# American Naturalist, http://www.jstor.org/stable/10.1086/668202).  Tests
+# require as input one or more tables of counts in sites (rows) X sources
+# (columns) format.
+
 .diversityTestsVersion = "0.3.1"
-#
+
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
 # douglas.scofield@plantphys.umu.se
@@ -65,13 +66,13 @@
 #
 # TODO
 #
-# * Turn this into an actual R package
+# --- Turn this into an actual R package
 
 
 source("pmiDiversity.R")
 
-# Test code relies on the presense of pmiDiversity() and nielsenTransform(),
-# both defined in pmiDiversity.R
+# This code relies on pmiDiversity() and nielsenTransform(), both defined in
+# pmiDiversity.R
 
 
 #---------------------------------------------

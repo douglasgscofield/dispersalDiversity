@@ -1,18 +1,20 @@
 Dispersal Diversity : Statistics and Tests
 ==========================================
 
+
 R functions for calculating dispersal diversity statistics and making
-comparisons involving dispersal diversity statistics (Scofield et al.
-accepted).  All functions take as input a simple data structure: a table of
-site (rows) by source (columns) counts.  Though we originally developed the
-diversity tests to understand seed dispersal in plant populations, the tests
-themselves should be useful for any diversity data (such as biodiversity of
-plant communities, etc.) that can be expressed with this same data structure.
+comparisons involving dispersal diversity statistics (Scofield _et al._
+_American Naturalist_ <http://www.jstor.org/stable/10.1086/668202>).  All
+functions take as input a simple data structure: a table of site (rows) by
+source (columns) counts.  Though we originally developed the diversity tests to
+understand seed dispersal in plant populations, the tests themselves should be
+useful for any diversity data (such as biodiversity of plant communities, etc.)
+that can be expressed with this same data structure.
 
 The `pmiDiversity.R` and `diversityTest.r` source files are required for
-performing diversity tests.  If all that is desired are PMI (Grivet et al.
-2005, Scofield et al. 2010, Scofield et al.  2011) and diversity (Scofield et
-al. _Am Nat_) statistics (<i>q<sub>gg</sub></i>,
+performing diversity tests.  If all that is desired are PMI (Grivet _et al._
+2005, Scofield _et al._ 2010, Scofield _et al._  2011) and diversity (Scofield _et
+al._ <I>Am Nat</I>) statistics (<i>q<sub>gg</sub></i>,
 <i>&alpha;<sub>g</sub></i>, etc.) the source file `pmiDiversity.R` contains the
 `pmiDiversity()` function that provides these and this can be used separately.
 
@@ -109,7 +111,7 @@ plotPairwiseMatrix.R
 
 Provides a function for plotting pairwise diversity matrices as returned by the
 `pmiDiversity()` function, examples of which can be seen in Figure 4A-C of
-Scofield et al. _Am Nat_.
+Scofield et al. <I>Am Nat</I>.
 
 `plotPairwiseMatrix()`
 : Create a visual plot of pairwise divergence or overlap values as calculated by
@@ -134,7 +136,7 @@ gammaAccum.R
 
 Provides functions for calculating gamma accumulation across sites, and
 plotting the result, examples of which can be seen in Figure 4D-F of Scofield
-et al. _Am Nat_.  The file `pmiDiversity.R` (see above) is required to be in
+et al. <I>Am Nat</I>.  The file `pmiDiversity.R` (see above) is required to be in
 the same directory, as it provides functions used here.
 
 A typical workflow using these functions would be:
@@ -200,21 +202,23 @@ References
 
 Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Using
 alpha, beta and gamma diversity to characterize seed dispersal by animals.
-_American Naturalist_.
+[<I>American Naturalist</I> ahead of
+print](http://www.jstor.org/stable/10.1086/668202).  
+([Data](http://dx.doi.org/10.5061/dryad.40kq7))
 
 Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
-R. Pluess et al. 2011. Foraging patterns of acorn woodpeckers (_Melanerpes
-formicivorus_) on valley oak (_Quercus lobata_ Née) in two California oak
-savanna-woodlands. _Oecologia_ 166:187-196.
+R. Pluess et al. 2011. Foraging patterns of acorn woodpeckers (<I>Melanerpes
+formicivorus</I>) on valley oak (<I>Quercus lobata</I> Née) in two California oak
+savanna-woodlands. <I>Oecologia</I> 166:187-196.
 
 Scofield, D. G., V. L. Sork, and P. E. Smouse. 2010. Influence of acorn
-woodpecker social behaviour on transport of coast live oak (_Quercus agrifolia_)
-acorns in a southern California oak savanna. _Journal of Ecology_ 98:561-572.
+woodpecker social behaviour on transport of coast live oak (<I>Quercus agrifolia</I>)
+acorns in a southern California oak savanna. <I>Journal of Ecology</I> 98:561-572.
 
 Grivet, D., P. E. Smouse, and V. L. Sork. 2005. A novel approach to an old
-problem: tracking dispersed seeds. _Molecular Ecology_ 14:3585-3595.
+problem: tracking dispersed seeds. <I>Molecular Ecology</I> 14:3585-3595.
 
 Nielsen, R., D. R. Tarpy, and H. K. Reeve. 2003. Estimating effective paternity
 number in social insects and the effective number of alleles in a population.
-_Molecular Ecology_ 12:3157-3164.
+<I>Molecular Ecology</I> 12:3157-3164.
 

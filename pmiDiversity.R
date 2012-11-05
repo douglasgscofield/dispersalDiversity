@@ -1,14 +1,17 @@
 # pmiDiversity.R
-#
+
 # Calculate PMI statistics (Grivet et al. 2005, Scofield et al.  2010, 2011) as
-# well as alpha, beta, gamma based on both q_qq and r_gg (Scofield et al. in
-# prep), as well as q_gg adjusted following Nielsen et al.  2003.  The single
-# argument is a table of counts in sites (rows) X sources (columns) format.  If
-# the argument is not a matrix, it is converted to one, and rows are ordered
+# well as alpha, beta, gamma based on both q_qq and r_gg (Scofield et al
+# American Naturalist, http://www.jstor.org/stable/10.1086/668202), as well as
+# q_gg adjusted following Nielsen et al 2003.  Used during data analysis for
+# Scofield et al Am Nat; earlier versions (pre-github) were used for Scofield
+# et al 2010 J Ecol and for Scofield et al 2011 Oecologia.  The single argument
+# is a table of counts in sites (rows) X sources (columns) format.  If the
+# argument is not a matrix, it is converted to one, and rows are ordered
 # numerically by rowname if the rownames are numeric.
-#
+
 .pmiDiversityVersion = "0.3"
-#
+
 # Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
 # douglas.scofield@plantphys.umu.se
@@ -31,7 +34,7 @@
 
 nielsenTransform = function(q.gg, n.g)
 {  
-    # better bias correction, Nielsen et al. 2003 Mol.Ecol.
+    # better bias correction, Nielsen et al 2003 Mol Ecol
     (((q.gg*(n.g+1)*(n.g-2))+(3-n.g))/((n.g-1)^2))
 }
 
@@ -46,10 +49,7 @@ pmiDiversity <- function(tab)
   K <- dim(tab)[2]
   N <- sum(tab)
   n.g <- apply(tab, 1, sum)
-  # PMI statistics (Grivet et al. 2005 Mol.Ecol., Scofield et al. 2010 J.Ecol.)
-  #nielsenTransform = function(q.gg, n.g) {  # better bias correction, Nielsen et al. 2003 Mol.Ecol.
-  #  (((q.gg*(n.g+1)*(n.g-2))+(3-n.g))/((n.g-1)^2))
-  #}
+  # PMI statistics (Grivet et al 2005 Mol Ecol, Scofield et al 2010 J Ecol)
 
   r.gg <- numeric(G)
   for (g in 1:G) {
@@ -68,7 +68,7 @@ pmiDiversity <- function(tab)
   r.bar.0 <- sum((n.g*n.g*r.gg) - (n.g*r.gg)) / sum((n.g*n.g) - n.g)
   # more pairwise PMI stuff
   q.gh <- lower.tri(Q.mat)
-  # pooled PMI (Scofield et al. 2010 J.Ecol.)
+  # pooled PMI (Scofield et al 2010 J Ecol)
   q.0.gh <- prop.y.0.gh <- matrix(0,G,G)
   dimnames(q.0.gh) <- dimnames(prop.y.0.gh) <- dimnames(Q.mat)
   for (g in 1:(G-1)) {
@@ -82,7 +82,7 @@ pmiDiversity <- function(tab)
     }
   }
 
-  # Diversity measures (Scofield et al. in prep)
+  # Diversity measures (Scofield et al Am Nat http://www.jstor.org/stable/10.1086/668202)
   # alpha
   alpha.q <- 1/q.gg
   alpha.q.unweighted.mean <- (1/G) * sum(alpha.q)
@@ -159,7 +159,7 @@ pmiDiversity <- function(tab)
 
      q.0.gh=q.0.gh,
 
-     # Pooled values (Scofield et al. 2010)
+     # Pooled values (Scofield et al 2010 J Ecol)
      y.gh=y.gh,
      prop.y.0.gh=prop.y.0.gh,  # 
 
