@@ -4,7 +4,7 @@ Dispersal Diversity : Statistics and Tests
 
 R functions for calculating dispersal diversity statistics and making
 comparisons involving dispersal diversity statistics (Scofield _et al._
-_American Naturalist_ <http://www.jstor.org/stable/10.1086/668202>).  All
+[_American Naturalist_](http://www.jstor.org/stable/10.1086/668202).  All
 functions take as input a simple data structure: a table of site (rows) by
 source (columns) counts.  Though we originally developed the diversity tests to
 understand seed dispersal in plant populations, the tests themselves should be
