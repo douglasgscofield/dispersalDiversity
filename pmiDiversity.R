@@ -2,7 +2,7 @@
 
 # Calculate PMI statistics (Grivet et al. 2005, Scofield et al.  2010, 2011) as
 # well as alpha, beta, gamma based on both q_qq and r_gg (Scofield et al 2012
-# American Naturalist 180(6) 719-723,
+# American Naturalist 180(6) 719-732,
 # http://www.jstor.org/stable/10.1086/668202), as well as q_gg adjusted
 # following Nielsen et al 2003.  Used during data analysis for Scofield et al
 # Am Nat; earlier versions (pre-github) were used for Scofield et al 2010 J

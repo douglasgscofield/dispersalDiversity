@@ -2,7 +2,7 @@
 
 # Provide function for plotting pairwise diversity matrices as returned by the
 # pmiDiversity() function.  Used during data analysis for Scofield et al 2012
-# American Naturalist 180(6) 719-723,
+# American Naturalist 180(6) 719-732,
 # http://www.jstor.org/stable/10.1086/668202.  Requires as input one or more
 # tables of counts in sites (rows) X sources (columns) format.
 
