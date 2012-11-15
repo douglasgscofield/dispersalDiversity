@@ -1,9 +1,9 @@
 # diversityTests.R
 
 # Provide functions for performing dispersal diversity tests (Scofield et al
-# American Naturalist, http://www.jstor.org/stable/10.1086/668202).  Tests
-# require as input one or more tables of counts in sites (rows) X sources
-# (columns) format.
+# 2012 American Naturalist 180(6) 719-723,
+# http://www.jstor.org/stable/10.1086/668202).  Tests require as input one or
+# more tables of counts in sites (rows) X sources (columns) format.
 
 .diversityTestsVersion = "0.3.1"
 

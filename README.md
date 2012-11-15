@@ -2,21 +2,25 @@ Dispersal Diversity : Statistics and Tests
 ==========================================
 
 
-R functions for calculating dispersal diversity statistics and making
-comparisons involving dispersal diversity statistics (Scofield _et al._
-[_American Naturalist_](http://www.jstor.org/stable/10.1086/668202).  All
-functions take as input a simple data structure: a table of site (rows) by
+This is a collection of [R](http://www.r-project.org) functions to calculate dispersal diversity statistics and to compare diversity statistics, as described in Scofield _et al._ 2012
+[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202).
+
+### Input requirements
+
+All functions take as input a simple data structure: a table of site (rows) by
 source (columns) counts.  Though we originally developed the diversity tests to
 understand seed dispersal in plant populations, the tests themselves should be
-useful for any diversity data (such as biodiversity of plant communities, etc.)
-that can be expressed with this same data structure.
+useful for biodiversity data or any other diversity-like data that can be expressed 
+with this same data structure.
+
+### Getting started
 
 The `pmiDiversity.R` and `diversityTest.r` source files are required for
 performing diversity tests.  If all that is desired are PMI (Grivet _et al._
-2005, Scofield _et al._ 2010, Scofield _et al._  2011) and diversity (Scofield _et
-al._ <I>Am Nat</I>) statistics (<i>q<sub>gg</sub></i>,
-<i>&alpha;<sub>g</sub></i>, etc.) the source file `pmiDiversity.R` contains the
-`pmiDiversity()` function that provides these and this can be used separately.
+2005, Scofield _et al._ 2010, Scofield _et al._ 2011) and diversity (Scofield _et
+al._ 2012) statistics (_q<sub>gg</sub>_, _&alpha;<sub>g</sub>_, etc.), the source 
+file `pmiDiversity.R` contains the `pmiDiversity()` function that provides these 
+and can be used separately.
 
 Put all the source files in the same directory, and within your R session
 simply
@@ -28,8 +32,7 @@ source("diversityTests.R")
 Additional source files are provided to perform other tasks.
 `plotPairwiseMatrix.R` is available for plotting pairwise divergence/overlap
 matrices.  More information is available below.  This file requires the
-`pmiDiversity.R` source file to be available within the same directory.  Then
-simply
+`pmiDiversity.R` source file to be available within the same directory:
 
 ```R
 source("plotPairwiseMatrix.R")
@@ -38,7 +41,7 @@ source("plotPairwiseMatrix.R")
 `gammaAccum.R` is available for collecting &gamma; diversity accumulation
 information and plotting this.  More information is avaialble below.  This file
 requires the `pmiDiversity.R` source file to be available within the same
-directory.  Then simply
+directory:
 
 ```R
 source("gammaAccum.R")
@@ -59,17 +62,17 @@ pmiDiversity.R
 Defines the R function `pmiDiversity()` which takes a site-by-source table and
 produces statistics for Probability of Maternal Identity aka PMI (Grivet _et al._
 2005, Scofield _et al._ 2010, Scofield _et al._ 2011) and dispersal
-diversity (Scofield _et al._ _Am Nat_).  Three different PMI and diversity
+diversity (Scofield _et al._ 2012).  Three different PMI and diversity
 statistics are calculated:
 
 * <i>q<sub>gg</sub></i>-based, known to be biased (Grivet _et al._ 2005)
 
 * <i>r<sub>gg</sub></i>-based, unbiased but poor performers at low sample sizes
-  (Grivet _et al._ 2005, Scofield _et al._ _Am Nat_)
+  (Grivet _et al._ 2005, Scofield _et al._ 2012)
 
 * <i>q<sup>*</sup><sub>gg</sub></i>-based, which apply the transformation
   developed by Nielsen _et al._ (2003) to be unbiased and seem to perform well
-(Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et al._ _Am Nat_).
+(Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et al._ 2012).
 
 
 diversityTests.R
@@ -77,7 +80,7 @@ diversityTests.R
 
 Defines several R functions which, like `pmiDiversity()`, take a site-by-source
 table (one or more) and test diversity statistics within and among them.  See
-(Scofield _et al._ _Am Nat_) for methodological details.  The file `pmiDiversity.R`
+(Scofield _et al._ 2012) for methodological details.  The file `pmiDiversity.R`
 (see above) is required to be in the same directory, as it provides functions
 used here.
 
@@ -118,18 +121,17 @@ Scofield _et al._ <I>Am Nat</I>.
 `pmiDiversity()`
 
 For example, with `tab` defined as above, plot the divergence matrix based on
-<i>r<sub>gg</sub></i> calculations, labelling the axes "Seed Pool", using the
+_r<sub>gg</sub>_ calculations, labelling the axes "Seed Pool", using the
 following code: 
 
-```R
+
+````R
 pmiD = pmiDiversity(tab)
 plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
                    pairwise.mean=pmiD$r.divergence, 
                    statistic="divergence", 
                    axis.label="Seed Pool")
-
-```
-
+````
 
 gammaAccum.R
 ------------
@@ -141,10 +143,10 @@ the same directory, as it provides functions used here.
 
 A typical workflow using these functions would be:
 
-```R
+````R
 rga.result = runGammaAccum(tab)
 plotGammaAccum(rga.result)
-```
+````
 
 #### runGammaAccum(tab)
 
@@ -200,23 +202,23 @@ instead.
 References
 ----------
 
-Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  Accepted.  Use of
+Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  2012.  Use of
 &alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
-[_American Naturalist_](http://www.jstor.org/stable/10.1086/668202), [data](http://dx.doi.org/10.5061/dryad.40kq7).
+[_American Naturalist_ 180: 719-723](http://www.jstor.org/stable/10.1086/668202), [supplement](http://www.jstor.org/stable/full/10.1086/668202#apa), [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
 Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
-R. Pluess _et al._ 2011. Foraging patterns of acorn woodpeckers (<I>Melanerpes
-formicivorus</I>) on valley oak (<I>Quercus lobata</I> Née) in two California oak
-savanna-woodlands. <I>Oecologia</I> 166:187-196.
+R. Pluess _et al._ 2011. Foraging patterns of acorn woodpeckers (_Melanerpes
+formicivorus_) on valley oak (_Quercus lobata_ N&eacute;e) in two California oak
+savanna-woodlands. [_Oecologia_ 166: 187-196](http://dx.doi.org/10.1007/s00442-010-1828-5), [supplement](http://link.springer.com/content/esm/art:10.1007/s00442-010-1828-5/MediaObjects/442_2010_1828_MOESM1_ESM.doc).
 
 Scofield, D. G., V. L. Sork, and P. E. Smouse. 2010. Influence of acorn
-woodpecker social behaviour on transport of coast live oak (<I>Quercus agrifolia</I>)
-acorns in a southern California oak savanna. <I>Journal of Ecology</I> 98:561-572.
+woodpecker social behaviour on transport of coast live oak (_Quercus agrifolia_)
+acorns in a southern California oak savanna. [_Journal of Ecology_ 98: 561-572](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [supplement](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2010.01649.x/suppinfo).
 
 Grivet, D., P. E. Smouse, and V. L. Sork. 2005. A novel approach to an old
-problem: tracking dispersed seeds. <I>Molecular Ecology</I> 14:3585-3595.
+problem: tracking dispersed seeds. [_Molecular Ecology_ 14: 3585-3595](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x).
 
 Nielsen, R., D. R. Tarpy, and H. K. Reeve. 2003. Estimating effective paternity
 number in social insects and the effective number of alleles in a population.
-<I>Molecular Ecology</I> 12:3157-3164.
+[_Molecular Ecology_ 12: 3157-3164](http://dx.doi.org/10.1046/j.1365-294X.2003.01994.x).
 

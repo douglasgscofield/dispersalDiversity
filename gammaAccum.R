@@ -1,10 +1,10 @@
 # gammaAccum.R
 
 # Provide functions for calculating gamma accumulation across sites, and
-# plotting the results.  Used during data analysis for Scofield et al
-# American Naturalist, http://www.jstor.org/stable/10.1086/668202.  Requires as
-# input one or more tables of counts in sites (rows) X sources (columns)
-# format.
+# plotting the results.  Used during data analysis for Scofield et al 2012
+# American Naturalist 180(6) 719-723,
+# http://www.jstor.org/stable/10.1086/668202.  Requires as input one or more
+# tables of counts in sites (rows) X sources (columns) format.
 
 # A typical workflow might look like
 #
