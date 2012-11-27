@@ -15,10 +15,10 @@ with this same data structure.
 
 ### Getting started
 
-The `pmiDiversity.R` and `diversityTest.r` source files are required for
+The `pmiDiversity.R` and `diversityTests.R` source files are required for
 performing diversity tests.  If all that is desired are PMI (Grivet _et al._
 2005, Scofield _et al._ 2010, Scofield _et al._ 2011) and diversity (Scofield _et
-al._ 2012) statistics (_q<sub>gg</sub>_, _&alpha;<sub>g</sub>_, etc.), the source 
+al._ 2012) statistics (<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the source 
 file `pmiDiversity.R` contains the `pmiDiversity()` function that provides these 
 and can be used separately.
 
@@ -204,16 +204,19 @@ References
 
 Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  2012.  Use of
 &alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
-[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202), [supplement](http://www.jstor.org/stable/full/10.1086/668202#apa), [data](http://dx.doi.org/10.5061/dryad.40kq7).
+[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202), 
+[supplement](http://www.jstor.org/stable/full/10.1086/668202#apa), [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
 Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
-R. Pluess _et al._ 2011. Foraging patterns of acorn woodpeckers (_Melanerpes
-formicivorus_) on valley oak (_Quercus lobata_ N&eacute;e) in two California oak
-savanna-woodlands. [_Oecologia_ 166: 187-196](http://dx.doi.org/10.1007/s00442-010-1828-5), [supplement](http://link.springer.com/content/esm/art:10.1007/s00442-010-1828-5/MediaObjects/442_2010_1828_MOESM1_ESM.doc).
+R. Pluess _et al._ 2011. Foraging patterns of acorn woodpeckers (<i>Melanerpes
+formicivorus</i>) on valley oak (<i>Quercus lobata</i> N&eacute;e) in two California oak
+savanna-woodlands. [_Oecologia_ 166: 187-196](http://dx.doi.org/10.1007/s00442-010-1828-5), 
+[supplement](http://link.springer.com/content/esm/art:10.1007/s00442-010-1828-5/MediaObjects/442_2010_1828_MOESM1_ESM.doc).
 
 Scofield, D. G., V. L. Sork, and P. E. Smouse. 2010. Influence of acorn
-woodpecker social behaviour on transport of coast live oak (_Quercus agrifolia_)
-acorns in a southern California oak savanna. [_Journal of Ecology_ 98: 561-572](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [supplement](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2010.01649.x/suppinfo).
+woodpecker social behaviour on transport of coast live oak (<i>Quercus agrifolia</i>)
+acorns in a southern California oak savanna. [_Journal of Ecology_ 98: 561-572](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x),
+[supplement](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2010.01649.x/suppinfo).
 
 Grivet, D., P. E. Smouse, and V. L. Sork. 2005. A novel approach to an old
 problem: tracking dispersed seeds. [_Molecular Ecology_ 14: 3585-3595](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x).
