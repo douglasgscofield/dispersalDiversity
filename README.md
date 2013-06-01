@@ -16,9 +16,8 @@ with this same data structure.
 ### Getting started
 
 The `pmiDiversity.R` and `diversityTests.R` source files are required for
-performing diversity tests.  If all that is desired are PMI (Grivet _et al._
-2005, Scofield _et al._ 2010, Scofield _et al._ 2011) and diversity (Scofield _et
-al._ 2012) statistics (<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the source 
+performing diversity tests.  If all that is desired are PMI ([Grivet _et al._
+2005](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x), [Scofield _et al._ 2010](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [Scofield _et al._ 2011](http://dx.doi.org/10.1007/s00442-010-1828-5)) and diversity ([Scofield _et al._ 2012](http://www.jstor.org/stable/10.1086/668202)) statistics (<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the source 
 file `pmiDiversity.R` contains the `pmiDiversity()` function that provides these 
 and can be used separately.
 
@@ -50,9 +49,7 @@ source("gammaAccum.R")
 
 * * *
 
-These statistical tools were developed in collaboration with Peter Smouse
-(Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
-Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
+These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
 
 * * *
 
