@@ -3,9 +3,12 @@ membershipPlot <- function(tab,
                            fill.method=c("bw","color"),
                            distinguish.multiton=FALSE,
                            postscript.file=NULL, 
-                           postscript.dim=c(5.25,2.00),
+                           pdf.file=NULL, 
+                           file.dim=c(5.25,2.00),
                            xlab="Seed cache",
                            ylab="Seed source proportion",
+                           label.rotation=1,
+                           x.mar.width=ifelse(label.rotation >= 2, 4, 3),  # method="bar"
                            l1=NULL,  # the first line of annotation to appear above the bars
                                      # assumed to be real (e.g. alpha values)
                            l2=NULL,  # the second line of annotation to appear above the bars
@@ -16,9 +19,18 @@ membershipPlot <- function(tab,
   .eps <- function(...) {
       postscript(onefile=FALSE, horizontal=FALSE, paper="special", ...)
   }
+  .pdf <- function(...) {
+      pdf(onefile=FALSE, paper="special", ...)
+  }
 
   method <- match.arg(method)
   fill.method <- match.arg(fill.method)
+  stopifnot(label.rotation >= 0, label.rotation <= 3)
+  stopifnot(is.null(postscript.file) || is.null(pdf.file))
+  to.file = ! is.null(postscript.file) || ! is.null(pdf.file)
+
+  # data comes in "backwards" to what we expect, correct the order
+  tab <- tab[rev(1:nrow(tab)), ]
   tab <- t(tab)
 
   # Generate colors: white for singleton types, grayscale for
@@ -29,9 +41,11 @@ membershipPlot <- function(tab,
   names(fill.colors) <- rownames(tab)
   n.types <- apply(tab, 1, sum)
   names(n.types) <- rownames(tab)
-  # sort the data in descending order of number of appearances of type
+
+  # sort the types in descending order of number of appearances of type
   n.types <- rev(sort(n.types))
   tab <- tab[names(n.types), ]
+
   # number of sites in which each type can be found
   n.sites <- apply(tab, 1, function(x) sum(x > 0))
   singleton.idx <- n.types == 1
@@ -105,13 +119,15 @@ membershipPlot <- function(tab,
     if (any(abs(apply(tab, 2, sum) - 1) > (.Machine$double.eps ^ 0.5))) 
       stop("didn't scale tab correctly")
 
-    if (! is.null(postscript.file)) {
-      .eps(file=postscript.file, width=postscript.dim[1], 
-           height=postscript.dim[2])
-      par(mar=c(3,3,3,0), mgp=c(1.9,0.4,0), 
-          bty="n", xpd=NA, las=1, tcl=-0.25, cex=par.cex)
+    if (to.file) {
+      if (! is.null(postscript.file))
+        .eps(file=postscript.file, width=file.dim[1], height=file.dim[2])
+      else 
+        .pdf(file=pdf.file, width=file.dim[1], height=file.dim[2])
+      par(mar=c(x.mar.width,3,3,0), mgp=c(1.9,0.4,0), 
+          bty="n", xpd=NA, las=label.rotation, tcl=-0.25, cex=par.cex)
     } else {
-      par(mar=c(3,7,3,1), bty="n", xpd=NA, las=1)
+      par(mar=c(x.mar.width,7,3,1), bty="n", xpd=NA, las=label.rotation)
     }
 
     tab <- tab[, rev(1:ncol(tab))]
@@ -119,17 +135,15 @@ membershipPlot <- function(tab,
                           cex.names=names.cex, fill.args, ...))
     title(xlab=, ylab=ylab)
     xl <- seq(0.8, by=1.3, length.out=length(l1))
-    #axis(3, at=xl, labels=rep("",17))
-    text(-0.6, 1.250, labels=expression(italic(alpha[g])==""), cex=header.cex)
-    text(-0.6, 1.125, labels=expression(italic(n[g])==""), cex=header.cex)
-    #text(0.8, 1.1, "This is a label")
     if (! is.null(l1)) {
+      text(-0.6, 1.250, labels=expression(italic(alpha[g])==""), cex=header.cex)
       text(xl, 1.250, labels=sapply(l1, function(x) sprintf("%.1f",x)), cex=header.cex)
     }
     if (! is.null(l2)) {
+      text(-0.6, 1.125, labels=expression(italic(n[g])==""), cex=header.cex)
       text(xl, 1.125, labels=l2, cex=header.cex)
     }
-    if (! is.null(postscript.file)) {
+    if (! is.null(postscript.file) || ! is.null(pdf.file)) {
       dev.off()
     }
 
@@ -139,8 +153,8 @@ membershipPlot <- function(tab,
     n.pie.col <- 5
     n.pie.row <- ceiling(n.pie/n.pie.col)
     if (! is.null(postscript.file)) {
-      .eps(file=postscript.file, width=postscript.dim[1], 
-          height=postscript.dim[2])
+      .eps(file=postscript.file, width=file.dim[1], 
+          height=file.dim[2])
     }
     par(mfrow=c(n.pie.row, n.pie.col), mar=c(1,1,1,1), bty="n", xpd=NA)
     for (p in 1:n.pie) {
