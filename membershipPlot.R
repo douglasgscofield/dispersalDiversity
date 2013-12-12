@@ -1,3 +1,5 @@
+require(RColorBrewer)
+
 membershipPlot <- function(tab, 
                            method=c("bar","pie"), 
                            fill.method=c("bw","color"),
