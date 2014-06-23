@@ -5,7 +5,7 @@ Dispersal Diversity : Statistics and Tests
 This is a collection of [R](http://www.r-project.org) functions to facilitate analysis of dispersal in biological communities.  The bulk of the functions calculate dispersal diversity statistics and allow for comparison of diversity statistics, as described in Scofield _et al._ 2012
 [_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202).
 
-We also provide a Mann-Whitney-Wilcoxon (MWW) nested ranks test first described in Thompson _et al._ accepted, _Movement Ecology_.  We used the MWW nested ranks test to compare dispersal distances between years for a collection of acorn woodpecker granaries, but the test is more generally useful for any MWW-type comparison between two treatment levels when the data are divided into two or more discrete groups.  Each group must be present in both treatment levels, but the number of measurements within each group need not be the same for each level.
+We also provide a Mann-Whitney-Wilcoxon (MWW) nested ranks test first described in Thompson _et al._ 2014 [_Movement Ecology_ 2:12](http://dx.doi.org/10.1186/2051-3933-2-12).  We used the MWW nested ranks test to compare dispersal distances between years for a collection of acorn woodpecker granaries, but the test is more generally useful for any MWW-type comparison between two treatment levels when the data are divided into two or more discrete groups.  Each group must be present in both treatment levels, but the number of measurements within each group need not be the same for each level.
 
 
 * * *
@@ -39,6 +39,10 @@ The test results are printed to the console, and are also invisibly returned in 
 * `Z.weighted.obs` is the Z-score for the observed data
 * `P.obs` is the *P*-value as calculated from the empirical distribution
 * `n.iter` as provided to the function
+
+The returned data frame can be passed to the utility function `plot.MWW.ntested.test(test.dat, title=NULL)` to plot the simulated distribution and the observed value.
+
+
 
 ### Running the test as published
 
