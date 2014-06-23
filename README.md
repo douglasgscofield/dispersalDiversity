@@ -25,9 +25,9 @@ group, this test is identical to a standard MWW test.
 The function `MWW.nested.test(dat, n.iter=10000, title=NULL)` takes three arguments:
 
 * `dat` is a data frame containing three columns.
-	1. an alphanumeric group identifier
-	2. the treatment level, there must be two treatment levels
-	3. a numerical value to be ranked between treatments.  All groups must have values in both treatment levels.
+	1. `group`, an alphanumeric group identifier
+	2. `treatment`, the treatment level, there must be two treatment levels
+	3. `value`, a numerical value to be ranked between treatments.  All groups must have values in both treatment levels.
 * `n.iter` is the number of permutations to use to create the null distribution.  The number of simulated distributions is `n.iter - 1`, with the observed data providing the `n.iter`-th value
 * `title` is a title to use when reporting test results, if not provided it is taken from the name of the input data frame
 

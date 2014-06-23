@@ -19,7 +19,7 @@
 options(stringsAsFactors=FALSE)
 
 # MWW.nested.test performs the nested ranks test
-#    dat    : data frame containing Granary (group), Year (treatment) and Dist (value to rank)
+#    dat    : data frame containing group, treatment and value columns
 #    n.iter : number of iterations for permutation (n.iter - 1 are random, n.iter-th is data)
 #    title  : title to use when reporting test results
 # The result of the test is printed, and if the return value is
@@ -28,29 +28,34 @@ options(stringsAsFactors=FALSE)
 # results of the test attached as attributes.  The data.frame can be passed to
 # plot.MWW.nested.test() to plot the test results.
 MWW.nested.test = function(dat, n.iter=10000, title=NULL) {
-  if (is.null(title)) title = deparse(substitute(dat))
-  dat = subset(dat, both_years)
+  dat.name = deparse(substitute(dat))
+  if (is.null(title)) title = dat.name
+  y = unique(sort(dat$treatment))
+  if (length(y) != 2) 
+    stop(dat.name, "requires exactly two levels for treatment")
+  s = split(dat$group, dat$treatment)
+  if (length(unique(sort(dat$group))) != length(intersect(s[[1]], s[[2]])))
+    stop(dat.name, "must have values for all groups in both treatment levels")
   wt = MWW.weights(dat)
-  y = unique(sort(dat$Year))
-  Grans = as.character(sort(as.integer(unique(dat$Granary))))
+  Grps = as.character(sort(as.integer(unique(dat$group))))
   # fill in weight for each granary
   weights = wt$Rel_Wt
-  names(weights) = paste0("g",wt$Granary)
+  names(weights) = paste0("g",wt$group)  # ensure that groups have proper R names
   # print(weights)
   # compute permutation for each granary individually
   p = list()
-  for (g in Grans) {
-    gdat = subset(dat, Granary == g)
-    y1.dat = subset(gdat, Year == y[1])
-    y2.dat = subset(gdat, Year == y[2])
+  for (g in Grps) {
+    gdat = subset(dat, group == g)
+    y1.dat = subset(gdat, treatment == y[1])
+    y2.dat = subset(gdat, treatment == y[2])
     n1 = nrow(y1.dat)
     n2 = nrow(y2.dat)
-    dists = c(y1.dat$Dist, y2.dat$Dist)
-    this.z = MWW(dists, n1, n2)
+    vals = c(y1.dat$value, y2.dat$value)
+    this.z = MWW(vals, n1, n2)
     Z = numeric(n.iter)
     if (n.iter > 1) {
       for (i in 1:(n.iter - 1)) {
-        d = sample(dists)
+        d = sample(vals)
         Z[i] = MWW(d, n1, n2)
       }
     }
@@ -98,24 +103,23 @@ MWW = function(x, n1, n2) {
 
 # MWW.weights calculates sample-size weights
 MWW.weights = function(dat) {
-  dat = subset(dat, both_years)
-  y = unique(sort(dat$Year))
-  Grans = as.character(sort(as.integer(unique(dat$Granary))))
+  y = unique(sort(dat$treatment))
+  Grps = as.character(sort(as.integer(unique(dat$group))))
   w = data.frame()
-  for (g in Grans) {
-    gdat = subset(dat, Granary == g)
-    y1.dat = subset(gdat, Year == y[1])
-    y2.dat = subset(gdat, Year == y[2])
+  for (g in Grps) {
+    gdat = subset(dat, group == g)
+    y1.dat = subset(gdat, treatment == y[1])
+    y2.dat = subset(gdat, treatment == y[2])
     n1 = nrow(y1.dat)
     n2 = nrow(y2.dat)
     n1.n2 = n1 * n2
-    w = rbind(w, list(Granary=g,
+    w = rbind(w, list(group=g,
                       n1=n1,
                       n2=n2,
                       n1.n2=n1.n2))
   }
   w = transform(w, Rel_Wt=n1.n2/sum(n1.n2))
-  rownames(w) = paste0("g", w$Granary)
+  rownames(w) = paste0("g", w$group)
   ####
   w
 }
@@ -132,7 +136,7 @@ plot.MWW.nested.test = function(test.dat, title=NULL) {
        breaks=bks,
        col="lightblue",
        border=NA,
-       main=paste0(title, " weighted between-y Z-score\nacross all granaries, P = ", 
+       main=paste0(title, " weighted between-y Z-score\nacross all groups, P = ", 
                    attr(test.dat, "P.obs")),
        xlab="Weighted between-year Z-score",
        ylab=paste0("Frequency (out of ", attr(test.dat, "n.iter"), ")"))
