@@ -2,8 +2,53 @@ Dispersal Diversity : Statistics and Tests
 ==========================================
 
 
-This is a collection of [R](http://www.r-project.org) functions to calculate dispersal diversity statistics and to compare diversity statistics, as described in Scofield _et al._ 2012
-[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202).
+This is a collection of [R](http://www.r-project.org) functions to facilitate analysis of dispersal in biological communities.  The bulk of the functions calculate dispersal diversity statistics and to compare diversity statistics, as described in Scofield _et al._ 2012
+[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202), with an additional nested Mann-Whitney-Wilcoxon ranks test first described in Thompson _et al._ accepted, _Movement Ecology_.
+
+
+* * *
+
+These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
+
+* * *
+
+Mann-Whitney-Wilcoxon Nested Ranks Test
+---------------------------------------
+
+Calculate a Mann-Whitney-Wilcoxon (MWW) test using nested ranks.  Data are
+structured into several groups and each group has received two treatment
+levels. The rankings are compared between treatment levels, taking group
+structure and size into account when permuting ranks to construct a null
+distribution which assumes no influence of treatment.  When there is just one
+group, this test is identical to a standard MWW test.
+
+The function `MWW.nested.test(dat, n.iter=10000, title=NULL)` takes three arguments:
+
+* `dat` is a data frame containing three columns.
+	1. an alphanumeric group identifier
+	2. the treatment level, there must be two treatment levels
+	3. a numerical value to be ranked between treatments.  All groups must have values in both treatment levels.
+* `n.iter` is the number of permutations to use to create the null distribution.  The number of simulated distributions is `n.iter - 1`, with the observed data providing the `n.iter`-th value
+* `title` is a title to use when reporting test results, if not provided it is taken from the name of the input data frame
+
+The test results are printed to the console, and are also invisibly returned in a data frame.  The data frame contains the weighted Z-scores across all groups for each iteration, with the observed Z-scores as the last row.  The data frame also contains the following attached attributes:
+
+* `weights` which are the group-size weights used when combining Z-scores
+* `Z.weighted.obs` is the Z-score for the observed data
+* `P.obs` is the *P*-value as calculated from the empirical distribution
+* `n.iter` as provided to the function
+
+### Running the test as published
+
+To run the test as published, get the first version of this script committed to the respository, or better, please obtain the script, an accessory script, and data from Data Dryad at <http://doi.org/10.5061/dryad.64jk6>.  The latest version of the script available here is more general than the version used to generate the published results.
+
+Thompson PG, Smouse PE, Scofield DG, Sork VL.
+What seeds tell us about birds: a multi-year analysis of acorn woodpecker
+foraging movements.  Accepted, *Movement Ecology*.
+
+
+Dispersal Diversity
+-------------------
 
 ### Input requirements
 
@@ -45,13 +90,6 @@ directory:
 ```R
 source("gammaAccum.R")
 ```
-
-
-* * *
-
-These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
-
-* * *
 
 pmiDiversity.R
 --------------
