@@ -27,9 +27,9 @@ group, this test is identical to a standard MWW test.
 The function `MWW.nested.test(dat, n.iter=10000, title=NULL)` takes three arguments:
 
 * `dat` is a data frame containing three columns.
-	1. `group`, an alphanumeric group identifier
-	2. `treatment`, the treatment level, there must be two treatment levels
-	3. `value`, a numerical value to be ranked between treatments.  All groups must have values in both treatment levels.
+	1. `$group`, an alphanumeric group identifier
+	2. `$treatment`, the treatment level, there must be two treatment levels
+	3. `$value`, a numerical value to be ranked between treatments.  All groups must have values in both treatment levels.
 * `n.iter` is the number of permutations to use to create the null distribution.  The number of simulated distributions is `n.iter - 1`, with the observed data providing the `n.iter`-th value
 * `title` is a title to use when reporting test results, if not provided it is taken from the name of the input data frame
 
@@ -46,11 +46,14 @@ The returned data frame can be passed to the utility function `plot.MWW.ntested.
 
 ### Running the test as published
 
-To run the test as published, get the first version of this script committed to the respository, or better, please obtain the script, an accessory script, and data from Data Dryad at <http://doi.org/10.5061/dryad.64jk6>.  The latest version of the script available here is more general than the version used to generate the published results.
+To run the test as published, get the first version of this script committed to the respository and obtain the data from Data Dryad at <http://doi.org/10.5061/dryad.64jk6>.  The latest version of the script available here is more general than the version used to generate the published results.
 
-Thompson PG, Smouse PE, Scofield DG, Sork VL.
-What seeds tell us about birds: a multi-year analysis of acorn woodpecker
-foraging movements.  Accepted, *Movement Ecology*.
+### References
+
+Thompson PG, Smouse PE, Scofield DG, Sork VL.  2014.  What seeds tell us about birds: a multi-year analysis of acorn woodpecker foraging movements.  [_Movement Ecology_ 2:12](http://dx.doi.org/10.1186/2051-3933-2-12), [data](http://doi.org/10.5061/dryad.64jk6).
+
+
+
 
 
 Dispersal Diversity
@@ -97,8 +100,7 @@ directory:
 source("gammaAccum.R")
 ```
 
-pmiDiversity.R
---------------
+### pmiDiversity.R
 
 Defines the R function `pmiDiversity()` which takes a site-by-source table and
 produces statistics for Probability of Maternal Identity aka PMI (Grivet _et al._
@@ -116,8 +118,7 @@ statistics are calculated:
 (Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et al._ 2012).
 
 
-diversityTests.R
-----------------
+### diversityTests.R
 
 Defines several R functions which, like `pmiDiversity()`, take a site-by-source
 table (one or more) and test diversity statistics within and among them.  See
@@ -150,13 +151,11 @@ used here.
 : Test whether there is a difference in the &gamma; diversity among three datasets
 
 
-membershipPlot.R
---------------------
+### membershipPlot.R
 
 Provides the function `membershipPlot()` for plotting relative representations of sources within sites, and source sharing across sites, using the same site-by-source table used for input to the `pmiDiversity()` function.  Examples of membership plots can be seen in Figure 2A-C of Scofield _et al._ <I>Am Nat</I>.  Singleton sources (those that appear just once in just one site) are distinguished using a white background, while multiton sources (those that appear multiple times but still in just one site) can be distinguished with a gray background using the option `distinguish.multiton=TRUE`.  Other options are provided for controlling labelling of the plot and producing output to PDF or PostScript files.
 
-plotPairwiseMatrix.R
---------------------
+### plotPairwiseMatrix.R
 
 Provides a function for plotting pairwise diversity matrices as returned by the
 `pmiDiversity()` function, examples of which can be seen in Figure 4A-C of
@@ -179,8 +178,7 @@ plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat,
                    axis.label="Seed Pool")
 ````
 
-gammaAccum.R
-------------
+### gammaAccum.R
 
 Provides functions for calculating &gamma; accumulation across sites, and
 plotting the result, examples of which can be seen in Figure 4D-F of Scofield
@@ -245,29 +243,27 @@ instead.
 
 
 
-References
-----------
+### References
 
-Scofield, D. G., P. E. Smouse, J. Karubian and V. L. Sork.  2012.  Use of
+Scofield DG, Smouse PE, Karubian J, Sork VL.  2012.  Use of
 &alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
 [_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202), 
 [supplement](http://www.jstor.org/stable/full/10.1086/668202#apa), [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
-Scofield, D. G., V. R. Alfaro, V. L. Sork, D. Grivet, E. Martinez, J. Papp, A.
-R. Pluess _et al._ 2011. Foraging patterns of acorn woodpeckers (<i>Melanerpes
+Scofield DG, Alfaro VR, Sork VL, Grivet D, Martinez E, Papp J, Pluess AR, Koenig WD, Smouse PE.  2011.  Foraging patterns of acorn woodpeckers (<i>Melanerpes
 formicivorus</i>) on valley oak (<i>Quercus lobata</i> N&eacute;e) in two California oak
 savanna-woodlands. [_Oecologia_ 166: 187-196](http://dx.doi.org/10.1007/s00442-010-1828-5), 
 [supplement](http://link.springer.com/content/esm/art:10.1007/s00442-010-1828-5/MediaObjects/442_2010_1828_MOESM1_ESM.doc).
 
-Scofield, D. G., V. L. Sork, and P. E. Smouse. 2010. Influence of acorn
+Scofield DG, Sork VL, Smouse PE. 2010. Influence of acorn
 woodpecker social behaviour on transport of coast live oak (<i>Quercus agrifolia</i>)
 acorns in a southern California oak savanna. [_Journal of Ecology_ 98: 561-572](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x),
 [supplement](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2010.01649.x/suppinfo).
 
-Grivet, D., P. E. Smouse, and V. L. Sork. 2005. A novel approach to an old
+Grivet D, Smouse PE, Sork VL. 2005. A novel approach to an old
 problem: tracking dispersed seeds. [_Molecular Ecology_ 14: 3585-3595](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x).
 
-Nielsen, R., D. R. Tarpy, and H. K. Reeve. 2003. Estimating effective paternity
+Nielsen R, Tarpy DR, Reeve HK. 2003. Estimating effective paternity
 number in social insects and the effective number of alleles in a population.
 [_Molecular Ecology_ 12: 3157-3164](http://dx.doi.org/10.1046/j.1365-294X.2003.01994.x).
 
