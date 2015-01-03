@@ -5,6 +5,8 @@ Dispersal Diversity : Statistics and Tests
 This is a collection of [R](http://www.r-project.org) functions to facilitate analysis of dispersal in biological communities.  The bulk of the functions calculate dispersal diversity statistics and allow for comparison of diversity statistics, as described in Scofield _et al._ 2012
 [_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202).
 
+There are also new functions for calculating allelic diversity using these same conceptual and statistical principles, and for comparing allele diversity statistics.
+
 We also provide a Mann-Whitney-Wilcoxon (MWW) nested ranks test first described in Thompson _et al._ 2014 [_Movement Ecology_ 2:12](http://dx.doi.org/10.1186/2051-3933-2-12).  We used the MWW nested ranks test to compare dispersal distances between years for a collection of acorn woodpecker granaries, but the test is more generally useful for any MWW-type comparison between two treatment levels when the data are divided into two or more discrete groups.  Each group must be present in both treatment levels, but the number of measurements within each group need not be the same for each level.
 
 
@@ -244,8 +246,68 @@ instead.
 : Wrapper that runs and then returns stats from `gammaAccum()`
 
 
+Allelic Diversity
+-----------------
 
-### References
+These functions calculate allelic alpha, beta and gamma diversity as described by Sork et al. (unpublished), following the same conceptual and statistical principles described in Scofield et al. (2012).  These have been used to calculate the structure of allelic diversity for complete progeny genotypes as well as their decomposed male and female gametes, and to compare alpha and gamma diversity of progeny dispersed relatively short vs. long distances.
+
+### Input requirements
+
+Input begins as a file of genotypes in [GenAlEx](http://www.anu.edu.au/BoZo/GenAlEx/) format, which is read using `readGenalex()` available in file [readGenalex.R](https://raw.githubusercontent.com/douglasgscofield/popgen/master/readGenalex.R) from my [popgen](https://github.com/douglasgscofield/popgen) repository.
+
+### Usage
+
+The augmented `data.frame` returned by `readGenalex()` is then processed into a list of tables, one per locus, using `allele.createTableList()`.  These are collectively analysed by `allele.pmiDiversity()`.  The functions 
+
+
+### Workflow
+
+The workflow to calculate basic allelic diversity statistics:
+
+```R
+source("allelePmiDiversity.R")
+dat = readGenalex("GenAlEx-format-file-of-genotypes.txt")
+gt = allele.createTableList(dat)
+div = allele.pmiDiversity(gt)
+```
+
+For comparing allele diversity between two different samples:
+
+```R
+source("allelePmiDiversity.R")
+source("alleleDiversityTests.R")
+dat1 = readGenalex("file-of-genotypes-sample-1.txt")
+dat2 = readGenalex("file-of-genotypes-sample-2.txt")
+gt1 = allele.createTableList(dat1)
+gt2 = allele.createTableList(dat2)
+alpha.contrast = allele.alphaContrastTest(gt1, gt2)
+gamma.contrast = allele.gammaContrastTest(gt1, gt2)
+```
+
+#### Functions in `allelePmiDiversity.R`
+
+`allele.pmiDiversity()` 
+: The function calculating diversity for a set of loci.  The single argument is a list produced by `allele.createTableList()`, and it uses the function
+`allele.pmiDiversitySingleLocus()`.
+
+`allele.createTableList()`
+: Take a data.frame of genotypes read by readGenalex(), produce a list of allele count tables used by the other functions.  Each entry of the list is, for each locus, a table of site x allele counts, with row names being the
+site names, and column names being the names given to the individual alleles.
+
+`allele.pmiDiversitySingleLocus()`
+: The single argument is, for a single locus, a table of site &times; allele counts, with row names being the site names, and column names being the names given to the individual alleles.
+
+#### Functions in `alleleDiversityTests.R`
+
+`allele.alphaContrastTest(lst.a, lst.b)`
+: Test whether there is a difference in the alpha diversity between two lists of allele diversity datasets.
+
+`allele.gammaContrastTest(lst.a, lst.b)`
+: Test whether there is a difference in the gamma diversity between two allele diversity datasets.
+
+* * *
+
+# References
 
 Scofield DG, Smouse PE, Karubian J, Sork VL.  2012.  Use of
 &alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
