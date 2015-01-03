@@ -257,8 +257,9 @@ Input begins as a file of genotypes in [GenAlEx](http://www.anu.edu.au/BoZo/GenA
 
 ### Usage
 
-The augmented `data.frame` returned by `readGenalex()` is then processed into a list of tables, one per locus, using `allele.createTableList()`.  These are collectively analysed by `allele.pmiDiversity()`.  The functions 
+The augmented `data.frame` returned by `readGenalex()` is then processed into a list of tables, one per locus, using `allele.createTableList()`.  If the true ploidy of the input data does not the ploidy of the GenAlEx file, for example if haploid gametes are represented by a pair of homozygous alleles, then use the `new.ploidy=1` argument to `allele.createTableList()` to reduce the ploidy to its true level.
 
+The list of tables is analysed as a unit by `allele.pmiDiversity()`, and can be passed to one of the contrast functions for testing against another list of tables.
 
 ### Workflow
 
