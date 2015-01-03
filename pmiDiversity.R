@@ -1,21 +1,8 @@
 # pmiDiversity.R
-
-# Calculate PMI statistics (Grivet et al. 2005, Scofield et al.  2010, 2011) as
-# well as alpha, beta, gamma based on both q_qq and r_gg (Scofield et al 2012
-# American Naturalist 180(6) 719-732,
-# http://www.jstor.org/stable/10.1086/668202), as well as q_gg adjusted
-# following Nielsen et al 2003.  Used during data analysis for Scofield et al
-# Am Nat; earlier versions (pre-github) were used for Scofield et al 2010 J
-# Ecol and for Scofield et al 2011 Oecologia.  The single argument is a table
-# of counts in sites (rows) X sources (columns) format.  If the argument is not
-# a matrix, it is converted to one, and rows are ordered numerically by rowname
-# if the rownames are numeric.
-
-.pmiDiversityVersion = "0.3"
-
-# Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
 #
-# douglas.scofield@plantphys.umu.se
+# Copyright (c) 2010, 2012, 2014 Douglas G. Scofield, Uppsala University
+#
+# douglas.scofield@ebc.uu.se
 # douglasgscofield@gmail.com
 #
 # These statistical tools were developed in collaboration with Peter Smouse
@@ -25,12 +12,28 @@
 # Use as you see fit.  No warranty regarding this code is implied nor should be
 # assumed.  Send bug reports etc. to one of the above email addresses.
 #
+#
+#
+# Calculate PMI statistics (Grivet et al 2005, Scofield et al 2010, 2011) as
+# well as alpha, beta, gamma based on both q_qq and r_gg (Scofield et al 2012
+# American Naturalist 180:719-732, http://www.jstor.org/stable/10.1086/668202),
+# as well as q_gg adjusted following Nielsen et al 2003.  Used during data
+# analysis for Scofield et al Am Nat; earlier versions (pre-github) were used
+# for Scofield et al 2010 J Ecol and for Scofield et al 2011 Oecologia.
+#
+# The single argument is a table of counts in sites (rows) X sources (columns)
+# format.  If the argument is not a matrix, it is converted to one.  Rows are
+# not reordered.
+
+.pmiDiversityVersion = "0.3.1"
+
 # CHANGELOG
 #
-# 0.3: Pull Nielsen et al. out into separate function for use in diversity tests,
-#      add collaborators/funding statement
-# 0.2: Finalize Nielsen et al. calculations of diversity measures
-# 0.1: First release
+# 0.3.1  remove unnecessary q.gh calc, update email
+# 0.3    Pull Nielsen et al. out into separate function for use in diversity tests,
+#        add collaborators/funding statement
+# 0.2    Finalize Nielsen et al. calculations of diversity measures
+# 0.1    First release
 
 
 nielsenTransform = function(q.gg, n.g)
@@ -44,6 +47,7 @@ pmiDiversity <- function(tab)
 {
   .thisis = paste("pmiDiversity v", .pmiDiversityVersion, "Douglas G. Scofield, douglasgscofield@gmail.com")
   tab = as.matrix(tab)
+  # old code, reorders if row names are numeric
   #if (! any(is.na(suppressWarnings(as.numeric(rownames(tab))))))
   #  tab <- tab[order(as.numeric(rownames(tab))), ]
   G <- dim(tab)[1]
@@ -67,8 +71,7 @@ pmiDiversity <- function(tab)
   q.bar.0 <- sum(n.g * n.g * q.gg) / sum(n.g * n.g)
   q.nielsen.bar.0 <- sum(n.g * n.g * q.nielsen.gg) / sum(n.g * n.g)
   r.bar.0 <- sum((n.g*n.g*r.gg) - (n.g*r.gg)) / sum((n.g*n.g) - n.g)
-  # more pairwise PMI stuff
-  q.gh <- lower.tri(Q.mat)
+
   # pooled PMI (Scofield et al 2010 J Ecol)
   q.0.gh <- prop.y.0.gh <- matrix(0,G,G)
   dimnames(q.0.gh) <- dimnames(prop.y.0.gh) <- dimnames(Q.mat)
@@ -199,7 +202,7 @@ pmiDiversity <- function(tab)
      d.beta.q.nielsen=d.gamma.q.nielsen/d.alpha.q.nielsen,
      d.beta.r=d.gamma.r/d.alpha.r,
 
-     # Diversity matrix: q_gg on diagonal, q_gh off-diagonal
+     # Diversity matrix: q_gg on diagonal, q_gh/r_gh off-diagonal
      # Divergence matrix: 0 diagonal, delta_gh off-diagonal
      # You can construct the overlap matrix (1 diagonal,
      #   omega_gh off-diagonal) via 1 - Divergence matrix
