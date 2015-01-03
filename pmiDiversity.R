@@ -29,7 +29,7 @@
 
 # CHANGELOG
 #
-# 0.3.1  remove unnecessary q.gh calc, update email
+# 0.3.1  remove unnecessary q.gh calc, update email and produced.by
 # 0.3    Pull Nielsen et al. out into separate function for use in diversity tests,
 #        add collaborators/funding statement
 # 0.2    Finalize Nielsen et al. calculations of diversity measures
@@ -45,7 +45,7 @@ nielsenTransform = function(q.gg, n.g)
 
 pmiDiversity <- function(tab)
 {
-  .thisis = paste("pmiDiversity v", .pmiDiversityVersion, "Douglas G. Scofield, douglasgscofield@gmail.com")
+  .thisis = paste0("pmiDiversity v", .pmiDiversityVersion, ", Douglas G. Scofield (douglasgscofield@gmail.com)")
   tab = as.matrix(tab)
   # old code, reorders if row names are numeric
   #if (! any(is.na(suppressWarnings(as.numeric(rownames(tab))))))
