@@ -43,6 +43,105 @@ source("diversityTests.R")
 #---------------------------------------------
 
 
+allele.alphaDiversityTest <- function(lst, 
+                               zero.var.adjust=TRUE, 
+                               n.resample=10000, 
+                               method=c("bootstrap", "permute"))
+{
+  method <- match.arg(method)
+  name = deparse(substitute(tab))
+  nm = names(lst)
+  q1 <- c(0.5, 0.95, 0.99, 0.999)
+
+  ans <- list()
+  ans$name = name
+  ans$names = nm
+  # for the grand test
+  ans$observed.ln.LR = 0
+  ans$empdist = numeric(n.resample)
+  # sublists for each locus
+
+  for (l in 1:length(lst)) {
+
+    locus = nm[l]
+
+    this.ans = list()
+    this.ans$locus = locus
+
+    tab = lst[[locus]]
+
+    g.vardist <- lapply(.diversityTest.distmat(tab), 
+                        function(x) diag(.diversityTest.gower(x)))  
+    n.g <- unlist(lapply(g.vardist, length))
+    N <- sum(n.g)
+    G <- length(n.g)
+    this.ans$name = name
+    this.ans$N.samples <- N
+    this.ans$N.groups <- G
+
+    terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
+    PVAL = pchisq(terms$ln.LR, df=terms$DF, lower.tail=FALSE)
+    cat("Bartlett's Test for Heteroscedasticity in Intra-group Variances for", name, "\n")
+    cat("Current locus:", locus, "\n")
+    cat("For comparison against analytic X^2, see data structure\n")
+    #cat("Comparing against X-2 distribution directly:\n")
+    #cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  df=(G-1) = %d  P = %g\n", 
+    #            N, G, terms$ln.LR, terms$DF, PVAL))
+    this.ans$observed.ln.LR <- terms$ln.LR
+    this.ans$df.X2 <- terms$DF
+    this.ans$P.analytic <- PVAL
+    nulldist <- .diversityTest.NullDist(obs=terms$ln.LR, 
+                                        n.g=n.g, g.vardist=g.vardist, 
+                                        zero.var.adjust=zero.var.adjust, 
+                                        method=method, n.resample=n.resample)
+    PVAL <- sum(terms$ln.LR <= nulldist)/n.resample
+    cat("Comparing against bootstrap X-2 distribution:\n")
+    q2 <- quantile(nulldist, q1)
+    o = sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f %.2f]  P = %g\n", 
+        N, G, terms$ln.LR, n.resample, paste(collapse=" ", q1), 
+        q2[1], q2[2], q2[3], q2[4], PVAL)
+    cat(o)
+    this.ans$n.resample <- n.resample
+    this.ans$resample.method <- method
+    this.ans$quants <- q2
+    this.ans$P.empirical <- PVAL
+    this.ans$empdist <- nulldist
+    this.ans$version <- .diversityTestsVersion
+
+    # add the current locus' results to the grand totals
+    ans[[ locus ]] = this.ans
+    ans$observed.ln.LR = ans$observed.ln.LR + this.ans$observed.ln.LR
+    ans$empdist = ans$empdist + this.ans$empdist
+  }
+
+  ans$N.samples = ans[[ nm[1] ]]$N.samples
+  ans$N.groups = ans[[ nm[1] ]]$N.groups
+  ans$n.resample <- n.resample
+  ans$resample.method <- method
+  cat("Bartlett's Test for Heteroscedasticity in Intra-group Variances for",name,"\n\n")
+  cat("Over ALL loci\n")
+  cat("Skipping comparison against analytic X^2\n")
+  ans$P.empirical = sum(ans$observed.ln.LR <= ans$empdist)/ans$n.resample
+  cat("Contrasting groups, compare summed ln-LR against summed bootstrap X^2 distribution:\n")
+  ans$quants = quantile(ans$empdist, q1)
+  cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f %.2f]  P = %g\n", 
+              ans$N.samples,
+              ans$N.groups,
+              ans$observed.ln.LR,
+              ans$n.resample,
+              paste(collapse=" ", q1),
+              ans$quants[1], ans$quants[2], ans$quants[3], ans$quants[4],
+              ans$P.empirical))
+  ans$version = .alleleDiversityTestsVersion
+  ####
+  class(ans) <- c(class(ans), "allele.diversityTest")
+  invisible(ans)
+}
+
+
+#---------------------------------------------
+
+
 allele.alphaContrastTest = function(lst.a, lst.b,
                              zero.var.adjust=TRUE, 
                              n.resample=10000, 
@@ -73,7 +172,7 @@ allele.alphaContrastTest = function(lst.a, lst.b,
     this.ans = list()
     this.ans$locus = locus
 
-    tab.a = lst.a[[l]]
+    tab.a = lst.a[[locus]]
     a.vardist <- lapply(.diversityTest.distmat(tab.a), 
                         function(x) diag(.diversityTest.gower(x)))  
     n.a <- unlist(lapply(a.vardist, length))
@@ -85,7 +184,7 @@ allele.alphaContrastTest = function(lst.a, lst.b,
     this.ans$G.a <- G.a
     terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
 
-    tab.b = lst.b[[l]]
+    tab.b = lst.b[[locus]]
     b.vardist <- lapply(.diversityTest.distmat(tab.b), 
                         function(x) diag(.diversityTest.gower(x)))  
     n.b <- unlist(lapply(b.vardist, length))

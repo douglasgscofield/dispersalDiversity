@@ -300,6 +300,9 @@ site names, and column names being the names given to the individual alleles.
 
 #### Functions in `alleleDiversityTests.R`
 
+`allele.alphaDiversityTest(lst)`
+: Test whether there is a difference in the alpha diversity among patches in an allele diversity dataset, that is, whether &beta; = 1 or &delta; = 0 across a collection of patches at a site (see Sork et al.).
+
 `allele.alphaContrastTest(lst.a, lst.b)`
 : Test whether there is a difference in the alpha diversity between two lists of allele diversity datasets.
 
