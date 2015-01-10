@@ -1,21 +1,8 @@
 # gammaAccum.R
 
-# Provide functions for calculating gamma accumulation across sites, and
-# plotting the results.  Used during data analysis for Scofield et al 2012
-# American Naturalist 180(6) 719-732,
-# http://www.jstor.org/stable/10.1086/668202.  Requires as input one or more
-# tables of counts in sites (rows) X sources (columns) format.
-
-# A typical workflow might look like
+# Copyright (c) 2012,2015 Douglas G. Scofield, Uppsala University
 #
-#    rga.result = runGammaAccum(tab)  # where tab is site-by-source
-#    plotGammaAccum(rga.result)
-
-.gammaAccum.Version = "0.1.2"
-
-# Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
-#
-# douglas.scofield@plantphys.umu.se
+# douglas.scofield@ebc.uu.se
 # douglasgscofield@gmail.com
 #
 # These statistical tools were developed in collaboration with Peter Smouse
@@ -25,7 +12,19 @@
 # Use as you see fit.  No warranty regarding this code is implied nor should be
 # assumed.  Send bug reports etc. to one of the above email addresses.
 #
+# Provide functions for calculating gamma accumulation across sites, and
+# plotting the results.  Used during data analysis for Scofield et al 2012
+# American Naturalist 180(6) 719-732,
+# http://www.jstor.org/stable/10.1086/668202.  Requires as input one or more
+# tables of counts in sites (rows) X sources (columns) format.
 #
+# A typical workflow might look like
+#
+#    rga.result = runGammaAccum(tab)  # where tab is site-by-source
+#    plotGammaAccum(rga.result)
+
+.gammaAccum.Version = "0.1.3"
+
 # FUNCTIONS PROVIDED 
 # 
 # See Scofield et al. Am. Nat, Figure 4D-F to see figures derived from using
@@ -71,6 +70,7 @@
 #
 # CHANGELOG
 #
+# 0.1.3: Fix typo and simplify gammaAccum() by adding local functions
 # 0.1.2: Add calculation of gamma via Nielsen et al. transform of q_gg
 # 0.1.1: Minor bugfix for runGammaAccum arguments
 # 0.1: First release
@@ -183,10 +183,11 @@ runGammaAccumSimple <- function(tab, ...)
 
 gammaAccumStats <- function(gammaAccum.results)
 {
-  mns <- unlist(lapply(gammaAccum.results, 
-                       function(x) { recip = 1/x; rmax = max(recip[recip != Inf]); recip[recip == Inf] = rmax; ; mean(recip) } ))
-  vars <- unlist(lapply(gammaAccum.results, 
-                        function(x) { recip = 1/x; rmax = max(recip[recip != Inf]); recip[recip == Inf] = rmax; ; var(recip) } ))
+  f = function(x, FUN) {
+    recip = 1/x; rmax = max(recip[recip != Inf]); recip[recip == Inf] = rmax; FUN(recip)
+  }
+  mns <- unlist(lapply(gammaAccum.results, f, mean))
+  vars <- unlist(lapply(gammaAccum.results, f, var))
   SE <- sqrt(vars)
   quants <- lapply(gammaAccum.results, 
                    function(x) quantile(1/x, c(0.05, 0.5, 0.95)))
@@ -206,7 +207,8 @@ gammaAccum <- function(tab,
                        distance.file=NA,
                        gamma.method=c("r", "q.nielsen", "q"))
 {
-  # If used, the distance.file has three columns, with the header line pool, X, Y
+  # If used, the distance.file has three columns, with names: pool, X, Y
+  # It is either a filename to read, or a data.frame
   accum.method <- match.arg(accum.method)
   resample.method <- match.arg(resample.method)
   gamma.method <- match.arg(gamma.method)
@@ -214,55 +216,85 @@ gammaAccum <- function(tab,
   G <- dim(tab)[1]
   K <- dim(tab)[2]
   N <- sum(tab)
-  if (accum.method == "proximity") {
-    if (is.character(distance.file))
-      gxy <- read.delim(file=distance.file)
-    else if ("data.frame" %in% class(distance.file))
-      gxy <- distance.file
-    else
-      stop("unknown type of distance information for", 
-          deparse(substitute(distance.file)), " with class ", 
-          paste(sep=", ", class(distance.file)))
-    gxy <- subset(gxy, granary %in% pool.names)
-  }
+  if (accum.method == "proximity")
+    gxy = .loadDistanceFile(distance.file, pool.names)
 
-  ans <- list()
-  for (g in 1:n.sites)
-    ans[[g]] <- numeric(0)
+  ans = lapply(1:n.sites, function(x) numeric(0))
   for (i in 1:n.resample) {
     row.order <- sample(1:G,
                         size=n.sites,
                         replace=ifelse(resample.method=="bootstrap", TRUE, FALSE))
-    if (accum.method == "proximity") {
-      new.row.order <- c()
-      pools <- gxy[pool.names[row.order], ]
-      dm <- CreateSpatialDistmat(pools$X, pools$Y, names.1=pools$pool)
-      diag(dm) <- +Inf  # distance to same pool is always farthest
-      next.row.i <- 1
-      new.row.order <- c(new.row.order, row.order[next.row.i])
-      dm[, next.row.i] <- Inf  # distance to same pool is always farthest
-      for (r in 2:n.sites) {
-        next.row.i <- which(dm[next.row.i, ] == min(dm[next.row.i, ]))[1]
-        dm[, next.row.i] <- Inf
-        new.row.order <- c(new.row.order, row.order[next.row.i])
-      }
-      row.order <- new.row.order
-    }
+    if (accum.method == "proximity")
+      row.order = .reorderByProximity(row.order, gxy, pool.names)
     for (g in 1:n.sites) {
-      this.accum <- apply(tab[row.order[1:g], , drop=FALSE], 2, sum)
-      sum.accum <- sum(this.accum)
-      this.prop <- this.accum / sum.accum
-      sum.prop <- sum(this.prop * this.prop)
-      ans[[g]] <- c(ans[[g]], switch(gamma.method,
-        q         = sum.prop,
-        q.nielsen = nielsenTransform(sum.prop, sum.accum),
-        r         = (((sum.accum * sum.prop) - 1) / (sum.accum - 1))))
+      this.gamma = .calculateGammaAccum(apply(tab[row.order[1:g], , drop=FALSE], 2, sum),
+                                        gamma.method)
+      ans[[g]] = c(ans[[g]], this.gamma)
     }
   }
   return(ans)
 }
 
 
-#---------------------------------------------
+#--------------------------------------------- local functions
 
+
+.calculateGammaAccum = function(this.accum, gamma.method)
+{
+  sum.accum <- sum(this.accum)
+  this.prop <- this.accum / sum.accum
+  sum.prop <- sum(this.prop * this.prop)
+  switch(gamma.method,
+    q         = sum.prop,
+    q.nielsen = nielsenTransform(sum.prop, sum.accum),
+    r         = (((sum.accum * sum.prop) - 1) / (sum.accum - 1)))
+}
+
+
+.reorderByProximity = function(row.order, gxy, pool.names)
+{
+  new.row.order <- c()
+  pools <- gxy[pool.names[row.order], ]
+  dm <- .createSpatialDistmat(pools$X, pools$Y, names.1=pools$pool)
+  diag(dm) <- +Inf  # distance to same pool is always farthest
+  next.row.i <- 1
+  new.row.order <- c(new.row.order, row.order[next.row.i])
+  dm[, next.row.i] <- Inf  # distance to same pool is always farthest
+  for (r in 2:n.sites) {
+    next.row.i <- which(dm[next.row.i, ] == min(dm[next.row.i, ]))[1]
+    dm[, next.row.i] <- Inf
+    new.row.order <- c(new.row.order, row.order[next.row.i])
+  }
+  new.row.order
+}
+
+
+.createSpatialDistmat <- function(x.1, y.1, x.2, y.2, names.1, names.2)
+{
+    if (! missing(names.1)) names(x.1) = names.1
+    if (missing(x.2)) x.2 <- x.1
+    if (! missing(names.2)) names(x.2) = names.2
+    if (missing(y.2)) y.2 <- y.1
+    xx <- outer(x.1, x.2, "-")
+    xx <- xx * xx
+    yy <- outer(y.1, y.2, "-")
+    yy <- yy * yy
+    ans <- sqrt(xx + yy)
+    dimnames(ans) <- list(names(x.1), names(x.2))
+    ans
+}
+
+
+.loadDistanceFile = function(distance.file, pool.names)
+{
+  if (is.character(distance.file))
+    gxy <- read.delim(file=distance.file)
+  else if ("data.frame" %in% class(distance.file))
+    gxy <- distance.file
+  else
+    stop("unknown type of distance information for", 
+        deparse(substitute(distance.file)), " with class ", 
+        paste(sep=", ", class(distance.file)))
+  subset(gxy, pool %in% pool.names)
+}
 

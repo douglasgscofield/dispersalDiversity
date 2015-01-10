@@ -37,7 +37,8 @@
 
 .alleleDiversityTestsVersion = 0.1
 
-# This code relies on code from diversityTests.R
+# This code relies on other files in respository
+source("allelePmiDiversity.R")
 source("diversityTests.R")
 
 #---------------------------------------------

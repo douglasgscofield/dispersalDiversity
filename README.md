@@ -266,6 +266,7 @@ The list of tables is analysed as a unit by `allele.pmiDiversity()`, and can be 
 The workflow to calculate basic allelic diversity statistics:
 
 ```R
+source("readGenalex.R")
 source("allelePmiDiversity.R")
 dat = readGenalex("GenAlEx-format-file-of-genotypes.txt")
 gt = allele.createTableList(dat)
@@ -275,6 +276,7 @@ div = allele.pmiDiversity(gt)
 For comparing allele diversity between two different samples:
 
 ```R
+source("readGenalex.R")
 source("allelePmiDiversity.R")
 source("alleleDiversityTests.R")
 dat1 = readGenalex("file-of-genotypes-sample-1.txt")
@@ -285,15 +287,25 @@ alpha.contrast = allele.alphaContrastTest(gt1, gt2)
 gamma.contrast = allele.gammaContrastTest(gt1, gt2)
 ```
 
+For calculating and plotting gamma accumulation curves across all loci:
+
+```R
+source("readGenalex.R")
+source("allelePmiDiversity.R")
+source("alleleGammaAccum.R")
+dat = readGenalex("genotypes.txt")
+lst = allele.createTableList(dat)
+allele.rga.result = allele.runGammaAccum(lst)
+plotGammaAccum(allele.rga.result)
+```
+
 #### Functions in `allelePmiDiversity.R`
 
 `allele.pmiDiversity()` 
-: The function calculating diversity for a set of loci.  The single argument is a list produced by `allele.createTableList()`, and it uses the function
-`allele.pmiDiversitySingleLocus()`.
+: The function calculating diversity for a set of loci.  The single argument is a list produced by `allele.createTableList()`, and it uses the function `allele.pmiDiversitySingleLocus()`.
 
 `allele.createTableList()`
-: Take a data.frame of genotypes read by readGenalex(), produce a list of allele count tables used by the other functions.  Each entry of the list is, for each locus, a table of site x allele counts, with row names being the
-site names, and column names being the names given to the individual alleles.
+: Take a data.frame of genotypes read by readGenalex(), produce a list of allele count tables used by the other functions.  Each entry of the list is, for each locus, a table of site x allele counts, with row names being the site names, and column names being the names given to the individual alleles.
 
 `allele.pmiDiversitySingleLocus()`
 : The single argument is, for a single locus, a table of site &times; allele counts, with row names being the site names, and column names being the names given to the individual alleles.
@@ -308,6 +320,11 @@ site names, and column names being the names given to the individual alleles.
 
 `allele.gammaContrastTest(lst.a, lst.b)`
 : Test whether there is a difference in the gamma diversity between two allele diversity datasets.
+
+#### Functions in `alleleGammaAccum.R`
+
+`allele.runGammaAccum(lst)`
+: Perform a gamma diversity accumulation on the site-by-source data in tab.  Several arguments control the method of accumulation and value of gamma calculated.  Other arguments are identical to `gammaAccum()`.  Only the defaults have been tested; the others were developed while exploring the data and must be considered experimental.  The result is returned in a list, which may be passed to `plotGammaAccum()` to plot the result.  
 
 * * *
 

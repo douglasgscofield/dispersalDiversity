@@ -7,3 +7,8 @@
 *.swp
 future
 old
+.Rproj.user
+*.Rproj
+readGenalex.R
+testing.R
+testing.txt

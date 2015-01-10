@@ -65,7 +65,8 @@
 # allele data must be in readGenalex() format
 source("readGenalex.R")
 
-allele.createTableList = function(dat, new.ploidy=2, collapse.alleles=TRUE) {
+allele.createTableList = function(dat, new.ploidy=2, collapse.alleles=TRUE,
+                                  exclude=c(NA, "0"), quiet=FALSE) {
   if (! is.genalex(dat))
     stop("input must be from readGenalex")
   if (new.ploidy >= 2 && ! collapse.alleles)
@@ -74,29 +75,34 @@ allele.createTableList = function(dat, new.ploidy=2, collapse.alleles=TRUE) {
     dat = reduceGenalexPloidy(dat, new.ploidy)
   lc = attr(dat, "locus.columns")
   ln = attr(dat, "locus.names")
+  pop = attr(dat, "pop.title")
   ans = list()
+  ex = list()
   for (il in 1:length(lc)) {
     v = as.vector(unlist(dat[, lc[il]:(lc[il] + new.ploidy - 1)]))
-    p = rep(dat$Patch, new.ploidy)
-    ans[[ ln[il] ]] = t(as.matrix(table(v, p)))
+    ex[[ ln[il] ]] = sum(v %in% exclude)
+    p = rep(dat[[pop]], new.ploidy)
+    ans[[ ln[il] ]] = t(as.matrix(table(v, p, exclude=exclude)))
   }
+  if (sum(unlist(ex)) && !quiet)
+    cat(sprintf("Excluding %d entries based on 'exclude=c(%s)'\n", sum(unlist(ex)), paste(collapse=", ", exclude)))
   ans
 }
 
 allele.pmiDiversity = function(lst) {
   # calculates diversity statistics for a collection of loci, the argument
   # is produced by allele.createTableList()
-  
+
   # create utility zero vectors and matrices
-  patch.locus.0 = matrix(0, nrow=nrow(lst[[1]]), ncol=length(names(lst)), dimnames=list(Patch=rownames(lst[[1]]), Locus=names(lst)))
-  patch.patch.0 = matrix(0, nrow=nrow(lst[[1]]), ncol=nrow(lst[[1]]), dimnames=list(Patch=rownames(lst[[1]]), Patch=rownames(lst[[1]])))
-  patch.0 = patch.locus.0[, 1]
-  locus.0 = patch.locus.0[1, ]
+  pop.locus.0 = matrix(0, nrow=nrow(lst[[1]]), ncol=length(names(lst)), dimnames=list(Pop=rownames(lst[[1]]), Locus=names(lst)))
+  pop.pop.0 = matrix(0, nrow=nrow(lst[[1]]), ncol=nrow(lst[[1]]), dimnames=list(Pop=rownames(lst[[1]]), Pop=rownames(lst[[1]])))
+  pop.0 = pop.locus.0[, 1]
+  locus.0 = pop.locus.0[1, ]
   # accumulator vectors and matrices
-  alpha.gk = r.gg = patch.locus.0
-  r.gh = patch.patch.0
+  alpha.gk = r.gg = pop.locus.0
+  r.gh = pop.pop.0
   overlap.a = divergence.a = R.0.a = r.bar.weighted.a = alpha.bar.weighted.a = locus.0
-  r.k = alpha.k = patch.0
+  r.k = alpha.k = pop.0
   p = list()
   # Go through loci, storing diversity values
   for (a in names(lst)) {
