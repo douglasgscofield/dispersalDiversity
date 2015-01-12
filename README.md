@@ -211,11 +211,10 @@ These functions calculate allelic alpha, beta and gamma diversity as described b
 
 ### Input requirements
 
-Input begins as a file of genotypes in [GenAlEx](http://biology-assets.anu.edu.au/GenAlEx) format, which is read using `readGenalex()` available as an R package:
+Input begins as a file of genotypes in [GenAlEx](http://biology-assets.anu.edu.au/GenAlEx) format, which is read using the [`readGenalex`] R package (<https://github.com/douglasgscofield/readGenalex>) available via CRAN:
 
 ```R
-install.packages("devtools")
-devtools::install_github("douglasgscofield/readGenalex")
+install.packages("readGenalex")
 ```
 
 ### Usage
