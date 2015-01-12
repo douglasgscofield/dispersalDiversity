@@ -7,55 +7,13 @@ This is a collection of [R](http://www.r-project.org) functions to facilitate an
 
 There are also new functions for calculating allelic diversity using these same conceptual and statistical principles, and for comparing allele diversity statistics.
 
-We also provide a Mann-Whitney-Wilcoxon (MWW) nested ranks test first described in Thompson _et al._ 2014 [_Movement Ecology_ 2:12](http://dx.doi.org/10.1186/2051-3933-2-12).  We used the MWW nested ranks test to compare dispersal distances between years for a collection of acorn woodpecker granaries, but the test is more generally useful for any MWW-type comparison between two treatment levels when the data are divided into two or more discrete groups.  Each group must be present in both treatment levels, but the number of measurements within each group need not be the same for each level.
-
+The **Mann-Whitney-Wilcoxon nested ranks test** we originally provided here has been made an R package and has been moved to [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
 
 * * *
 
 These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](https://www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
 
 * * *
-
-Mann-Whitney-Wilcoxon Nested Ranks Test
----------------------------------------
-
-Calculate a Mann-Whitney-Wilcoxon (MWW) test using nested ranks.  Data are
-structured into several groups and each group has received two treatment
-levels. The rankings are compared between treatment levels, taking group
-structure and size into account when permuting ranks to construct a null
-distribution which assumes no influence of treatment.  When there is just one
-group, this test is identical to a standard MWW test.
-
-The function `MWW.nested.test(dat, n.iter=10000, title=NULL)` takes three arguments:
-
-* `dat` is a data frame containing three columns.
-	1. `$group`, an alphanumeric group identifier
-	2. `$treatment`, the treatment level, there must be two treatment levels
-	3. `$value`, a numerical value to be ranked between treatments.  All groups must have values in both treatment levels.
-* `n.iter` is the number of permutations to use to create the null distribution.  The number of simulated distributions is `n.iter - 1`, with the observed data providing the `n.iter`-th value
-* `title` is a title to use when reporting test results, if not provided it is taken from the name of the input data frame
-
-The test results are printed to the console, and are also invisibly returned in a data frame.  The data frame contains the weighted Z-scores across all groups for each iteration, with the observed Z-scores as the last row.  The data frame also contains the following attached attributes:
-
-* `weights` which are the group-size weights used when combining Z-scores
-* `Z.weighted.obs` is the Z-score for the observed data
-* `P.obs` is the *P*-value as calculated from the empirical distribution
-* `n.iter` as provided to the function
-
-The returned data frame can be passed to the utility function `plot.MWW.ntested.test(test.dat, title=NULL)` to plot the simulated distribution and the observed value.
-
-
-
-### Running the test as published
-
-To run the test as published, get the first version of this script committed to the respository and obtain the data from Data Dryad at <http://doi.org/10.5061/dryad.64jk6>.  The latest version of the script available here is more general than the version used to generate the published results.
-
-### References
-
-Thompson PG, Smouse PE, Scofield DG, Sork VL.  2014.  What seeds tell us about birds: a multi-year analysis of acorn woodpecker foraging movements.  [_Movement Ecology_ 2:12](http://dx.doi.org/10.1186/2051-3933-2-12), [data](http://doi.org/10.5061/dryad.64jk6).
-
-
-
 
 
 Dispersal Diversity
@@ -253,7 +211,12 @@ These functions calculate allelic alpha, beta and gamma diversity as described b
 
 ### Input requirements
 
-Input begins as a file of genotypes in [GenAlEx](http://www.anu.edu.au/BoZo/GenAlEx/) format, which is read using `readGenalex()` available in file [readGenalex.R](https://raw.githubusercontent.com/douglasgscofield/popgen/master/readGenalex.R) from my [popgen](https://github.com/douglasgscofield/popgen) repository.
+Input begins as a file of genotypes in [GenAlEx](http://biology-assets.anu.edu.au/GenAlEx) format, which is read using `readGenalex()` available as an R package:
+
+```R
+install.packages("devtools")
+devtools::install_github("douglasgscofield/readGenalex")
+```
 
 ### Usage
 
@@ -266,7 +229,7 @@ The list of tables is analysed as a unit by `allele.pmiDiversity()`, and can be 
 The workflow to calculate basic allelic diversity statistics:
 
 ```R
-source("readGenalex.R")
+library(readGenalex)
 source("allelePmiDiversity.R")
 dat = readGenalex("GenAlEx-format-file-of-genotypes.txt")
 gt = allele.createTableList(dat)
@@ -276,7 +239,7 @@ div = allele.pmiDiversity(gt)
 For comparing allele diversity between two different samples:
 
 ```R
-source("readGenalex.R")
+library(readGenalex)
 source("allelePmiDiversity.R")
 source("alleleDiversityTests.R")
 dat1 = readGenalex("file-of-genotypes-sample-1.txt")
@@ -290,7 +253,7 @@ gamma.contrast = allele.gammaContrastTest(gt1, gt2)
 For calculating and plotting gamma accumulation curves across all loci:
 
 ```R
-source("readGenalex.R")
+library(readGenalex)
 source("allelePmiDiversity.R")
 source("alleleGammaAccum.R")
 dat = readGenalex("genotypes.txt")

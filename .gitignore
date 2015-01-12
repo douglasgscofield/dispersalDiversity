@@ -5,6 +5,7 @@
 *.RData
 *.Rhistory
 *.swp
+*.zip
 future
 old
 .Rproj.user

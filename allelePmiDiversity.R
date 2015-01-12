@@ -63,7 +63,6 @@
 .allele.pmiDiversityVersion = "0.1"
 
 # allele data must be in readGenalex() format
-source("readGenalex.R")
 
 allele.createTableList = function(dat, new.ploidy=2, collapse.alleles=TRUE,
                                   exclude=c(NA, "0"), quiet=FALSE) {
