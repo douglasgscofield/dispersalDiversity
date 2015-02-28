@@ -1,17 +1,9 @@
-# gammaAccum.R
+#' @include pmiDiversity.R
+# for collation order
+NULL
 
-# Copyright (c) 2012,2015 Douglas G. Scofield, Uppsala University
-#
-# douglas.scofield@ebc.uu.se
-# douglasgscofield@gmail.com
-#
-# These statistical tools were developed in collaboration with Peter Smouse
-# (Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
-# Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
-#
-# Use as you see fit.  No warranty regarding this code is implied nor should be
-# assumed.  Send bug reports etc. to one of the above email addresses.
-#
+
+
 # Provide functions for calculating gamma accumulation across sites, and
 # plotting the results.  Used during data analysis for Scofield et al 2012
 # American Naturalist 180(6) 719-732,
@@ -23,41 +15,113 @@
 #    rga.result = runGammaAccum(tab)  # where tab is site-by-source
 #    plotGammaAccum(rga.result)
 
-.gammaAccum.Version = "0.1.3"
 
 # FUNCTIONS PROVIDED 
 # 
 # See Scofield et al. Am. Nat, Figure 4D-F to see figures derived from using
 # these functions.
 # 
-#
-# runGammaAccum(tab)      : Perform a gamma diversity accumulation on the
-#                           site-by-source data in tab.  Several arguments
-#                           control the method of accumulation and value of
-#                           gamma calculated.  Only the defaults have been
-#                           tested; the others were developed while exploring
-#                           the data and must be considered experimental.
-#                           The result is returned in a list, which may be
-#                           passed to plotGammaAccum() to plot the result.
-#
-#       Arguments:
-#           tab 
-#                 Site-by-source table, as passed to pmiDiversity()
-#           accum.method
-#                 "random" (default) or "proximity".  If "proximity" is used,
-#                 then distance.file must be supplied (see below)
-#           resample.method
-#                 "permute" (default) or "bootstrap"; whether to resample sites
-#                 without ("permute") or with ("bootstrap") replacement
-#           distance.file
-#                 A file or data.frame containing three columns of data, with
-#                 the header/column names being "pool", "X", and "Y",
-#                 containing the spatial locations of the seed pools named in
-#                 the row names of tab.  Only used if the
-#                 accum.method=="proximity"
-#           gamma.method
-#                 Calculate gamma using "r" (default), "q" or "q.nielsen" method
-#                 (see paper).
+
+#' Plot the gamma accumulation result from \code{runGammaAccum}
+#'
+#' See Scofield et al. Am. Nat, Figure 4D-F to see figures derived from using
+#' these functions.
+#'
+#' @param gamma.accum Result from \code{\link{runGammaAccum}}
+#' 
+#' @param plot.xmax   If provided, the maximum extent of the X-axis
+#' in the plot.  If missing, calculated from the data.
+#' 
+#' @param plot.ymax   If provided, the maximum extent of the Y-axis
+#' in the plot.  If missing, calculated from the data.
+#' 
+#' @param obs.omega   If provided, the observed omega value for the
+#' data underlying the gamma accumulation curve is added to the plot
+#' 
+#' @param xlab,ylab,col,bty,lwd,bg  Options passed to \code{\link{plot}},
+#' \code{\link{lines}} and/or \code{\link{points}}
+#'
+#' @param \dots  Additional options passed to \code{\link{plot}},
+#' \code{\link{lines}} and/or \code{\link{points}}
+#'
+#' @return Nothing returned
+#'
+#' @seealso \code{\link{runGammaAccum}}
+#'
+#' @export plotGammaAccum
+#'
+plotGammaAccum <- function(gamma.accum, plot.xmax, plot.ymax, obs.omega,
+                           xlab = "Number of seed pools",
+                           ylab = expression("Accumulated  " * gamma * 
+                                             "  diversity"),
+                           col = "black", bty = "L", lwd = 1.5, bg = "white",
+                           lty = 2,
+                           ...) {
+  gtr <- gamma.accum$simple.results
+  obs.gamma <- gamma.accum$obs.gamma
+  xmax <- length(gtr$mns)
+  x <- 1:xmax
+  lim <- c(1, max(xmax + 3, gtr$mns + gtr$SE))
+  xlim <- ylim <- lim
+  xlim <- c(1, ifelse(missing(plot.xmax), xmax, plot.xmax))
+  ylim <- c(1, ifelse(missing(plot.ymax), max(gtr$mns + gtr$SE), plot.ymax))
+
+  #par(mar = c(3.5, 3.5, 0.5, 0.5), mgp = c(2.0, 0.5, 0), las = 1, xpd = NA)
+  par(mar = c(2.7, 2.7, 0.5, 0.5), mgp = c(1.7, 0.4, 0), las = 1, ps = 10, tcl = -0.4, xpd = NA)
+
+  pch.gamma <- 24
+  pch.means <- 19
+  plot.separate.gamma <- FALSE
+  if (abs(gtr$mns[xmax] - obs.gamma) < 0.1) { # gamma in means sequence
+    pch <- c(rep(pch.means, xmax - 1), pch.gamma)
+  } else {
+    pch <- pch.means
+    plot.separate.gamma <- TRUE
+  }
+  plot(x, gtr$mns,
+       pch = pch, col = col, bty = bty, xlim = xlim, ylim = ylim,
+       lwd = lwd, xlab = xlab, ylab = ylab, bg = bg, ...)
+  lines(x, gtr$mns + gtr$SE, lty = lty, ...)
+  lines(x, gtr$mns - gtr$SE, lty = lty, ...)
+  if (plot.separate.gamma) {
+    points(xmax, obs.gamma, pch = pch.gamma, lwd = lwd, bg = bg, cex = 1.2)
+  }
+  if (! missing(obs.gamma)) {
+    text(x = (0.15 * xlim[2]) + 1, y = (0.97 * ylim[2]) + 1,
+         substitute(bar(omega) == OMEGA, list(OMEGA = obs.omega)),
+         cex = 1.2)
+  }
+}
+
+
+
+#' Perform gamma diversity accumulation on site-by-source data
+#'
+#' Perform a gamma diversity accumulation on the site-by-source data in tab.
+#' Several arguments control the method of accumulation and value of gamma
+#' calculated.  Only the defaults have been tested; the others were developed
+#' while exploring the data and must be considered experimental.  The result is
+#' returned in a list, which may be passed to \code{plotGammaAccum} to plot the
+#' result.
+#'
+#' @param tab           Site-by-source table, as passed to pmiDiversity
+#'
+#' @param accum.method  \code{"random"} (default) or \code{"proximity"}.  
+#' Method for accumulating sites.  If \code{"random"}, then the next site is
+#' chosen at random. If \code{"proximity"}, then the next site chosen is the
+#' next closest site, and \code{distance.file} must be supplied.
+#'
+#' @param resample.method  \code{"permute"} (default) or \code{"bootstrap"}.
+#' Whether to resample sites without replacement (\code{"permute"}) or with
+#' replacement (\code{"bootstrap"}).
+#'
+#' @param distance.file  A file or data.frame containing three columns of data,
+#' with the header/column names being \code{"pool"}, \code{"X"}, and \code{"Y"},
+#' containing the spatial locations of the seed pools named in the row names of
+#' tab.  Only used if the \code{accum.method=="proximity"}.
+#'
+#' @param gamma.method Calculate gamma using \code{"r"} (default),
+#' \code{"q"} or \code{"q.nielsen"} method (see paper).
 #
 # plotGammaAccum(rga.result)
 #                         : plot the gamma accumulation result from runGammaAccum()
@@ -80,67 +144,6 @@
 #
 # * Turn this into an actual R package
 
-
-source("pmiDiversity.R")
-
-
-#---------------------------------------------
-
-
-plotGammaAccum <- function(gamma.accum, 
-                           plot.xmax=NA, 
-                           plot.ymax=NA,
-                           add.regression=FALSE, 
-                           obs.omega=NA, 
-                           ...)
-{
-  gtr = gamma.accum$simple.results
-  obs.gamma = gamma.accum$obs.gamma
-  xmax <- length(gtr$mns)
-  x <- 1:xmax
-  lim <- c(1, max(xmax + 3, gtr$mns + gtr$SE))
-  xlim <- ylim <- lim
-  xlim <- c(1, ifelse(is.na(plot.xmax), xmax, plot.xmax))
-  ylim <- c(1, ifelse(is.na(plot.ymax), max(gtr$mns + gtr$SE), plot.ymax))
-
-  #par(mar=c(3.5, 3.5, 0.5, 0.5), mgp=c(2.0, 0.5, 0), las=1, xpd=NA)
-  par(mar=c(2.7, 2.7, 0.5, 0.5), mgp=c(1.7, 0.4, 0), las=1, ps=10, tcl=-0.4, xpd=NA)
-
-  pch.gamma <- 24
-  pch.means <- 19
-  plot.separate.gamma <- FALSE
-  if (abs(gtr$mns[xmax] - obs.gamma) < 0.1) { # gamma in means sequence
-    pch <- c(rep(pch.means, xmax - 1), pch.gamma)
-  } else {
-    pch <- pch.means
-    plot.separate.gamma <- TRUE
-  }
-  plot(x, gtr$mns,
-       pch=pch, col="black", bty="L",
-       xlim=xlim,
-       ylim=ylim,
-       #asp=1,
-       lwd=1.5,
-       tcl=-0.3,
-       xlab="Number of Seed Pools",
-       ylab=expression("Accumulated  "*gamma*"  diversity"),
-       bg="white",
-       ...
-       )
-  lines(x, gtr$mns + gtr$SE, lty=2, ...)
-  lines(x, gtr$mns - gtr$SE, lty=2, ...)
-  if (plot.separate.gamma) {
-    points(xmax, obs.gamma, pch=pch.gamma, lwd=1.5, bg="white", cex=1.2)
-  }
-  if (! is.na(obs.omega)) {
-    text(x=(0.15*xlim[2])+1, y=(0.97*ylim[2])+1,
-         substitute(bar(omega)==OMEGA, list(OMEGA=obs.omega)),
-         cex=1.2)
-  }
-}
-
-
-#---------------------------------------------
 
 
 runGammaAccum <- function(tab, 
