@@ -14,7 +14,9 @@ Description: A collection of R functions to analyse individual and genetic
 URL: https://github.com/douglasgscofield/dispersalDiversity
 BugReports: https://github.com/douglasgscofield/dispersalDiversity/issues
 License: LGPL-3 | file LICENSE
-Requires:
+Imports:
+    RColorBrewer
+Depends:
     readGenalex (>= 1.0)
 Suggests:
     testthat
