@@ -1,12 +1,16 @@
 TODO for dispersalDiversity
-=====
+---------------------------
 
 * make this an actual package
 * come up with some tests
 * submit to CRAN
 * do I need to do a types x sites data structure, or is that a 2d table?
 * perhaps provide functions to convert tables and xtabs to this?
-* work out how to deal with `library(RColorBrewer)` use in `membershipPlot`
+
+Completed
+---------
+
+* Worked out how to deal with `library(RColorBrewer)` use in `membershipPlot`.  If `RColorBrewer` is available then it is used, otherwise it is not.
 
 Create a random distance matrix
 ------
