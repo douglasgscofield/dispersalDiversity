@@ -22,6 +22,14 @@ n.samples <- 1000
 # data frame of site-source pairs
 t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
                 source = round(runif(n.samples) * n.sources + 0.5))
+
 # site-by-source matrix
-m <- do.call(rbind, lapply(split(t, t$site), function(x) table(x$source)))
+m1 <- do.call(rbind, lapply(split(t, t$site), function(x) table(x$source)))
+# this creates a class c("matrix")
+
+# or use xtabs
+m2 <- xtabs(data = t)
+# this creates a class c("xtabs","table")
 ```
+
+Both the above methods create a matrix with rownames of site levels, and column names of source levels.  `xtabs` also names the dims after the variables (`site` and `source`).
