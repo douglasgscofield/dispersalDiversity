@@ -4,24 +4,6 @@ NULL
 
 
 
-# Provide functions for calculating gamma accumulation across sites, and
-# plotting the results.  Used during data analysis for Scofield et al 2012
-# American Naturalist 180(6) 719-732,
-# http://www.jstor.org/stable/10.1086/668202.  Requires as input one or more
-# tables of counts in sites (rows) X sources (columns) format.
-#
-# A typical workflow might look like
-#
-#    rga.result = runGammaAccum(tab)  # where tab is site-by-source
-#    plotGammaAccum(rga.result)
-
-
-# FUNCTIONS PROVIDED 
-# 
-# See Scofield et al. Am. Nat, Figure 4D-F to see figures derived from using
-# these functions.
-# 
-
 #' Plot the gamma accumulation result from \code{runGammaAccum}
 #'
 #' See Scofield et al. Am. Nat, Figure 4D-F to see figures derived from using
@@ -29,15 +11,24 @@ NULL
 #'
 #' @param gamma.accum Result from \code{\link{runGammaAccum}}
 #' 
-#' @param plot.xmax   If provided, the maximum extent of the X-axis
-#' in the plot.  If missing, calculated from the data.
+#' @param plot.xmax   Maximum extent of the X-axis in the plot
 #' 
-#' @param plot.ymax   If provided, the maximum extent of the Y-axis
-#' in the plot.  If missing, calculated from the data.
+#' @param plot.ymax   Maximum extent of the Y-axis in the plot
 #' 
 #' @param obs.omega   If provided, the observed omega value for the
-#' data underlying the gamma accumulation curve is added to the plot
+#' data underlying the gamma accumulation curve; this value is added to 
+#' the plot
 #' 
+#' @param omega.positions  If \code{obs.omega} is given, the location at
+#' which it is plotted, relative to \code{plot.xmax} and \code{plot.ymax},
+#' in a two-element vector.  1 is added to each dimension.
+#' 
+#' @param pch  Plotting character used for mean gamma values accumulated,
+#' see \code{?pch}
+#'
+#' @param pch.gamma  Plotting character used for total gamma value, 
+#' \code{?pch}
+#'
 #' @param xlab,ylab,col,bty,lwd,bg  Options passed to \code{\link{plot}},
 #' \code{\link{lines}} and/or \code{\link{points}}
 #'
@@ -46,51 +37,60 @@ NULL
 #'
 #' @return Nothing returned
 #'
+#' @examples
+#'
+#' rga.result = runGammaAccum(tab)
+#' plotGammaAccum(rga.result)
+#'
 #' @seealso \code{\link{runGammaAccum}}
 #'
 #' @export plotGammaAccum
 #'
-plotGammaAccum <- function(gamma.accum, plot.xmax, plot.ymax, obs.omega,
+plotGammaAccum <- function(gamma.accum, 
+                           plot.xmax = length(gamma.accum$simple.results$mns), 
+                           plot.ymax = max(gamma.accum$simple.results$mns + 
+                                           gamma.accum$simple.results$SE), 
+                           obs.omega = NULL,
+                           omega.positions = c(0.15, 0.97),
                            xlab = "Number of seed pools",
                            ylab = expression("Accumulated  " * gamma * 
                                              "  diversity"),
+                           pch = 19, pch.gamma = 24,
                            col = "black", bty = "L", lwd = 1.5, bg = "white",
                            lty = 2,
                            ...) {
-  gtr <- gamma.accum$simple.results
-  obs.gamma <- gamma.accum$obs.gamma
-  xmax <- length(gtr$mns)
-  x <- 1:xmax
-  lim <- c(1, max(xmax + 3, gtr$mns + gtr$SE))
-  xlim <- ylim <- lim
-  xlim <- c(1, ifelse(missing(plot.xmax), xmax, plot.xmax))
-  ylim <- c(1, ifelse(missing(plot.ymax), max(gtr$mns + gtr$SE), plot.ymax))
+    gtr <- gamma.accum$simple.results
+    obs.gamma <- gamma.accum$obs.gamma
+    xmax <- length(gtr$mns)
+    x <- 1:xmax
+    #lim <- c(1, max(xmax + 3, gtr$mns + gtr$SE))
+    #xlim <- ylim <- lim
+    xlim <- c(1, plot.xmax)
+    ylim <- c(1, plot.ymax)
 
-  #par(mar = c(3.5, 3.5, 0.5, 0.5), mgp = c(2.0, 0.5, 0), las = 1, xpd = NA)
-  par(mar = c(2.7, 2.7, 0.5, 0.5), mgp = c(1.7, 0.4, 0), las = 1, ps = 10, tcl = -0.4, xpd = NA)
-
-  pch.gamma <- 24
-  pch.means <- 19
-  plot.separate.gamma <- FALSE
-  if (abs(gtr$mns[xmax] - obs.gamma) < 0.1) { # gamma in means sequence
-    pch <- c(rep(pch.means, xmax - 1), pch.gamma)
-  } else {
-    pch <- pch.means
-    plot.separate.gamma <- TRUE
-  }
-  plot(x, gtr$mns,
-       pch = pch, col = col, bty = bty, xlim = xlim, ylim = ylim,
-       lwd = lwd, xlab = xlab, ylab = ylab, bg = bg, ...)
-  lines(x, gtr$mns + gtr$SE, lty = lty, ...)
-  lines(x, gtr$mns - gtr$SE, lty = lty, ...)
-  if (plot.separate.gamma) {
-    points(xmax, obs.gamma, pch = pch.gamma, lwd = lwd, bg = bg, cex = 1.2)
-  }
-  if (! missing(obs.gamma)) {
-    text(x = (0.15 * xlim[2]) + 1, y = (0.97 * ylim[2]) + 1,
-         substitute(bar(omega) == OMEGA, list(OMEGA = obs.omega)),
-         cex = 1.2)
-  }
+    opa <- par(mar = c(2.7, 2.7, 0.5, 0.5), mgp = c(1.7, 0.4, 0), 
+               las = 1, ps = 10, tcl = -0.4, xpd = NA)
+    plot.separate.gamma <- FALSE
+    if (abs(gtr$mns[xmax] - obs.gamma) < 0.1) {
+        # include gamma in means sequence
+        pch <- c(rep(pch, xmax - 1), pch.gamma)
+    } else {
+        plot.separate.gamma <- TRUE
+    }
+    plot(x, gtr$mns, pch = pch, col = col, bty = bty, xlim = xlim, 
+         ylim = ylim, lwd = lwd, xlab = xlab, ylab = ylab, bg = bg, ...)
+    lines(x, gtr$mns + gtr$SE, lty = lty, ...)
+    lines(x, gtr$mns - gtr$SE, lty = lty, ...)
+    if (plot.separate.gamma)
+        points(xmax, obs.gamma, pch = pch.gamma, lwd = lwd, bg = bg, 
+               cex = 1.2, ...)
+    if (! is.null(obs.omega)) {
+        text(x = (omega.positions[1] * xlim[2]) + 1, 
+             y = (omega.positions[2] * ylim[2]) + 1,
+             substitute(bar(omega) == OMEGA, list(OMEGA = obs.omega)),
+             cex = 1.2)
+    }
+    par(opa)
 }
 
 
@@ -122,9 +122,41 @@ plotGammaAccum <- function(gamma.accum, plot.xmax, plot.ymax, obs.omega,
 #'
 #' @param gamma.method Calculate gamma using \code{"r"} (default),
 #' \code{"q"} or \code{"q.nielsen"} method (see paper).
+#'
+#' @param \dots Additional parameters passed to \code{runGammaAccumSimple}
 #
-# plotGammaAccum(rga.result)
-#                         : plot the gamma accumulation result from runGammaAccum()
+# TODO does runGammaAccumSimple need to be exposed?  does it need more options?
+#
+#'
+#' @seealso \code{\link{plotGammaAccum}}, \code{\link{runGammaAccumSimple}}
+#'
+# @examples
+#'
+#' @export runGammaAccum
+#'
+runGammaAccum <- function(tab, 
+                          accum.method = c("random", "proximity"),
+                          resample.method = c("permute", "bootstrap"),
+                          gamma.method = c("r", "q.nielsen", "q"),
+                          distance.file = NULL,
+                          ...)
+{
+    accum.method <- match.arg(accum.method)
+    resample.method <- match.arg(resample.method)
+    gamma.method <- match.arg(gamma.method)
+    pmiD <- pmiDiversity(tab)
+    ans <- list()
+    ans$obs.gamma <- pmiD[[paste(sep="", "d.gamma.", gamma.method)]]
+    ans$obs.omega.mean <- pmiD[[paste(sep="", gamma.method, ".overlap")]]
+    ans$obs.delta.mean <- pmiD[[paste(sep="", gamma.method, ".divergence")]]
+    ans$simple.results <- runGammaAccumSimple(tab,
+        accum.method = accum.method, resample.method = resample.method,
+        gamma.method = gamma.method, distance.file = distance.file, ...)
+    return(ans)
+}
+
+
+
 #
 # gammaAccum()            : workhorse function for gamma accumulation
 # gammaAccumStats()       : extracts stats from result of gammaAccum()
@@ -144,32 +176,6 @@ plotGammaAccum <- function(gamma.accum, plot.xmax, plot.ymax, obs.omega,
 #
 # * Turn this into an actual R package
 
-
-
-runGammaAccum <- function(tab, 
-                          accum.method=c("random", "proximity"),
-                          resample.method=c("permute", "bootstrap"),
-                          gamma.method=c("r", "q.nielsen", "q"),
-                          distance.file=NA,
-                          ...)
-{
-  accum.method = match.arg(accum.method)
-  resample.method = match.arg(resample.method)
-  gamma.method = match.arg(gamma.method)
-  pmiD = pmiDiversity(tab)
-  ans = list()
-  ans$obs.gamma <- pmiD[[paste(sep="", "d.gamma.", gamma.method)]]
-  ans$obs.omega.mean <- pmiD[[paste(sep="", gamma.method, ".overlap")]]
-  ans$obs.delta.mean <- pmiD[[paste(sep="", gamma.method, ".divergence")]]
-  ans$simple.results <- runGammaAccumSimple(tab,
-                                            accum.method=accum.method,
-                                            resample.method=resample.method,
-                                            gamma.method=gamma.method,
-                                            distance.file=distance.file,
-                                            ...)
-  ####          
-  ans
-}
 
 
 #---------------------------------------------
@@ -207,7 +213,7 @@ gammaAccum <- function(tab,
                        n.resample=1000,
                        accum.method=c("random", "proximity"),
                        resample.method=c("permute", "bootstrap"),
-                       distance.file=NA,
+                       distance.file=NULL,
                        gamma.method=c("r", "q.nielsen", "q"))
 {
   # If used, the distance.file has three columns, with names: pool, X, Y
@@ -219,8 +225,11 @@ gammaAccum <- function(tab,
   G <- dim(tab)[1]
   K <- dim(tab)[2]
   N <- sum(tab)
-  if (accum.method == "proximity")
-    gxy = .loadDistanceFile(distance.file, pool.names)
+  if (accum.method == "proximity") {
+      if (! is.null(distance.file))
+          gxy = .loadDistanceFile(distance.file, pool.names)
+      else stop("distance.file must be provided")
+  }
 
   ans = lapply(1:n.sites, function(x) numeric(0))
   for (i in 1:n.resample) {
