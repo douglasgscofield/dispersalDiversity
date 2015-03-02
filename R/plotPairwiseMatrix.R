@@ -14,10 +14,11 @@
 #'
 #' @param pairwise.mean Mean pairwise divergence or overlap as found at
 #' \code{pmiDiversity()$r.divergence}.  If provided, this is added to
-#' the plot in the upper triangle, with positions specified by
-#' \code{mean.positions}.  The value is plotted together with
-#' '$\bar{\delta} =$' if \code{statistic} is \code{"divergence"}, and
-#' '$\bar{\omega} =$' if \code{statistic} is \code{"overlap"}.
+#' the plot in the upper triangle, rounded to three digits, with 
+#' positions specified by \code{mean.positions}.  The value is plotted 
+#' together with '$\bar{\delta} =$' if \code{statistic} is
+#' \code{"divergence"}, and '$\bar{\omega} =$' if \code{statistic} is 
+#' \code{"overlap"}.
 #'
 #' @param mean.positions If \code{pairwise.mean} is given, the relative
 #' X and Y positions within the panel at which the value is plotted, in 
@@ -33,6 +34,15 @@
 #' @return The lattice plot is returned invisibly
 #'
 #' @examples
+#
+#
+#
+#
+# TODO: get DATA into here, perhaps import pericarp data from readGenalex?
+#
+#
+#
+#
 #' pmiD = pmiDiversity(tab)
 #' plotPairwiseMatrix(pairwise.mat = pmiD$r.divergence.mat, 
 #'                    pairwise.mean = pmiD$r.divergence, 
@@ -40,6 +50,8 @@
 #'                    axis.label = "Seed Pool")
 #'
 #' @seealso \code{\link{lattice::levelplot}}
+#'
+#' @import lattice
 #'
 #' @export plotPairwiseMatrix
 #'
@@ -64,7 +76,8 @@ plotPairwiseMatrix <- function(pairwise.mat,
     rotateMatrix = function(mat) t(mat[nrow(mat):1, , drop=FALSE])
     pairwise.mat = rotateMatrix(pairwise.mat)
     opa <- par(mar = c(0, 0, 0, 5), ps = 10, xpd = NA)
-    lp <- lattice::levelplot(pairwise.mat, 
+    # levelplot from lattice::
+    lp <- levelplot(pairwise.mat, 
               bty = bty, aspect = aspect, 
               regions = TRUE, col.regions = col.regions, 
               colorkey = colorkey,
@@ -72,20 +85,20 @@ plotPairwiseMatrix <- function(pairwise.mat,
               scales = scales,
               xlab = xlab, ylab = ylab,
               ...)
-    ## this needs a lattice::, right?
-    lattice::plot(lp, ...)
+    ## really lattice::plot.lattice
+    plot(lp, ...)
     if (! is.null(pairwise.mean)) {
-        lims <- lapply(lattice::current.panel.limits(), round)
+        # lattice::current.panel.limits
+        lims <- lapply(current.panel.limits(), round)
         # is it sapply that i should use instead of unlist lapply?
         rr <- abs(unlist(lapply(lims, diff)))
         xpr <- if (statistic == "divergence")
             substitute(bar(delta) == OBS, list(OBS = round(pairwise.mean, 3)))
         else substitute(bar(omega) == OBS, list(OBS = round(pairwise.mean, 3)))
 
-        lattice::panel.text(xpr, 
-                            x = mean.position[1] * rr[1], 
-                            y = mean.position[2] * rr[2], 
-                            adj = c(0, 0), cex = 1.0)
+        # lattice::panel.text
+        panel.text(xpr, x = mean.position[1] * rr[1], 
+                   y = mean.position[2] * rr[2], adj = c(0, 0), cex = 1.0)
         #} else {
         #    lattice::panel.text(x=0.45*rr[1], y=0.7*rr[2], #expression(omega[italic(gh)]),
         #            substitute(bar(omega)==OBS, list(OBS=round(pairwise.mean,3))),
