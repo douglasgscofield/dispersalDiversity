@@ -16,6 +16,8 @@ BugReports: https://github.com/douglasgscofield/dispersalDiversity/issues
 License: LGPL-3 | file LICENSE
 Depends:
     readGenalex (>= 1.0)
+Imports:
+    lattice
 Suggests:
     RColorBrewer,
     testthat
