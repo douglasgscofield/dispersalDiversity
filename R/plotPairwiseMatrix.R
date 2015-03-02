@@ -1,4 +1,4 @@
-#' Create a visual plot of pairwise divergence or overlap as calculated by \code{pmiDiversity}
+#' Plot pairwise divergence or overlap as calculated by \code{pmiDiversity}
 #'
 #' Plot pairwise values using \code{levelplot} from the \code{lattice} 
 #' package.  See Scofield et al. Am. Nat, Figure 4A-C to see examples 
@@ -7,7 +7,7 @@
 #' @param pairwise.mat Pairwise divergence or overlap matrix as found at
 #' \code{pmiDiversity()$r.diversity.mat}.  Currently, prior to plotting
 #' this matrix has its diagonal and upper triangle zeroed, and is then
-#' rotated prior to passing to \code{lattice::levelplot}
+#' rotated prior to passing to \code{\link{lattice::levelplot}}
 #'
 #' @param statistic \code{"divergence"} or \code{"overlap"}, for which
 #' statistic is being presented
@@ -29,9 +29,9 @@
 #' labels can be changed with \code{xlab} and \code{ylab}
 #'
 #' @param bty,aspect,col.regions,colorkey,at,scales,xlab,ylab Additional
-#' plot options passed to \code{lattice::levelplot}
+#' plot options passed to \code{\link{lattice::levelplot}}
 #'
-#' @return The lattice plot is returned invisibly
+#' @return The lattice plot object is returned invisibly
 #'
 #' @examples
 #
@@ -49,19 +49,21 @@
 #'                    statistic = "divergence", 
 #'                    axis.label = "Seed Pool")
 #'
-#' @seealso \code{\link{lattice::levelplot}}
+#' @seealso \code{\link{pmiDiversity}}, \code{\link{lattice::levelplot}}
 #'
-#' @import lattice
+#' @importFrom lattice levelplot current.panel.limits panel.text plot
+#
+# do i need this for the plot?  or is the above import enough?
+# @importMethodsFrom lattice plot.lattice
+#
 #'
 #' @export plotPairwiseMatrix
 #'
-# library(lattice)
-#
 plotPairwiseMatrix <- function(pairwise.mat, 
     statistic = c("divergence", "overlap"), 
     pairwise.mean = NULL, mean.position = c(0.45, 0.7),
     bty = "L", aspect = "iso", 
-    col.regions = function(.x) gray(c(1, seq(.9, .6, length.out=(.x - 2)), 0)),
+    col.regions = function(x) gray(c(1, seq(.9, .6, length.out=(x - 2)), 0)),
     colorkey = list(labels = list(cex = 1.0)),
     at = c(0, 0.01, seq(0.2, 0.8, 0.2), 0.99, 1.0),
     scales = list(draw = FALSE, tck = 0, cex = 0.7, x = list(rot = 90)),
@@ -76,7 +78,7 @@ plotPairwiseMatrix <- function(pairwise.mat,
     rotateMatrix = function(mat) t(mat[nrow(mat):1, , drop=FALSE])
     pairwise.mat = rotateMatrix(pairwise.mat)
     opa <- par(mar = c(0, 0, 0, 5), ps = 10, xpd = NA)
-    # levelplot from lattice::
+    # lattice::levelplot
     lp <- levelplot(pairwise.mat, 
               bty = bty, aspect = aspect, 
               regions = TRUE, col.regions = col.regions, 
@@ -85,7 +87,7 @@ plotPairwiseMatrix <- function(pairwise.mat,
               scales = scales,
               xlab = xlab, ylab = ylab,
               ...)
-    ## really lattice::plot.lattice
+    # lattice::plot.lattice
     plot(lp, ...)
     if (! is.null(pairwise.mean)) {
         # lattice::current.panel.limits
