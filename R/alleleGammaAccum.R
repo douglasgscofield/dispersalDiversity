@@ -1,3 +1,8 @@
+#' @include allelePmiDiversity.R
+#' @include gammaAccum.R
+# for collation
+NULL
+
 # alleleGammaAccum.R
 #
 # Copyright (c) 2015 Douglas G. Scofield, Uppsala University
@@ -17,14 +22,12 @@
 # Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202.
 # Requires as input one list of tables produced by allele.createTableList().
 
-# A typical workflow might look like
-#
-#    dat = readGenalex("genotypes.txt")
-#    lst = allele.createTableList(dat)
-#    allele.rga.result = allele.runGammaAccum(lst)
-#    plotGammaAccum(allele.rga.result)
-
-.alleleGammaAccum.Version = "0.1"
+#' @examples
+#'
+#' dat = readGenalex("genotypes.txt")
+#' lst = allele.createTableList(dat)
+#' allele.rga.result = allele.runGammaAccum(lst)
+#' plotGammaAccum(allele.rga.result)
 
 # FUNCTIONS PROVIDED 
 # 

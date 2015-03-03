@@ -51,7 +51,7 @@ TARBALL_LOC = $(PARENTDIR)/$(TARBALL)
 CHECKDIR = check_tmp
 PANDOC = pandoc
 
-all: vars NEWS data doc vignettes
+all: vars NEWS doc vignettes
 
 vars:
 	@echo PACKAGE = "$(PACKAGE)"
