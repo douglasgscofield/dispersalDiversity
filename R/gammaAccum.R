@@ -6,8 +6,7 @@ NULL
 
 #' Plot the gamma accumulation result from \code{runGammaAccum}
 #'
-#' See Scofield et al. Am. Nat, Figure 4D-F to see figures derived from using
-#' these functions.
+#' For an example of its use see Figure 4D-F of Scofield et al. (2012).
 #'
 #' @param gamma.accum Result from \code{\link{runGammaAccum}}
 #' 
@@ -36,12 +35,18 @@ NULL
 #' \code{\link{lines}} and/or \code{\link{points}}
 #'
 #' @return Nothing returned
-#'
-#' @examples
-#'
-#' rga.result = runGammaAccum(tab)
-#' plotGammaAccum(rga.result)
-#'
+#
+# @references
+#
+# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+# Use of alpha, beta and gamma diversity measures to characterize seed
+# dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#
+# @examples
+#
+# rga.result = runGammaAccum(tab)
+# plotGammaAccum(rga.result)
+#
 #' @seealso \code{\link{runGammaAccum}}
 #'
 #' @export plotGammaAccum

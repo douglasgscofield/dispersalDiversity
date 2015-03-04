@@ -1,3 +1,7 @@
+#' @include pmiDiversity.R
+# for collation
+NULL
+
 # diversityTests.R
 
 # Provide functions for performing dispersal diversity tests (Scofield et al
@@ -5,21 +9,6 @@
 # http://www.jstor.org/stable/10.1086/668202).  Tests require as input one or
 # more tables of counts in sites (rows) X sources (columns) format.
 
-.diversityTestsVersion = "0.3.1"
-
-# Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
-#
-# douglas.scofield@plantphys.umu.se
-# douglasgscofield@gmail.com
-#
-# These statistical tools were developed in collaboration with Peter Smouse
-# (Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
-# Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
-#
-# Use as you see fit.  No warranty regarding this code is implied nor should be
-# assumed.  Send bug reports etc. to one of the above email addresses.
-#
-#
 # FUNCTIONS PROVIDED 
 #
 # 
@@ -69,12 +58,6 @@
 # --- Turn this into an actual R package
 
 
-source("pmiDiversity.R")
-
-# This code relies on pmiDiversity() and nielsenTransform(), both defined in
-# pmiDiversity.R
-
-
 #---------------------------------------------
 
 
@@ -122,7 +105,6 @@ alphaDiversityTest <- function(tab,
   ans$quants <- q2
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
-  ans$version <- .diversityTestsVersion
   ####
   class(ans) <- c(class(ans), "diversityTest")
   invisible(ans)
@@ -196,7 +178,6 @@ alphaContrastTest = function(tab.a, tab.b,
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
   ans$a.b.vardist = a.b.vardist
-  ans$version <- .diversityTestsVersion
   .diversityTest.ReverseTerms = .RT
   ####
   class(ans) <- c(class(ans), "diversityTest.AlphaContrast")
@@ -287,7 +268,6 @@ alphaContrastTest.3 = function(tab.a, tab.b, tab.c,
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
   ans$a.b.c.vardist = a.b.c.vardist
-  ans$version <- .diversityTestsVersion
   .diversityTest.ReverseTerms = .RT
   ####
   class(ans) <- c(class(ans), "diversityTest.AlphaContrast.3")
@@ -404,7 +384,6 @@ pairwiseMeanTest <- function(tab,
   ans <- list(n.cache=G, n.source=K, n.seed=sum(n.g),
               obs=obs, n.iter=n.iter, nulldist=nulldist, 
               P.lower=P.lower, P.upper=P.upper, method=method, statistic=statistic)
-  ans$version <- .diversityTestsVersion
   class(ans) <- c(class(ans), "class.PairwiseMeanTest")
   ####
   ans
@@ -535,7 +514,6 @@ gammaContrastTest = function(tab.a, tab.b,
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
   ans$a.b.vardist = a.b.vardist
-  ans$version <- .diversityTestsVersion
   ####
   class(ans) <- c(class(ans), "diversityTest.GammaContrast")
   invisible(ans)
@@ -633,7 +611,6 @@ gammaContrastTest.3 = function(tab.a, tab.b, tab.c,
   ans$P.empirical <- PVAL
   ans$empdist <- nulldist
   ans$a.b.c.vardist = a.b.c.vardist
-  ans$version <- .diversityTestsVersion
   ####
   class(ans) <- c(class(ans), "diversityTest.GammaContrast.3")
   invisible(ans)
@@ -652,116 +629,128 @@ gammaContrastTest.3 = function(tab.a, tab.b, tab.c,
 .diversityTest.epsilon <- 1.0e-12
 .diversityTest.ReverseTerms <- TRUE
 
-.diversityTest.distmat <- function(tab, group=dimnames(tab)[[1]], drop=TRUE)
-{
-  if (is.null(dim(tab))) {
-    dim(tab) = c(1, length(tab))
-    dimnames(tab) = list(Site="onedim", Genotype=names(tab))
-  } 
-  if (dim(tab)[1] > 1 && is.null(group)) {
-    stop("must supply group(s), all groups not supported")
-  } else if (missing(group) && dim(tab)[1] == 1) group <- 1
-  G <- dim(tab)[1]
-  K <- dim(tab)[2]
-  N <- sum(tab)
-  N.G <- apply(tab, 1, sum)
-  D <- list()
-  for (g in group) {
-    Dmat <- matrix(1, N.G[g], N.G[g])
-    n.K <- tab[g,][tab[g,] > 0]
-    cum.n.K <- cumsum(n.K)
-    for (src in 1:length(n.K)) {
-      # which rows/cols to 0
-      slice <- (cum.n.K[src] - n.K[src] + 1):cum.n.K[src] 
-      Dmat[slice,slice] <- 0
+# construct a distance matrix from the site x group matrix
+#
+.diversityTest.distmat <- function(tab, group = dimnames(tab)[[1]], 
+                                   drop = TRUE) {
+    if (is.null(dim(tab))) {
+        dim(tab) <- c(1, length(tab))
+        dimnames(tab) <- list(Site = "onedim", Genotype = names(tab))
+    } 
+    if (dim(tab)[1] > 1 && is.null(group))
+        stop("must supply group(s), all groups not supported")
+    else if (missing(group) && dim(tab)[1] == 1) 
+        group <- 1
+    G <- dim(tab)[1]
+    K <- dim(tab)[2]
+    N <- sum(tab)
+    N.G <- apply(tab, 1, sum)
+    D <- list()
+    for (g in group) {
+        Dmat <- matrix(1, N.G[g], N.G[g])
+        n.K <- tab[g, ][tab[g, ] > 0]
+        cum.n.K <- cumsum(n.K)
+        for (src in 1:length(n.K)) {
+            # which rows/cols to 0
+            slice <- (cum.n.K[src] - n.K[src] + 1):cum.n.K[src] 
+            Dmat[slice, slice] <- 0
+        }
+        D[[as.character(g)]] <- Dmat
     }
-    D[[as.character(g)]] <- Dmat
-  }
-  ####
-  return(if (length(D) == 1 && drop) D[[1]] else D)
+    return(if (length(D) == 1 && drop) D[[1]] else D)
 }
 
 
+
+# Create centroid distances for variances based on
+#
+# Gower JC. 1966. Some distance properties of latent root and vector
+# methods used in multivariate analysis.  Biometrika 53:325-338.
+#
 .diversityTest.gower <- function(dmat)
 {
-  if (is.null(dim(dmat))) {
-    dim(dmat) = c(1, length(dmat))
-    dimnames(dmat) = list(Site="onedim", Genotype=names(dmat))
-  } 
-  if (! all(dmat == t(dmat))) stop("dmat not symmetric")
-  d <- -0.5*dmat
-  rd <- apply(d, 1, mean)
-  if (! all(rd == apply(d,2,mean))) stop("dmat not symmetric")
-  gower.mat <- d + outer(-rd, -rd, "+") + mean(d)
-  if (! all(abs(rowSums(gower.mat)) <= .diversityTest.epsilon))
-    stop("abs(rowSums(gower.mat)) > .diversityTest.epsilon")
-  if (! all(abs(colSums(gower.mat)) <= .diversityTest.epsilon))
-    stop("abs(colSums(gower.mat)) > .diversityTest.epsilon")
-  ####
-  gower.mat
-}
-
-
-.diversityTest.ZeroVarAdjust = function(ss.g, n.g)
-{
-  # adjust for no diversity within a group (ss.g == 0), in this case,
-  # the minimum distance possible prior to dividing by (n.g-1) is
-  # 1/(2*n.g*n.g), so make our replacement for 0 be half this, divided
-  # of course by (n.g-1):  1/((4*n.g*n.g)*(n.g-1))
-  nn <- names(ss.g[ss.g == 0]) # names of ss.g==0 elements
-  if (length(nn) > 0)
-    ss.g[nn] <- 1/(4*n.g[nn]*n.g[nn]*(n.g[nn]-1)) # and index by names
-  ####
-  ss.g
-}
-
-
-.diversityTest.CalcTerms <- function(n.g, g.vardist, zero.var.adjust=TRUE)
-{
-  N = sum(n.g)
-  G = length(n.g)
-  V.g = unlist(lapply(g.vardist, sum)) / (n.g - 1)
-  if (zero.var.adjust)
-    V.g = .diversityTest.ZeroVarAdjust(V.g, n.g)
-  V.p = ss.pooled = sum((n.g - 1) * V.g) / (N - G)
-  term.V.g = sum((n.g - 1) * log(V.g))
-  term.V.p = (N - G) * log(V.p)
-  term.denom = 1 + (1 / (3 * (G - 1))) * (sum(1 / (n.g - 1)) - (1 / (N - G)))
-  ln.LR = if (.diversityTest.ReverseTerms) 
-    (term.V.p - term.V.g) / term.denom
-  else 
-    (term.V.g - term.V.p) / term.denom
-  DF = G - 1
-  ####
-  list(V.g=V.g, V.p=V.p, ln.LR=ln.LR, DF=DF)
+    if (is.null(dim(dmat))) {
+        dim(dmat) <- c(1, length(dmat))
+        dimnames(dmat) <- list(Site = "onedim", Genotype = names(dmat))
+    } 
+    if (! all(dmat == t(dmat))) 
+        stop("dmat not symmetric")
+    d <- -0.5 * dmat
+    rd <- apply(d, 1, mean)
+    if (! all(rd == apply(d, 2, mean))) 
+        stop("dmat not symmetric")
+    gower.mat <- d + outer(-rd, -rd, "+") + mean(d)
+    if (! all(abs(rowSums(gower.mat)) <= .diversityTest.epsilon))
+        stop("abs(rowSums(gower.mat)) > .diversityTest.epsilon")
+    if (! all(abs(colSums(gower.mat)) <= .diversityTest.epsilon))
+        stop("abs(colSums(gower.mat)) > .diversityTest.epsilon")
+    return(gower.mat)
 }
 
 
 
-.diversityTest.NullDist = function(obs, n.g, g.vardist, 
-                                      zero.var.adjust=TRUE, 
-                                      method=c("bootstrap", "permute"),
-                                      n.resample=10000)
+# If there is no diversity within a group (ss.g == 0), assign a
+# minimum diversity.  The minimum distance prior to dividing by
+# (n.g - 1) is 1/(2 * n.g * n.g), so replace 0 diversity with
+# half this quantity, divided by (n.g - 1):
+#
+#        1 / ((4 * n.g * n.g) * (n.g - 1))
+#
+.diversityTest.ZeroVarAdjust <- function(ss.g, n.g) {
+    nn <- names(ss.g[ss.g == 0]) # names of ss.g==0 elements
+    if (length(nn)) # index by names
+        ss.g[nn] <- 1 / (4 * n.g[nn] * n.g[nn] * (n.g[nn] - 1))
+    return(ss.g)
+}
+
+
+
+# Calculate terms of the variance, log-likelihood and degrees of freedom
+.diversityTest.CalcTerms <- function(n.g, g.vardist, zero.var.adjust = TRUE)
 {
-  method <- match.arg(method)
-  N = sum(n.g)
-  G = length(n.g)
-  cum.n.g <- cumsum(n.g)
-  all.g.vardist <- unlist(g.vardist, use.names=FALSE)
-  nulldist <- obs  # observed
-  for (i in 2:n.resample) {
-    p <- switch(method,
-          "permute" = sample(all.g.vardist),
-          "bootstrap" = sample(all.g.vardist, replace=TRUE))
-    for (n in names(g.vardist)) {
-      # peel off a slice of the distance permutation for each group
-      slice <- (cum.n.g[n]-n.g[n]+1):cum.n.g[n]
-      g.vardist[[n]] <- p[slice]
+    N <- sum(n.g)
+    G <- length(n.g)
+    V.g <- unlist(lapply(g.vardist, sum)) / (n.g - 1)
+    if (zero.var.adjust)
+        V.g <- .diversityTest.ZeroVarAdjust(V.g, n.g)
+    V.p <- ss.pooled = sum((n.g - 1) * V.g) / (N - G)
+    term.V.g <- sum((n.g - 1) * log(V.g))
+    term.V.p <- (N - G) * log(V.p)
+    term.denom <- 1 + ((1 / (3 * (G - 1))) * 
+                       (sum(1 / (n.g - 1)) - (1 / (N - G))))
+    ln.LR <- if (.diversityTest.ReverseTerms) 
+        (term.V.p - term.V.g) / term.denom
+    else 
+        (term.V.g - term.V.p) / term.denom
+    DF <- G - 1
+    return(list(V.g=V.g, V.p=V.p, ln.LR=ln.LR, DF=DF))
+}
+
+
+
+# Construct null distribution of the variance
+.diversityTest.NullDist <- function(obs, n.g, g.vardist, 
+                                    zero.var.adjust = TRUE, 
+                                    method = c("bootstrap", "permute"),
+                                    n.resample = 10000) {
+    method <- match.arg(method)
+    N <- sum(n.g)
+    G <- length(n.g)
+    cum.n.g <- cumsum(n.g)
+    all.g.vardist <- unlist(g.vardist, use.names=FALSE)
+    nulldist <- obs  # observed
+    for (i in 2:n.resample) {
+        p <- switch(method, 
+                    "permute" = sample(all.g.vardist),
+                    "bootstrap" = sample(all.g.vardist, replace=TRUE))
+        for (n in names(g.vardist)) {
+            # peel off a slice of the distance permutation for each group
+            slice <- (cum.n.g[n] - n.g[n] + 1):cum.n.g[n]
+            g.vardist[[n]] <- p[slice]
+        }
+        terms <- .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
+        nulldist <- c(nulldist, terms$ln.LR)
     }
-    terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
-    nulldist <- c(nulldist, terms$ln.LR)
-  }
-  ####
-  sort(nulldist)
+    return(sort(nulldist))
 }
 

@@ -6,6 +6,9 @@
 #' as well as q_gg adjusted following Nielsen et al 2003.  Used during data
 #' analysis for Scofield et al Am Nat; earlier versions (pre-github) were used
 #' for Scofield et al 2010 J Ecol and for Scofield et al 2011 Oecologia.
+#
+# TODO incorporate weighted means and variances from Scofield et al. 2011
+#
 #'
 #' @param tab Table of counts in sites (rows) X sources (columns) format.
 #' If the argument is not a matrix, it is converted to one.  Rows are
@@ -14,10 +17,28 @@
 #' @return List of diversity calculations
 #'
 # @references
-# Grivet et al 2005 (base PMI and grand means)
-# Scofield et al 2010 (pooled PMI)
-# Scofield et al. 2011 (or not?)
-# Scofield et al. 2012 Am Nat (diversity and the rest)
+#
+# Grivet, D., Smouse, P. E. and Sork, V. L. (2005) A novel approach to an old
+# problem: tracking dispersed seeds.  \emph{Molecular Ecology} 14:3585-3595.
+#
+# Scofield, D. G.,  Sork, V. L. and Smouse, P. E. (2010) Influence of acorn
+# woodpecker social behaviour on transport of coast live oak
+# (\emph{Quercus agrifolia}) acorns in a southern California oak savanna.
+# \emph{Journal of Ecology} 98:561-572.
+#
+# Scofield, D. G., Alfaro, V. R., Sork, V. L., Grivet, D., Martinez, E.,
+# Papp, J., Pluess, A. R., Koenig, W. D. and Smouse, P. E. (2011) Foraging
+# patterns of acorn woodpeckers (\emph{Melanerpes formicivorus}) on valley
+# oak (\emph{Quercus lobata} N\'{e}e) in two California oak savanna-woodlands.
+# Oecologia 166:187-196.
+#
+# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+# Use of alpha, beta and gamma diversity measures to characterize seed
+# dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#
+# Nielsen, R., Tarpy, D. R. and Reeve, H. K. (2003) Estimating effective
+# paternity number in social insects and the effective number of alleles in
+# a population.  \emph{Molecular Ecology} 12:3157-3164.
 #
 # @examples
 #
@@ -83,7 +104,8 @@ pmiDiversity <- function(tab) {
     q$d.alpha <- 1 / q$q.unweighted.mean
     q$d.gamma <- 1 / sum(Q.k * Q.k)
     q$d.beta <- q$d.gamma / q$d.alpha
-    q$diversity.mat <- (2 * Q.mat) / outer(q$q.gg, q$q.gg, FUN="+")
+    q$diversity.mat <- (2 * Q.mat) / 
+                       outer(q$q.gg, q$q.gg, FUN="+")
     diag(q$diversity.mat) <- q$alpha.g
     q$divergence.mat <- 1 - q$diversity.mat
     diag(q$divergence.mat) <- 0
@@ -128,7 +150,8 @@ pmiDiversity <- function(tab) {
     r$d.alpha <- 1 / r$q.unweighted.mean
     r$d.gamma <- 1/sum((n.k * (n.k - 1)) / (N * (N - 1)))
     r$d.beta <- r$d.gamma / r$d.alpha
-    r$diversity.mat <- (2 * Q.mat) / outer(r$q.gg, r$q.gg, FUN="+")
+    r$diversity.mat <- (2 * Q.mat) / 
+                       outer(r$q.gg, r$q.gg, FUN="+")
     diag(r$diversity.mat) <- r$alpha.g
     r$divergence.mat <- 1 - r$diversity.mat
     diag(r$divergence.mat) <- 0

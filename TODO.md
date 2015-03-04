@@ -1,6 +1,8 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Incorporate weighted means and variances equations from Scofield et al. 2011
+* sort out reverseTerms stuff
 * rename `allele.createTableList` and all the stuff in allelePmiDiversity.R
 * make `allele.createTableList` an S3 generic that operates on class `genalex`
 * reconsider function name of `pmiDiversity`

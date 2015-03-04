@@ -1,8 +1,8 @@
 #' Plot pairwise divergence or overlap as calculated by \code{pmiDiversity}
 #'
 #' Plot pairwise values using \code{levelplot} from the \code{lattice} 
-#' package.  See Scofield et al. Am. Nat, Figure 4A-C to see examples 
-#' of this function in use.
+#' package.  An example of its use is in Figure 4A-C of Scofield et al.
+#' (2012).
 #'
 #' @param pairwise.mat Pairwise divergence or overlap matrix as found at
 #' \code{pmiDiversity()$r.diversity.mat}.  Currently, prior to plotting
@@ -33,22 +33,23 @@
 #'
 #' @return The lattice plot object is returned invisibly
 #'
-#' @examples
+# @references
+#
+# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+# Use of alpha, beta and gamma diversity measures to characterize seed
+# dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #
 #
-#
+# @examples
 #
 # TODO: get DATA into here, perhaps import pericarp data from readGenalex?
 #
+# pmiD = pmiDiversity(tab)
+# plotPairwiseMatrix(pairwise.mat = pmiD$r.divergence.mat, 
+#                    pairwise.mean = pmiD$r.divergence, 
+#                    statistic = "divergence", 
+#                    axis.label = "Seed Pool")
 #
-#
-#
-#' pmiD = pmiDiversity(tab)
-#' plotPairwiseMatrix(pairwise.mat = pmiD$r.divergence.mat, 
-#'                    pairwise.mean = pmiD$r.divergence, 
-#'                    statistic = "divergence", 
-#'                    axis.label = "Seed Pool")
-#'
 #' @seealso \code{\link{pmiDiversity}}, \code{\link{lattice::levelplot}}
 #'
 #' @importFrom lattice levelplot current.panel.limits panel.text plot

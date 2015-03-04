@@ -6,7 +6,8 @@
 #' white regions unless \code{fill.method = "color"} with
 #' \code{distinguish.multiton = TRUE}, then they are grey.  Groups with 
 #' members in more than one site are given a unique colour/hatching 
-#' combination.
+#' combination.  An example if its use is in Figure 2A-C of
+#' Scofield et al. (2012).
 #'
 #' @param tab Matrix of counts or proportions for observations of 
 #' group membership (columns) within sites (rows).  The table is 
@@ -61,7 +62,13 @@
 #'
 #' @return No value is returned
 #
-#  @example
+# @references
+#
+# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+# Use of alpha, beta and gamma diversity measures to characterize seed
+# dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#
+# @example
 #
 #
 #
