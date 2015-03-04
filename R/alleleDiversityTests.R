@@ -19,10 +19,10 @@ NULL
 #'
 #' @author Douglas G. Scofield
 #'
-#' @seealso \code{\link{}}
+#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{pmiDiversity}}
 #'
-#' @examples
-#'
+# @examples
+#
 #' @export allele.alphaDiversityTest
 #'
 allele.alphaDiversityTest <- function(lst, 
