@@ -1,6 +1,8 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* rename `allele.createTableList` and all the stuff in allelePmiDiversity.R
+* make `allele.createTableList` an S3 generic that operates on class `genalex`
 * reconsider function name of `pmiDiversity`
 * make allele diversity function returns match `pmiDiversity` function returns
 * expand documentation for `pmiDiversity` and `nielsenTransform`

@@ -1,19 +1,7 @@
-# allelePmiDiversity.R
-#
-# Copyright (c) 2014 Douglas G. Scofield, Uppsala University
-#
-# douglas.scofield@ebc.uu.se
-# douglasgscofield@gmail.com
-#
-# These statistical tools were developed in collaboration with Peter Smouse
-# (Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
-# Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
-#
-# Use as you see fit.  No warranty regarding this code is implied nor should be
-# assumed.  Send bug reports etc. to one of the above email addresses.
-#
-#
-#
+#' @include pmiDiversity.R
+# for collation
+NULL
+
 # Using PMI statistics (Grivet et al. 2005, Scofield et al.  2010, 2011) as
 # well as alpha, beta, gamma diversity (Scofield et al 2012) calculate allele
 # diversity following Sork et al.
@@ -60,34 +48,48 @@
 #
 # 0.1   First version, for Sork et al.
 
-.allele.pmiDiversityVersion = "0.1"
 
-# allele data must be in readGenalex() format
 
-allele.createTableList = function(dat, new.ploidy=2, collapse.alleles=TRUE,
-                                  exclude=c(NA, "0"), quiet=FALSE) {
-  if (! is.genalex(dat))
-    stop("input must be from readGenalex")
-  if (new.ploidy >= 2 && ! collapse.alleles)
-    stop("Must collapse ploidy when new.ploidy >= 2")
-  if (attr(dat,"ploidy") > new.ploidy)
-    dat = reduceGenalexPloidy(dat, new.ploidy)
-  lc = attr(dat, "locus.columns")
-  ln = attr(dat, "locus.names")
-  pop = attr(dat, "pop.title")
-  ans = list()
-  ex = list()
-  for (il in 1:length(lc)) {
-    v = as.vector(unlist(dat[, lc[il]:(lc[il] + new.ploidy - 1)]))
-    ex[[ ln[il] ]] = sum(v %in% exclude)
-    p = rep(dat[[pop]], new.ploidy)
-    ans[[ ln[il] ]] = t(as.matrix(table(v, p, exclude=exclude)))
-  }
-  if (sum(unlist(ex)) && !quiet)
-    cat(sprintf("Excluding %d entries based on 'exclude=c(%s)'\n", sum(unlist(ex)), paste(collapse=", ", exclude)))
-  ans
+#' Convert class \code{'genalex'} object to a list of allele count tables
+#'
+#' S3 method to convert an object of class \code{'genalex'} to a list of 
+#' allele count tables.  This is a generic so that other methods might be
+#' written to convert other genetic formats.
+#'
+#' @export allele.CreateTableList
+#'
+allele.createTableList <- function(dat, new.ploidy = 2, 
+                                   collapse.alleles = TRUE,
+                                   exclude = c(NA, "0"), quiet = FALSE) {
+    if (! is.genalex(dat))
+        stop("input must be class 'genalex'")
+    if (new.ploidy >= 2 && ! collapse.alleles)
+        stop("Must collapse ploidy when new.ploidy >= 2")
+    if (attr(dat, "ploidy") > new.ploidy)
+        dat = reduceGenalexPloidy(dat, new.ploidy)
+    lc <- attr(dat, "locus.columns")
+    ln <- attr(dat, "locus.names")
+    pop <- attr(dat, "pop.title")
+    ans <- list()
+    ex <- list()
+    for (il in 1:length(lc)) {
+        v <- as.vector(unlist(dat[, lc[il]:(lc[il] + new.ploidy - 1)]))
+        ex[[ ln[il] ]] <- sum(v %in% exclude)
+        p <- rep(dat[[pop]], new.ploidy)
+        ans[[ ln[il] ]] <- t(as.matrix(table(v, p, exclude=exclude)))
+    }
+    if (sum(unlist(ex)) && !quiet)
+        cat(sprintf("Excluding %d entries based on 'exclude=c(%s)'\n", 
+                    sum(unlist(ex)), paste(collapse=", ", exclude)))
+    return(ans)
 }
 
+
+
+#' allele.pmiDiversity
+#'
+#' @export allele.pmiDiversity
+#'
 allele.pmiDiversity = function(lst) {
   # calculates diversity statistics for a collection of loci, the argument
   # is produced by allele.createTableList()
@@ -166,15 +168,14 @@ allele.pmiDiversity = function(lst) {
 }
 
 
-# uses pmiDiversity()
-source("pmiDiversity.R")
-
+#' Calculate allelic diversity for a single locus
+#'
+#' @export allele.pmiDiversitySingleLocus
+#'
 allele.pmiDiversitySingleLocus <- function(tab)
 {
   # pmiDiversity() calculates several quantities we use here
   p = pmiDiversity(tab)
-
-  .thisis = paste0("allele.pmiDiversity v", .allele.pmiDiversityVersion, ", ", p$produced.by)
 
   allele.N = p$num.samples
   allele.G = p$num.groups
@@ -227,8 +228,7 @@ allele.pmiDiversitySingleLocus <- function(tab)
            allele.gamma              = allele.func.scale.gamma(allele.gamma, 2),
            allele.beta               = allele.func.scale.beta(allele.beta, 2))
 
-  list(produced.by               = .thisis,
-       allele.table              = tab,
+  list(allele.table              = tab,
        allele.N                  = allele.N,
        allele.G                  = allele.G,
        allele.r.gg               = allele.r.gg,
