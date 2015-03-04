@@ -15,7 +15,7 @@ TODO for dispersalDiversity
 Completed
 ---------
 
-* Worked out how to deal with `library(RColorBrewer)` use in `membershipPlot`.  If `RColorBrewer` is available then it is used, otherwise it is not.
+* Worked out how to deal with `library(RColorBrewer)` use in `membershipPlot`.  If `RColorBrewer` is available then it is used, with the new option `fill.palette = "Dark2"` selecting the palette.  If it is not available, `rainbow` is used.
 * Reworked return value from `pmiDiversity` to return separate lists for `q`, `q.nielsen` and `r`
 
 Create a random distance matrix
