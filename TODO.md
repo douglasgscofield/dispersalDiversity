@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Note README includes several examples and more documentation on parameters and functions
 * Incorporate weighted means and variances equations from Scofield et al. 2011
 * sort out reverseTerms stuff
 * rename `allele.createTableList` and all the stuff in allelePmiDiversity.R

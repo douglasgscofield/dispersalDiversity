@@ -7,7 +7,12 @@ This is a collection of [R](http://www.r-project.org) functions to facilitate an
 
 There are also new functions for calculating allelic diversity using these same conceptual and statistical principles, and for comparing allele diversity statistics.
 
-The **Mann-Whitney-Wilcoxon nested ranks test** we originally provided here has been made an R package and has been moved to [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
+The **Mann-Whitney-Wilcoxon nested ranks test** we originally provided here has been made an R package:
+```R
+install.packages("nestedRanksTest")
+vignette("nestedRanksTest")
+```
+and has been moved to [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
 
 * * *
 
@@ -24,15 +29,15 @@ Dispersal Diversity
 All functions take as input a simple data structure: a table of site (rows) by
 source (columns) counts.  Though we originally developed the diversity tests to
 understand seed dispersal in plant populations, the tests themselves should be
-useful for biodiversity data or any other diversity-like data that can be expressed 
+useful for biodiversity data or any other diversity-like data that can be expressed
 with this same data structure.
 
 ### Getting started
 
 The `pmiDiversity.R` and `diversityTests.R` source files are required for
 performing diversity tests.  If all that is desired are PMI ([Grivet _et al._
-2005](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x), [Scofield _et al._ 2010](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [Scofield _et al._ 2011](http://dx.doi.org/10.1007/s00442-010-1828-5)) and diversity ([Scofield _et al._ 2012](http://www.jstor.org/stable/10.1086/668202)) statistics (<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the source 
-file `pmiDiversity.R` contains the `pmiDiversity()` function that provides these 
+2005](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x), [Scofield _et al._ 2010](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [Scofield _et al._ 2011](http://dx.doi.org/10.1007/s00442-010-1828-5)) and diversity ([Scofield _et al._ 2012](http://www.jstor.org/stable/10.1086/668202)) statistics (<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the source
+file `pmiDiversity.R` contains the `pmiDiversity()` function that provides these
 and can be used separately.
 
 Put all the source files in the same directory, and within your R session
@@ -88,7 +93,7 @@ used here.
 
 `alphaDiversityTest(tab)`
 : Test for differences in &alpha; diversity among sites within a single dataset
- 
+
 `alphaContrastTest(tab.a, tab.b)`
 : Test whether there is a difference in the &alpha; diversity between two datasets
 
@@ -142,15 +147,15 @@ Scofield _et al._ <I>Am Nat</I>.
 
 For example, with `tab` defined as above, plot the divergence matrix based on
 _r<sub>gg</sub>_ calculations, labelling the axes "Seed Pool", using the
-following code: 
+following code:
 
 
 ````R
-pmiD = pmiDiversity(tab)
-plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
-                   pairwise.mean=pmiD$r.divergence, 
-                   statistic="divergence", 
-                   axis.label="Seed Pool")
+pmiD <- pmiDiversity(tab)
+plotPairwiseMatrix(pairwise.mat = pmiD$r$divergence.mat,
+                   pairwise.mean = pmiD$r$divergence,
+                   statistic = "divergence",
+                   axis.label = "Seed Pool")
 ````
 
 
@@ -165,7 +170,7 @@ the same directory, as it provides functions used here.
 A typical workflow using these functions would be:
 
 ````R
-rga.result = runGammaAccum(tab)
+rga.result <- runGammaAccum(tab)
 plotGammaAccum(rga.result)
 ````
 
@@ -177,22 +182,22 @@ plot the result.  Several arguments control the method of accumulation and
 value of &gamma; calculated.  Only the defaults have been tested; the others were
 developed while exploring the data and must be considered experimental.
 
-`tab` 
+`tab`
 : Site-by-source table, same format as that passed to `pmiDiversity()`
 
-`gamma.method` 
+`gamma.method`
 : Calculate &gamma; using `"r"` (default), `"q.nielsen"` or `"q"`
 method (see paper)
 
-`resample.method` 
+`resample.method`
 : `"permute"` (default) or `"bootstrap"`; whether to resample
 sites without (`"permute"`) or with (`"bootstrap"`) replacement
 
-`accum.method` 
+`accum.method`
 : `"random"` (default) or `"proximity"`.  If `proximity` is
 used, then `distance.file` must be supplied
 
-`distance.file` 
+`distance.file`
 : A file or data.frame containing three columns of data, with
 the header/column names being `pool`, `X`, and `Y`, containing the spatial
 locations of the seed pools named in the row names of tab; only used with
@@ -245,9 +250,9 @@ The workflow to calculate basic allelic diversity statistics:
 ```R
 library(readGenalex)
 source("allelePmiDiversity.R")
-dat = readGenalex("GenAlEx-format-file-of-genotypes.txt")
-gt = allele.createTableList(dat)
-div = allele.pmiDiversity(gt)
+dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
+gt <- allele.createTableList(dat)
+div <- allele.pmiDiversity(gt)
 ```
 
 For comparing allele diversity between two different samples:
@@ -256,12 +261,12 @@ For comparing allele diversity between two different samples:
 library(readGenalex)
 source("allelePmiDiversity.R")
 source("alleleDiversityTests.R")
-dat1 = readGenalex("file-of-genotypes-sample-1.txt")
-dat2 = readGenalex("file-of-genotypes-sample-2.txt")
-gt1 = allele.createTableList(dat1)
-gt2 = allele.createTableList(dat2)
-alpha.contrast = allele.alphaContrastTest(gt1, gt2)
-gamma.contrast = allele.gammaContrastTest(gt1, gt2)
+dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+gt1 <- allele.createTableList(dat1)
+gt2 <- allele.createTableList(dat2)
+alpha.contrast <- allele.alphaContrastTest(gt1, gt2)
+gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
 ```
 
 For calculating and plotting gamma accumulation curves across all loci:
@@ -270,15 +275,15 @@ For calculating and plotting gamma accumulation curves across all loci:
 library(readGenalex)
 source("allelePmiDiversity.R")
 source("alleleGammaAccum.R")
-dat = readGenalex("genotypes.txt")
-lst = allele.createTableList(dat)
-allele.rga.result = allele.runGammaAccum(lst)
+dat <- readGenalex("genotypes.txt")
+lst <- allele.createTableList(dat)
+allele.rga.result <- allele.runGammaAccum(lst)
 plotGammaAccum(allele.rga.result)
 ```
 
 #### Functions in `allelePmiDiversity.R`
 
-`allele.pmiDiversity()` 
+`allele.pmiDiversity()`
 : The function calculating diversity for a set of loci.  The single argument is a list produced by `allele.createTableList()`, and it uses the function `allele.pmiDiversitySingleLocus()`.
 
 `allele.createTableList()`
@@ -301,7 +306,7 @@ plotGammaAccum(allele.rga.result)
 #### Functions in `alleleGammaAccum.R`
 
 `allele.runGammaAccum(lst)`
-: Perform a gamma diversity accumulation on the site-by-source data in tab.  Several arguments control the method of accumulation and value of gamma calculated.  Other arguments are identical to `gammaAccum()`.  Only the defaults have been tested; the others were developed while exploring the data and must be considered experimental.  The result is returned in a list, which may be passed to `plotGammaAccum()` to plot the result.  
+: Perform a gamma diversity accumulation on the site-by-source data in tab.  Several arguments control the method of accumulation and value of gamma calculated.  Other arguments are identical to `gammaAccum()`.  Only the defaults have been tested; the others were developed while exploring the data and must be considered experimental.  The result is returned in a list, which may be passed to `plotGammaAccum()` to plot the result.
 
 * * *
 
@@ -309,12 +314,12 @@ plotGammaAccum(allele.rga.result)
 
 Scofield DG, Smouse PE, Karubian J, Sork VL.  2012.  Use of
 &alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
-[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202), 
+[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202),
 [supplement](http://www.jstor.org/stable/full/10.1086/668202#apa), [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
 Scofield DG, Alfaro VR, Sork VL, Grivet D, Martinez E, Papp J, Pluess AR, Koenig WD, Smouse PE.  2011.  Foraging patterns of acorn woodpeckers (<i>Melanerpes
 formicivorus</i>) on valley oak (<i>Quercus lobata</i> N&eacute;e) in two California oak
-savanna-woodlands. [_Oecologia_ 166: 187-196](http://dx.doi.org/10.1007/s00442-010-1828-5), 
+savanna-woodlands. [_Oecologia_ 166: 187-196](http://dx.doi.org/10.1007/s00442-010-1828-5),
 [supplement](http://link.springer.com/content/esm/art:10.1007/s00442-010-1828-5/MediaObjects/442_2010_1828_MOESM1_ESM.doc).
 
 Scofield DG, Sork VL, Smouse PE. 2010. Influence of acorn
