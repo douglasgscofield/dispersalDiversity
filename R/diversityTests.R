@@ -14,18 +14,6 @@ NULL
 #
 # See Scofield et al. in review for methodological details
 #
-#
-# alphaDiversityTest(tab) : Test for differences in alpha diversity among sites
-#                           within a single dataset
-#
-# alphaContrastTest(tab.a, tab.b)
-#                         : Test whether there is a difference in the alpha
-#                           diversity between two datasets
-#
-# alphaContrastTest.3(tab.a, tab.b, tab.c)
-#                         : Test whether there is a difference in the alpha
-#                           diversity among three datasets
-#
 # plotAlphaTest(result)   : Plot the list returned from alphaDiversityTest()
 #                           or alphaContrastTest() for evaluation
 #
@@ -51,228 +39,318 @@ NULL
 # 0.3: Versioning and collaborators/funding statement.
 # 0.2: Add q.nielsen to pairwiseMeanTest.
 # 0.1: First release
+
+
+
+#' Test for differences in alpha diversity among sites within a single data set
+#'
+#' @param tab Site x soure table
+#'
+#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
+#' with minimum value, see \code{\link{BLAHBLAH}}
+#'
+#' @param n.resample Number of iterations for creation of the null distribution
+#'
+#' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
+#' distribution iterations with (\code{"bootstrap"}) or without
+#' (\code{"permute"}) replacement
+#'
+#' @return An \code{'htest_boot'} object with the result of the test. The
+#' test also prints the result, so perhaps I should modify it to only
+#' return the htest_boot object?  Or should it return a different object?
 #
+#' @seealso \code{\link{alphaContrastTest}}
+#'
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+# @examples
 #
-# TODO
-#
-# --- Turn this into an actual R package
+#' @export alphaDiversityTest
+#'
+alphaDiversityTest <- function(tab, zero.var.adjust = TRUE,
+                               n.resample = 10000,
+                               method = c("bootstrap", "permute")) {
+    method <- match.arg(method)
+    ans <- list()
+    g.distmat <- .diversityTest.distmat(tab)
+    g.vardist <- lapply(g.distmat, function(x) diag(.diversityTest.gower(x)))
+    n.g <- unlist(lapply(g.vardist, length))
+    N <- sum(n.g)
+    G <- length(n.g)
+    ans$N.samples <- N
+    ans$N.groups <- G
 
-
-#---------------------------------------------
-
-
-alphaDiversityTest <- function(tab,
-                               zero.var.adjust=TRUE,
-                               n.resample=10000,
-                               method=c("bootstrap", "permute"))
-{
-  method <- match.arg(method)
-  ans <- list()
-  g.vardist <- lapply(.diversityTest.distmat(tab),
-                      function(x) diag(.diversityTest.gower(x)))
-  n.g <- unlist(lapply(g.vardist, length))
-  N <- sum(n.g)
-  G <- length(n.g)
-  ans$N.samples <- N
-  ans$N.groups <- G
-
-  terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
-  PVAL = pchisq(terms$ln.LR, df=terms$DF,
-                lower.tail=ifelse(.diversityTest.ReverseTerms, FALSE, TRUE))
-  cat("Bartlett's Test for Heteroscedasticity in Intra-group Variances\n\n")
-  cat("Comparing against X-2 distribution directly:\n")
-  cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  df=(G-1) = %d  P = %g\n",
+    terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
+    PVAL = pchisq(terms$ln.LR, df = terms$DF,
+                lower.tail = ifelse(.diversityTest.ReverseTerms, FALSE, TRUE))
+    cat("Bartlett's Test for Heteroscedasticity in Intra-group Variances\n\n")
+    cat("Comparing against X-2 distribution directly:\n")
+    cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  df=(G-1) = %d  P = %g\n",
         N, G, terms$ln.LR, terms$DF, PVAL))
-  ans$observed.ln.LR <- terms$ln.LR
-  ans$df.X2 <- terms$DF
-  ans$P.analytic <- PVAL
-  nulldist <- .diversityTest.NullDist(obs=terms$ln.LR,
-                                         n.g=n.g, g.vardist=g.vardist,
-                                         zero.var.adjust=zero.var.adjust,
-                                         method=method, n.resample=n.resample)
-  PVAL <- sum(terms$ln.LR <= nulldist)/n.resample
-  cat("\nComparing against bootstrap X-2 distribution:\n")
-  q1 <- if(.diversityTest.ReverseTerms)
-    c(0.5, 0.99, 0.999)
-  else
-    c(0.5, 0.01, 0.001)
-  q2 <- quantile(nulldist, q1)
-  cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
+    ans$observed.ln.LR <- terms$ln.LR
+    ans$df.X2 <- terms$DF
+    ans$P.analytic <- PVAL
+    nulldist <- .diversityTest.NullDist(obs = terms$ln.LR,
+                                        n.g = n.g, 
+                                        g.vardist = g.vardist,
+                                        zero.var.adjust = zero.var.adjust,
+                                        method = method, 
+                                        n.resample=n.resample)
+    PVAL <- sum(terms$ln.LR <= nulldist)/n.resample
+    cat("\nComparing against bootstrap X-2 distribution:\n")
+    q1 <- if(.diversityTest.ReverseTerms)
+        c(0.5, 0.99, 0.999)
+    else c(0.5, 0.01, 0.001)
+    q2 <- quantile(nulldist, q1)
+    cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
         N, G, terms$ln.LR, n.resample, paste(collapse=" ", q1),
         q2[1], q2[2], q2[3], PVAL))
-  ans$n.resample <- n.resample
-  ans$resample.method <- method
-  ans$quants <- q2
-  ans$P.empirical <- PVAL
-  ans$empdist <- nulldist
-  ####
-  class(ans) <- c(class(ans), "diversityTest")
-  invisible(ans)
+    ans$n.resample <- n.resample
+    ans$resample.method <- method
+    ans$quants <- q2
+    ans$P.empirical <- PVAL
+    ans$empdist <- nulldist
+    ####
+    class(ans) <- c(class(ans), "diversityTest")
+    invisible(ans)
 }
 
 
-#---------------------------------------------
 
+#' Test for differences in alpha diversity between two data sets
+#'
+#' @param tab.a First ite x soure table
+#'
+#' @param tab.b Second site x soure table
+#'
+#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
+#' with minimum value, see \code{\link{BLAHBLAH}}
+#'
+#' @param n.resample Number of iterations for creation of the null distribution
+#'
+#' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
+#' distribution iterations with (\code{"bootstrap"}) or without
+#' (\code{"permute"}) replacement
+#'
+#' @return An \code{'htest_boot'} object with the result of the test. The
+#' test also prints the result, so perhaps I should modify it to only
+#' return the htest_boot object?  Or should it return a different object?
+#'
+#' @seealso \code{\link{alphaContrastTest.3}}
+#'
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+# @examples
+#
+#' @export alphaContrastTest
+#'
+alphaContrastTest <- function(tab.a, tab.b,
+                              zero.var.adjust = TRUE,
+                              n.resample = 10000,
+                              method = c("bootstrap", "permute")) {
+    method <- match.arg(method)
+    .RT = .diversityTest.ReverseTerms
+    .diversityTest.ReverseTerms = FALSE
+    ans <- list()
+    a.distmat <- .diversityTest.distmat(tab.a)
+    a.vardist <- lapply(a.distmat, function(x) diag(.diversityTest.gower(x)))
+    n.a <- sapply(a.vardist, length)
+    N.a <- sum(n.a)
+    G.a <- length(n.a)
+    ans$N.a <- N.a
+    ans$G.a <- G.a
+    terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+    # V.a.p = terms.a$V.p
 
-alphaContrastTest = function(tab.a, tab.b,
-                             zero.var.adjust=TRUE,
-                             n.resample=10000,
-                             method=c("bootstrap", "permute"))
-{
-  method <- match.arg(method)
-  .RT = .diversityTest.ReverseTerms
-  .diversityTest.ReverseTerms = FALSE
-  ans <- list()
-  a.vardist <- lapply(.diversityTest.distmat(tab.a),
-                      function(x) diag(.diversityTest.gower(x)))
-  n.a <- unlist(lapply(a.vardist, length))
-  N.a <- sum(n.a)
-  G.a <- length(n.a)
-  ans$N.a <- N.a
-  ans$G.a <- G.a
-  terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
-  # V.a.p = terms.a$V.p
+    b.distmat <- .diversityTest.distmat(tab.b)
+    b.vardist <- lapply(b.distmat, function(x) diag(.diversityTest.gower(x)))
+    n.b <- sapply(b.vardist, length)
+    N.b <- sum(n.b)
+    G.b <- length(n.b)
+    ans$N.b <- N.b
+    ans$G.b <- G.b
+    terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+    # V.b.p = terms.b$V.p
+    V.a.b.p <- (((N.a - G.a) * terms.a$V.p) + ((N.b - G.b) * terms.b$V.p)) / 
+              (N.a + N.b - G.a - G.b)
+    observed.ln.LR.a.b <- ((N.a + N.b - G.a - G.b) * log(V.a.b.p)) - 
+                          ((N.a - G.a) * log(terms.a$V.p)) - 
+                          ((N.b - G.b) * log(terms.b$V.p))
 
-  b.vardist <- lapply(.diversityTest.distmat(tab.b),
-                      function(x) diag(.diversityTest.gower(x)))
-  n.b <- unlist(lapply(b.vardist, length))
-  N.b <- sum(n.b)
-  G.b <- length(n.b)
-  ans$N.b <- N.b
-  ans$G.b <- G.b
-  terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
-  # V.b.p = terms.b$V.p
-  V.a.b.p = (((N.a - G.a) * terms.a$V.p) + ((N.b - G.b) * terms.b$V.p)) / (N.a + N.b - G.a - G.b)
-  observed.ln.LR.a.b = ((N.a + N.b - G.a - G.b) * log(V.a.b.p)) - ((N.a - G.a) * log(terms.a$V.p)) - ((N.b - G.b) * log(terms.b$V.p))
-
-  # Combine A and B into strata for comparison
-  n.a.b = c(a=N.a, b=N.b)
-  a.b.vardist = list(a=unlist(a.vardist, use.names=FALSE), b=unlist(b.vardist, use.names=FALSE))
-  N = sum(n.a.b)
-  G = length(n.a.b)
-  DF = G -1
-  ans$N.samples <- N
-  ans$N.groups <- G
-  PVAL = pchisq(observed.ln.LR.a.b, df=DF, lower.tail=TRUE)
-  cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Alpha Variances\n\n")
-  cat("Comparing against X-2 distribution directly:\n")
-  cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  df=(G-1) = %d  P = %g\n",
+    # Combine A and B into strata for comparison
+    n.a.b <- c(a = N.a, b = N.b)
+    a.b.vardist <- list(a = unlist(a.vardist, use.names=FALSE), 
+                        b = unlist(b.vardist, use.names=FALSE))
+    N <- sum(n.a.b)
+    G <- length(n.a.b)
+    DF <- G -1
+    ans$N.samples <- N
+    ans$N.groups <- G
+    PVAL <- pchisq(observed.ln.LR.a.b, df = DF, lower.tail = TRUE)
+    cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Alpha Variances\n\n")
+    cat("Comparing against X-2 distribution directly:\n")
+    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  df=(G-1) = %d  P = %g\n",
         N.a, N.b, G, observed.ln.LR.a.b, DF, PVAL))
-  ans$observed.ln.LR <- observed.ln.LR.a.b
-  ans$df.X2 <- G - 1
-  ans$P.analytic <- PVAL
-  nulldist = .diversityTest.NullDist(obs=observed.ln.LR.a.b,
-                                             n.g=n.a.b,
-                                             g.vardist=a.b.vardist,
-                                             zero.var.adjust, method, n.resample)
-  PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
-  cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
-  q1 <- c(0.5, 0.01, 0.001)
-  q2 <- quantile(nulldist, q1)
-  cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
-        N.a, N.b, G, observed.ln.LR.a.b, n.resample, paste(collapse=" ", q1),
-        q2[1], q2[2], q2[3], PVAL))
-  ans$n.resample <- n.resample
-  ans$resample.method <- method
-  ans$quants <- q2
-  ans$P.empirical <- PVAL
-  ans$empdist <- nulldist
-  ans$a.b.vardist = a.b.vardist
-  .diversityTest.ReverseTerms = .RT
-  ####
-  class(ans) <- c(class(ans), "diversityTest.AlphaContrast")
-  invisible(ans)
-
+    ans$observed.ln.LR <- observed.ln.LR.a.b
+    ans$df.X2 <- G - 1
+    ans$P.analytic <- PVAL
+    nulldist <- .diversityTest.NullDist(obs=observed.ln.LR.a.b,
+                                        n.g = n.a.b,
+                                        g.vardist = a.b.vardist,
+                                        zero.var.adjust, method, 
+                                        n.resample)
+    PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
+    cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
+    q1 <- c(0.5, 0.01, 0.001)
+    q2 <- quantile(nulldist, q1)
+    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
+                N.a, N.b, G, observed.ln.LR.a.b, n.resample, 
+                paste(collapse = " ", q1), q2[1], q2[2], q2[3], PVAL))
+    ans$n.resample <- n.resample
+    ans$resample.method <- method
+    ans$quants <- q2
+    ans$P.empirical <- PVAL
+    ans$empdist <- nulldist
+    ans$a.b.vardist = a.b.vardist
+    .diversityTest.ReverseTerms = .RT
+    ####
+    class(ans) <- c(class(ans), "diversityTest.AlphaContrast")
+    invisible(ans)
 }
 
 
-#---------------------------------------------
+
+#' Test for differences in alpha diversity between three data sets
+#'
+#' @param tab.a First ite x soure table
+#'
+#' @param tab.b Second site x soure table
+#'
+#' @param tab.c Third site x soure table
+#'
+#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
+#' with minimum value, see \code{\link{BLAHBLAH}}
+#'
+#' @param n.resample Number of iterations for creation of the null distribution
+#'
+#' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
+#' distribution iterations with (\code{"bootstrap"}) or without
+#' (\code{"permute"}) replacement
+#'
+#' @return An \code{'htest_boot'} object with the result of the test. The
+#' test also prints the result, so perhaps I should modify it to only
+#' return the htest_boot object?  Or should it return a different object?
+#'
+#' @seealso \code{\link{alphaContrastTest}}
+#'
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+# @examples
+#
+#' @export alphaContrastTest
+#'
+alphaContrastTest.3 <- function(tab.a, tab.b, tab.c,
+                                zero.var.adjust = TRUE,
+                                n.resample = 10000,
+                                method = c("bootstrap", "permute")) {
+    method <- match.arg(method)
+    .RT <- .diversityTest.ReverseTerms
+    .diversityTest.ReverseTerms <- FALSE
+    ans <- list()
+
+    a.distmat <- .diversityTest.distmat(tab.a)
+    a.vardist <- lapply(a.distmat, function(x) diag(.diversityTest.gower(x)))
+    n.a <- sapply(a.vardist, length)
+    N.a <- sum(n.a)
+    G.a <- length(n.a)
+    ans$N.a <- N.a
+    ans$G.a <- G.a
+    terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+    # V.a.p <- terms.a$V.p
+
+    b.distmat <- .diversityTest.distmat(tab.b)
+    b.vardist <- lapply(b.distmat, function(x) diag(.diversityTest.gower(x)))
+    n.b <- unlist(lapply(b.vardist, length))
+    N.b <- sum(n.b)
+    G.b <- length(n.b)
+    ans$N.b <- N.b
+    ans$G.b <- G.b
+    terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+    # V.b.p <- terms.b$V.p
+
+    c.distmat <- .diversityTest.distmat(tab.c)
+    c.vardist <- lapply(c.distmat, function(x) diag(.diversityTest.gower(x)))
+    n.c <- unlist(lapply(c.vardist, length))
+    N.c <- sum(n.c)
+    G.c <- length(n.c)
+    ans$N.c <- N.c
+    ans$G.c <- G.c
+    terms.c <- .diversityTest.CalcTerms(n.c, c.vardist, zero.var.adjust)
+    # V.c.p <- terms.c$V.p
+
+    V.a.b.c.p <- (((N.a - G.a) * terms.a$V.p) + 
+                  ((N.b - G.b) * terms.b$V.p) + 
+                  ((N.c - G.c) * terms.c$V.p)) / 
+                 (N.a + N.b + N.c - G.a - G.b - G.c)
+    observed.ln.LR.a.b.c <- 
+        ((N.a + N.b + N.c - G.a - G.b - G.c) * log(V.a.b.c.p)) - 
+        ((N.a - G.a) * log(terms.a$V.p)) - 
+        ((N.b - G.b) * log(terms.b$V.p)) - 
+        ((N.c - G.c) * log(terms.c$V.p))
 
 
-alphaContrastTest.3 = function(tab.a, tab.b, tab.c,
-                               zero.var.adjust=TRUE,
-                               n.resample=10000,
-                               method=c("bootstrap", "permute"))
-{
-  method <- match.arg(method)
-  .RT = .diversityTest.ReverseTerms
-  .diversityTest.ReverseTerms = FALSE
-  ans <- list()
-
-  a.vardist <- lapply(.diversityTest.distmat(tab.a),
-                      function(x) diag(.diversityTest.gower(x)))
-  n.a <- unlist(lapply(a.vardist, length))
-  N.a <- sum(n.a)
-  G.a <- length(n.a)
-  ans$N.a <- N.a
-  ans$G.a <- G.a
-  terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
-  # V.a.p = terms.a$V.p
-
-  b.vardist <- lapply(.diversityTest.distmat(tab.b),
-                      function(x) diag(.diversityTest.gower(x)))
-  n.b <- unlist(lapply(b.vardist, length))
-  N.b <- sum(n.b)
-  G.b <- length(n.b)
-  ans$N.b <- N.b
-  ans$G.b <- G.b
-  terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
-  # V.b.p = terms.b$V.p
-
-  c.vardist <- lapply(.diversityTest.distmat(tab.c),
-                      function(x) diag(.diversityTest.gower(x)))
-  n.c <- unlist(lapply(c.vardist, length))
-  N.c <- sum(n.c)
-  G.c <- length(n.c)
-  ans$N.c <- N.c
-  ans$G.c <- G.c
-  terms.c = .diversityTest.CalcTerms(n.c, c.vardist, zero.var.adjust)
-  # V.c.p = terms.c$V.p
-
-  V.a.b.c.p = (((N.a - G.a) * terms.a$V.p) + ((N.b - G.b) * terms.b$V.p) + ((N.c - G.c) * terms.c$V.p)) / (N.a + N.b + N.c - G.a - G.b - G.c)
-  observed.ln.LR.a.b.c = ((N.a + N.b + N.c - G.a - G.b - G.c) * log(V.a.b.c.p)) - ((N.a - G.a) * log(terms.a$V.p)) - ((N.b - G.b) * log(terms.b$V.p)) - ((N.c - G.c) * log(terms.c$V.p))
-
-
-  # Combine A B C into strata for comparison
-  n.a.b.c = c(a=N.a, b=N.b, c=N.c)
-  a.b.c.vardist = list(a=unlist(a.vardist, use.names=FALSE),
-                       b=unlist(b.vardist, use.names=FALSE),
-                       c=unlist(c.vardist, use.names=FALSE))
-  N = sum(n.a.b.c)
-  G = length(n.a.b.c)
-  DF = G -1
-  ans$N.samples <- N
-  ans$N.groups <- G
-  PVAL = pchisq(observed.ln.LR.a.b.c, df=DF, lower.tail=TRUE)
-  cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Alpha Variances\n\n")
-  cat("Comparing against X-2 distribution directly:\n")
-  cat(sprintf("Samples N.a = %d, N.b = %d, N.c 0 %d  groups = %d  observed.ln.LR.a.b.c = %f  df=(G-1) = %d  P = %g\n",
+    # Combine A B C into strata for comparison
+    n.a.b.c <- c(a = N.a, b = N.b, c = N.c)
+    a.b.c.vardist <- list(a = unlist(a.vardist, use.names = FALSE),
+                          b = unlist(b.vardist, use.names = FALSE),
+                          c = unlist(c.vardist, use.names = FALSE))
+    N <- sum(n.a.b.c)
+    G <- length(n.a.b.c)
+    DF <- G -1
+    ans$N.samples <- N
+    ans$N.groups <- G
+    PVAL <- pchisq(observed.ln.LR.a.b.c, df = DF, lower.tail = TRUE)
+    cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Alpha Variances\n\n")
+    cat("Comparing against X-2 distribution directly:\n")
+    cat(sprintf("Samples N.a = %d, N.b = %d, N.c 0 %d  groups = %d  observed.ln.LR.a.b.c = %f  df=(G-1) = %d  P = %g\n",
         N.a, N.b, N.c, G, observed.ln.LR.a.b.c, DF, PVAL))
-  ans$observed.ln.LR <- observed.ln.LR.a.b.c
-  ans$df.X2 <- G - 1
-  ans$P.analytic <- PVAL
-  nulldist = .diversityTest.NullDist(obs=observed.ln.LR.a.b.c,
-                                             n.g=n.a.b.c,
-                                             g.vardist=a.b.c.vardist,
-                                             zero.var.adjust, method, n.resample)
-  PVAL <- sum(observed.ln.LR.a.b.c <= nulldist)/n.resample
-  cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
-  q1 <- c(0.5, 0.01, 0.001)
-  q2 <- quantile(nulldist, q1)
-  cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b.c = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
-        N.a, N.b, N.c, G, observed.ln.LR.a.b.c, n.resample, paste(collapse=" ", q1),
-        q2[1], q2[2], q2[3], PVAL))
-  ans$n.resample <- n.resample
-  ans$resample.method <- method
-  ans$quants <- q2
-  ans$P.empirical <- PVAL
-  ans$empdist <- nulldist
-  ans$a.b.c.vardist = a.b.c.vardist
-  .diversityTest.ReverseTerms = .RT
-  ####
-  class(ans) <- c(class(ans), "diversityTest.AlphaContrast.3")
-  invisible(ans)
-
+    ans$observed.ln.LR <- observed.ln.LR.a.b.c
+    ans$df.X2 <- G - 1
+    ans$P.analytic <- PVAL
+    nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b.c,
+                                        n.g = n.a.b.c,
+                                        g.vardist = a.b.c.vardist,
+                                        zero.var.adjust, method, 
+                                        n.resample)
+    PVAL <- sum(observed.ln.LR.a.b.c <= nulldist)/n.resample
+    cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
+    q1 <- c(0.5, 0.01, 0.001)
+    q2 <- quantile(nulldist, q1)
+    cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b.c = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
+        N.a, N.b, N.c, G, observed.ln.LR.a.b.c, n.resample, 
+        paste(collapse = " ", q1), q2[1], q2[2], q2[3], PVAL))
+    ans$n.resample <- n.resample
+    ans$resample.method <- method
+    ans$quants <- q2
+    ans$P.empirical <- PVAL
+    ans$empdist <- nulldist
+    ans$a.b.c.vardist <- a.b.c.vardist
+    .diversityTest.ReverseTerms <- .RT
+    ####
+    class(ans) <- c(class(ans), "diversityTest.AlphaContrast.3")
+    invisible(ans)
 }
 
 
@@ -542,15 +620,15 @@ gammaContrastTest = function(tab.a, tab.b,
 #' @return An \code{'htest_boot'} object with the result of the test. The
 #' test also prints the result, so perhaps I should modify it to only
 #' return the htest_boot object?  Or should it return a different object?
-#
-# @seealso
-#
-# @reference
-#
-# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-# Use of alpha, beta and gamma diversity measures to characterize seed
-# dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#
+#'
+#' @seealso \code{\link{cammaContrastTest}}, \code{\link{alphaContrastTest.3}}
+#'
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
 # @examples
 #
 #' @export gammaContrastTest.3
