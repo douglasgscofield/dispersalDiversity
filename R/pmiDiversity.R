@@ -16,29 +16,29 @@
 #'
 #' @return List of diversity calculations
 #'
-# @references
-#
-# Grivet, D., Smouse, P. E. and Sork, V. L. (2005) A novel approach to an old
-# problem: tracking dispersed seeds.  \emph{Molecular Ecology} 14:3585-3595.
-#
-# Scofield, D. G.,  Sork, V. L. and Smouse, P. E. (2010) Influence of acorn
-# woodpecker social behaviour on transport of coast live oak
-# (\emph{Quercus agrifolia}) acorns in a southern California oak savanna.
-# \emph{Journal of Ecology} 98:561-572.
-#
-# Scofield, D. G., Alfaro, V. R., Sork, V. L., Grivet, D., Martinez, E.,
-# Papp, J., Pluess, A. R., Koenig, W. D. and Smouse, P. E. (2011) Foraging
-# patterns of acorn woodpeckers (\emph{Melanerpes formicivorus}) on valley
-# oak (\emph{Quercus lobata} N\'{e}e) in two California oak savanna-woodlands.
-# Oecologia 166:187-196.
-#
-# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-# Use of alpha, beta and gamma diversity measures to characterize seed
-# dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#
-# Nielsen, R., Tarpy, D. R. and Reeve, H. K. (2003) Estimating effective
-# paternity number in social insects and the effective number of alleles in
-# a population.  \emph{Molecular Ecology} 12:3157-3164.
+#' @references
+#'
+#' Grivet, D., Smouse, P. E. and Sork, V. L. (2005) A novel approach to an old
+#' problem: tracking dispersed seeds.  \emph{Molecular Ecology} 14:3585-3595.
+#'
+#' Scofield, D. G.,  Sork, V. L. and Smouse, P. E. (2010) Influence of acorn
+#' woodpecker social behaviour on transport of coast live oak
+#' (\emph{Quercus agrifolia}) acorns in a southern California oak savanna.
+#' \emph{Journal of Ecology} 98:561-572.
+#'
+#' Scofield, D. G., Alfaro, V. R., Sork, V. L., Grivet, D., Martinez, E.,
+#' Papp, J., Pluess, A. R., Koenig, W. D. and Smouse, P. E. (2011) Foraging
+#' patterns of acorn woodpeckers (\emph{Melanerpes formicivorus}) on valley
+#' oak (\emph{Quercus lobata} N\'{e}e) in two California oak savanna-woodlands.
+#' Oecologia 166:187-196.
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+#' Nielsen, R., Tarpy, D. R. and Reeve, H. K. (2003) Estimating effective
+#' paternity number in social insects and the effective number of alleles in
+#' a population.  \emph{Molecular Ecology} 12:3157-3164.
 #
 # @examples
 #
@@ -160,30 +160,29 @@ pmiDiversity <- function(tab) {
     r$divergence <- 1 - r$overlap
 
     # return value
-    list(table = tab,   # table passed in, as a matrix
-         num.groups = G,  # number of rows (sites)
-         num.sources = K, # number of columns (sources)
+    list(table       = tab, # table passed in, as a matrix
+         num.groups  = G,   # number of rows (sites)
+         num.sources = K,   # number of columns (sources)
          num.samples = N, 
-         num.samples.group = n.g,
-         num.sources.group = apply(tab, 1, function(x) sum(x > 0)),
+         num.samples.group  = n.g,
+         num.sources.group  = apply(tab, 1, function(x) sum(x > 0)),
          num.samples.source = n.k,
-         num.groups.source = apply(tab, 2, function(x) sum(x > 0)),
+         num.groups.source  = apply(tab, 2, function(x) sum(x > 0)),
 
          # Pooled PMI (Scofield et al 2010 J Ecol)
-         y.gh = y.gh,
+         y.gh        = y.gh,
          prop.y.0.gh = prop.y.0.gh,
-         q.0.gh = q.0.gh,
+         q.0.gh      = q.0.gh,
 
-         q = q,
-
-         r = r, 
-
+         q         = q,
+         r         = r, 
          q.nielsen = q.nielsen
     )
 }
 
 
-#' Transform vector of squared frequencies using the method of Nielsen et al. 2003
+
+#' Transform vector of squared frequencies using the method of Nielsen et al. (2003)
 #'
 #' @param q.gg Vector of squared frequencies
 #'
@@ -191,7 +190,11 @@ pmiDiversity <- function(tab) {
 #'
 #' @return \code{q.gg} vector with the Nielsen et al. transform applied
 #'
-# @references TODO?????
+#' @references
+#'
+#' Nielsen, R., Tarpy, D. R. and Reeve, H. K. (2003) Estimating effective
+#' paternity number in social insects and the effective number of alleles in
+#' a population.  \emph{Molecular Ecology} 12:3157-3164.
 #
 # @examples
 #
