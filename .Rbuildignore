@@ -1,0 +1,8 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.git$
+^\.gitignore$
+^Makefile$
+^check_tmp$
+^NEWS.md$
+^TODO.md$
