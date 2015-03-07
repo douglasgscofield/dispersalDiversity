@@ -61,21 +61,16 @@
 #' the bars in a bar plot
 #'
 #' @return No value is returned
-#
-# @references
-#
-# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-# Use of alpha, beta and gamma diversity measures to characterize seed
-# dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#
-# @example
-#
-#
-#
-#
-#
-#
-#
+#'
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+#' @examples
+#'
+#' membershipPlot(tab, distinguish.multiton = TRUE)
 #'
 #' @export membershipPlot
 #'
@@ -203,9 +198,6 @@ membershipPlot <- function(tab, method = c("bar", "pie"),
         if (!is.null(l2)) 
             text(xl, 1.125, labels = l2, cex = header.cex)
 
-        if (to.file)
-            dev.off()
-        
     } else if (method == "pie") {
         
         n.pie <- ncol(tab)
@@ -227,10 +219,8 @@ membershipPlot <- function(tab, method = c("bar", "pie"),
                                   labels = ""), 
                              fill.args, ...))
         }
-        if (to.file)
-            dev.off()
-        
     }
-    
+    if (to.file)
+        dev.off()
 }
  
