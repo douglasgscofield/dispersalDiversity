@@ -1,4 +1,4 @@
-#' @include allelePmiDiversity.R
+#' @include alleleDiversity.R
 #' @include gammaAccum.R
 # for collation
 NULL

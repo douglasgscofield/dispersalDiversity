@@ -1,4 +1,4 @@
-#' @include allelePmiDiversity.R
+#' @include alleleDiversity.R
 #' @include diversityTests.R
 # For collation, load after the above
 NULL
@@ -9,7 +9,7 @@ NULL
 #'
 #' From Sork et al., extensions of those from Scofield et al. 2012 American
 #' Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
-#
+#'
 #' @param lst  Allele diversity dataset, a list, one entry per locus, of 
 #'             site x allele counts. Each table must have the same format.
 #'
@@ -27,8 +27,14 @@ NULL
 #'
 #' @seealso \code{\link{alphaDiversityTest}}, \code{\link{diversity}}
 #'
-# @examples
-#
+#' @examples
+#'
+#' # For comparing allele diversity between two different samples:
+#'
+#'   dat <- readGenalex("file-of-genotypes-sample-1.txt")
+#'   gt <- allele.createTableList(dat)
+#'   alpha.test <- allele.alphaDiversityTest(gt)
+#'
 #' @export allele.alphaDiversityTest
 #'
 allele.alphaDiversityTest <- function(lst, 
@@ -148,6 +154,14 @@ allele.alphaDiversityTest <- function(lst,
 #' @seealso \code{\link{}}
 #'
 #' @examples
+#'
+#' # For comparing allele diversity between two different samples:
+#'
+#'   dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+#'   dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+#'   gt1 <- allele.createTableList(dat1)
+#'   gt2 <- allele.createTableList(dat2)
+#'   alpha.contrast <- allele.alphaContrastTest(gt1, gt2)
 #'
 #' @export allele.alphaContrastTest
 #'
@@ -282,7 +296,6 @@ allele.alphaContrastTest <- function(lst.a, lst.b,
 }
 
 
-#---------------------------------------------
 
 
 #' Test for difference in gamma diversity between two allele diversity datasets
@@ -299,6 +312,18 @@ allele.alphaContrastTest <- function(lst.a, lst.b,
 #' @param \dots  Additional parameters
 #'
 #' @return Fill this in
+#'
+#' @examples
+#'
+#' # For comparing allele diversity between two different samples:
+#'
+#'   dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+#'   dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+#'   gt1 <- allele.createTableList(dat1)
+#'   gt2 <- allele.createTableList(dat2)
+#'   gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
+#'
+#' @export allele.gammaContrastTest
 #'
 allele.gammaContrastTest <- function(lst.a, lst.b,
                                      zero.var.adjust = TRUE, 
