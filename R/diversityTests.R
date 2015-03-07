@@ -1,4 +1,4 @@
-#' @include pmiDiversity.R
+#' @include diversity.R
 # for collation
 NULL
 
@@ -419,7 +419,7 @@ pairwiseMeanTest <- function(tab,
 {
   method <- match.arg(method)
   statistic <- match.arg(statistic)
-  pmiresults <- pmiDiversity(tab)
+  pmiresults <- diversity(tab)
   gammafreq <- apply(tab, 2, sum)
   K <- sum(gammafreq > 0)
   n.g <- apply(tab, 1, sum)

@@ -1,4 +1,4 @@
-#' @include pmiDiversity.R
+#' @include diversity.R
 # for collation
 NULL
 
@@ -11,7 +11,7 @@ NULL
 #   source("allelePmiDiversity.R")
 #   dat = readGenalex("GenAlEx-format-file-of-genotypes.txt")
 #   gt = allele.createTableList(dat)
-#   div = allele.pmiDiversity(gt)
+#   div = allele.diversity(gt)
 #
 # For comparing allele diversity between two different samples:
 #
@@ -27,10 +27,10 @@ NULL
 #
 # FUNCTIONS
 #
-# allele.pmiDiversity() : 
+# allele.diversity() : 
 #    The function calculating diversity for a set of loci.  The single argument
 #    is a list produced by allele.createTableList(), and it uses the function
-#    allele.pmiDiversitySingleLocus().
+#    allele.diversitySingleLocus().
 #
 # allele.createTableList() :
 #   Take a data.frame of genotypes read by readGenalex(), produce a list of
@@ -39,7 +39,7 @@ NULL
 #   site names, and column names being the names given to the individual
 #   alleles.
 #
-# allele.pmiDiversitySingleLocus() : 
+# allele.diversitySingleLocus() : 
 #    The single argument is, for a single locus, a table of site x allele
 #    counts, with row names being the site names, and column names being the
 #    names given to the individual alleles.
@@ -86,11 +86,11 @@ allele.createTableList <- function(dat, new.ploidy = 2,
 
 
 
-#' allele.pmiDiversity
+#' allele.diversity
 #'
-#' @export allele.pmiDiversity
+#' @export allele.diversity
 #'
-allele.pmiDiversity = function(lst) {
+allele.diversity = function(lst) {
   # calculates diversity statistics for a collection of loci, the argument
   # is produced by allele.createTableList()
 
@@ -107,7 +107,7 @@ allele.pmiDiversity = function(lst) {
   p = list()
   # Go through loci, storing diversity values
   for (a in names(lst)) {
-    p[[a]] = allele.pmiDiversitySingleLocus(lst[[a]])
+    p[[a]] = allele.diversitySingleLocus(lst[[a]])
     alpha.gk[, a] = p[[a]]$allele.alpha.g
     r.gg[, a] = p[[a]]$allele.r.gg
     R.0.a[a] = p[[a]]$allele.R.0
@@ -170,12 +170,12 @@ allele.pmiDiversity = function(lst) {
 
 #' Calculate allelic diversity for a single locus
 #'
-#' @export allele.pmiDiversitySingleLocus
+#' @export allele.diversitySingleLocus
 #'
-allele.pmiDiversitySingleLocus <- function(tab)
+allele.diversitySingleLocus <- function(tab)
 {
-  # pmiDiversity() calculates several quantities we use here
-  p = pmiDiversity(tab)
+  # diversity() calculates several quantities we use here
+  p = diversity(tab)
 
   allele.N = p$num.samples
   allele.G = p$num.groups
@@ -189,7 +189,7 @@ allele.pmiDiversitySingleLocus <- function(tab)
   allele.gamma = 1 / allele.R.0
   allele.beta = allele.gamma / allele.alpha.bar.weighted
 
-  # overlap and divergence; recreate C matrix not returned from pmiDiversity()
+  # overlap and divergence; recreate C matrix not returned from diversity()
   allele.r.gh = p$Q.mat; diag(allele.r.gh) = 0 # C matrix here
   allele.overlap = p$r.overlap
   allele.divergence = p$r.divergence

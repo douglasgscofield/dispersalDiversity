@@ -1,22 +1,75 @@
-#' Calculate alpha, beta, gamma, and delta/omega diversity statistics
+#' Calculate a collection of diversity statistics from a site x source matrix
 #'
-#' Calculate PMI statistics (Grivet et al 2005, Scofield et al 2010, 2011) as
-#' well as alpha, beta, gamma based on both q_qq and r_gg (Scofield et al 2012
-#' American Naturalist 180:719-732, http://www.jstor.org/stable/10.1086/668202),
-#' as well as q_gg adjusted following Nielsen et al 2003.  Used during data
-#' analysis for Scofield et al Am Nat; earlier versions (pre-github) were used
-#' for Scofield et al 2010 J Ecol and for Scofield et al 2011 Oecologia.
-#
-# TODO incorporate weighted means and variances from Scofield et al. 2011
-#
+#' Given a site x source matrix, calculate a collection of diversity
+#' statistics.  Statistics include PMI (probability of maternal inheritance)
+#' from Grivet \emph{et al}. (2005) and Scofield \emph{et al}. (2010, 2011) 
+#' as well as alpha, beta, gamma and delta/omega from classical ecology and
+#' applied to a dispersal context by Scofield \emph{et al}. (2012).
+#'
+#' The list returned contains several summary quantities:
+#' \itemize{
+#'     \item \code{table}, the table passed in as \code{tab}
+#'     \item \code{num.groups}, the number of rows in \code{tab}
+#'     \item \code{num.sources}, the number of columns in \code{tab}
+#'     \item \code{num.samples}, the sum of all elements in \code{tab}
+#'     \item \code{num.samples.group}, a vector of length \code{num.groups},
+#'           the sum of elements in each row of \code{tab}
+#'     \item \code{num.sources.group}, a vector of length \code{num.groups},
+#'           the number of distinct groups observed in each row of \code{tab}
+#'     \item \code{num.samples.source}, a vector of length \code{num.sources},
+#'           the sum of elements in each column of \code{tab}
+#'     \item \code{num.groups.source}, a vector of length \code{num.groups},
+#'           the number of distinct groups observed in each row of \code{tab}
+#' }
+#' Some additional statistics representing pooled PMI (Scofield \emph{et al}.
+#' (2010):
+#' \itemize{
+#'     \item \code{y.gh}
+#'     \item \code{prop.y.0.gh}
+#'     \item \code{q.0.gh}
+#' }
+#' The list returned also contains hree forms of diversity statistics, each
+#' returned as lists under separate named elements:
+#' \itemize{
+#'     \item \code{q}, based on squared frequencies, known to be biased at 
+#'           smaller sample sizes
+#'     \item \code{r}, unbiased versions of \code{q} (Simpson, 1949)
+#'     \item \code{q.nielsen}, a better unbiased transformation of \code{q}
+#'           following Nielsen \emph{et al}. (2003)
+#' }
+#' Each such list \code{q}, \code{r} and \code{q.nielsen} contains several 
+#' elements representing different diversity statistics.  Several 
+#' quantities are used below:
+#' \itemize{
+#'     \item \code{q.gg}, vector LENGTH of squared frequencies of groups in each 
+#'           site
+#'     \item \code{q.bar.0}, scalar, weighted mean of \code{q.gg} 
+#'     \item \code{q.unweighted.mean}, mean of \code{q.gg}
+#'     \item \code{alpha.g}, vector LENGTH of reciprocals of \code{q.gg}
+#'     \item \code{alpha.unweighted.mean}, mean of \code{alpha.g}
+#'     \item \code{d.alpha}, reciprocal of \code{q.unweighted.mean}
+#'     \item \code{d.gamma}, reciprocal of sum of grand squared frequencies
+#'     \item \code{d.beta}, \code{d.gamma / d.alpha}
+#'     \item \code{diversity.mat} DIMS, Chao pairwise off-diagonal, \code{alpha.g}
+#'           on-diagonal
+#'     \item \code{divergence.mat} DIMS, \code{diversity.mat} with \code{0}
+#'           on-diagonal
+#'     \item \code{overlap.mat}, \code{1 - divergence.mat}
+#'     \item \code{overlap}, mean overlap, \eqn{\sum{C} / ((G - 1) \sum{q_{gg}})}
+#'     \item \code{divergence}, mean divergence, \code{1 - overlap}
+#' }
 #'
 #' @param tab Table of counts in sites (rows) X sources (columns) format.
 #' If the argument is not a matrix, it is converted to one.  Rows are
 #' not reordered.
 #'
-#' @return List of diversity calculations
+#' @return Long list of diversity calculations, see Details
 #'
 #' @references
+#'
+#' Simpson, E. D. (1949) Measurement of diversity. \emph{Nature} 163:688.
+#'
+#' Chao et al., for the pairwise formula
 #'
 #' Grivet, D., Smouse, P. E. and Sork, V. L. (2005) A novel approach to an old
 #' problem: tracking dispersed seeds.  \emph{Molecular Ecology} 14:3585-3595.
@@ -42,9 +95,9 @@
 #
 # @examples
 #
-#' @export pmiDiversity
+#' @export diversity
 #'
-pmiDiversity <- function(tab) {
+diversity <- function(tab) {
     tab <- as.matrix(tab)
     G <- dim(tab)[1]
     K <- dim(tab)[2]

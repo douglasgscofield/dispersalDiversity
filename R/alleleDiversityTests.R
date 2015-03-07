@@ -25,7 +25,7 @@ NULL
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
-#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{pmiDiversity}}
+#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{diversity}}
 #'
 # @examples
 #

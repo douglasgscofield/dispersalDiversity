@@ -1,4 +1,4 @@
-#' @include pmiDiversity.R
+#' @include diversity.R
 # for collation order
 NULL
 
@@ -109,7 +109,7 @@ plotGammaAccum <- function(gamma.accum,
 #' returned in a list, which may be passed to \code{plotGammaAccum} to plot the
 #' result.
 #'
-#' @param tab           Site-by-source table, as passed to pmiDiversity
+#' @param tab           Site-by-source table, as passed to diversity()
 #'
 #' @param accum.method  \code{"random"} (default) or \code{"proximity"}.  
 #' Method for accumulating sites.  If \code{"random"}, then the next site is
@@ -149,7 +149,7 @@ runGammaAccum <- function(tab,
     accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)
     gamma.method <- match.arg(gamma.method)
-    pmiD <- pmiDiversity(tab)
+    pmiD <- diversity(tab)
     ans <- list()
     ans$obs.gamma <- pmiD[[paste(sep="", "d.gamma.", gamma.method)]]
     ans$obs.omega.mean <- pmiD[[paste(sep="", gamma.method, ".overlap")]]

@@ -65,7 +65,7 @@ allele.runGammaAccum <- function(lst,
     if (gamma.method != "r")
         warning("allele.runGammaAccum() should be used with gamma.method == 'r'", 
                 immediate. = TRUE)
-    pmiD <- allele.pmiDiversity(lst)
+    pmiD <- allele.diversity(lst)
     ans <- list()
     ans$obs.gamma <- pmiD$gamma
     ans$obs.omega.mean <- pmiD$overlap

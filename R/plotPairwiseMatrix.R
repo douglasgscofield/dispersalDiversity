@@ -1,19 +1,19 @@
-#' Plot pairwise divergence or overlap as calculated by \code{pmiDiversity}
+#' Plot pairwise divergence or overlap as calculated by \code{diversity}
 #'
 #' Plot pairwise values using \code{levelplot} from the \code{lattice} 
 #' package.  An example of its use is in Figure 4A-C of Scofield et al.
 #' (2012).
 #'
-#' @param pairwise.mat Pairwise divergence or overlap matrix as found at
-#' \code{pmiDiversity()$r.diversity.mat}.  Currently, prior to plotting
+#' @param pairwise.mat Pairwise divergence or overlap matrix as found at,
+#' e.g., \code{diversity()$q$diversity.mat}.  Currently, prior to plotting
 #' this matrix has its diagonal and upper triangle zeroed, and is then
 #' rotated prior to passing to \code{\link{lattice::levelplot}}
 #'
 #' @param statistic \code{"divergence"} or \code{"overlap"}, for which
 #' statistic is being presented
 #'
-#' @param pairwise.mean Mean pairwise divergence or overlap as found at
-#' \code{pmiDiversity()$r.divergence}.  If provided, this is added to
+#' @param pairwise.mean Mean pairwise divergence or overlap as found at,
+#' e.g., \code{diversity()$q$divergence}.  If provided, this is added to
 #' the plot in the upper triangle, rounded to three digits, with 
 #' positions specified by \code{mean.positions}.  The value is plotted 
 #' together with '$\bar{\delta} =$' if \code{statistic} is
@@ -33,24 +33,24 @@
 #'
 #' @return The lattice plot object is returned invisibly
 #'
-# @references
-#
-# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-# Use of alpha, beta and gamma diversity measures to characterize seed
-# dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
 #
 # @examples
 #
 # TODO: get DATA into here, perhaps import pericarp data from readGenalex?
 #
-# pmiD = pmiDiversity(tab)
-# plotPairwiseMatrix(pairwise.mat = pmiD$r.divergence.mat, 
-#                    pairwise.mean = pmiD$r.divergence, 
+# dv <- diversity(tab)
+# plotPairwiseMatrix(pairwise.mat = dv$r$divergence.mat, 
+#                    pairwise.mean = dv$r$divergence, 
 #                    statistic = "divergence", 
 #                    axis.label = "Seed Pool")
 #
-#' @seealso \code{\link{pmiDiversity}}, \code{\link{lattice::levelplot}}
+#' @seealso \code{\link{diversity}}, \code{\link{lattice::levelplot}}
 #'
 #' @importFrom lattice levelplot current.panel.limits panel.text plot
 #
@@ -70,8 +70,10 @@ plotPairwiseMatrix <- function(pairwise.mat,
     scales = list(draw = FALSE, tck = 0, cex = 0.7, x = list(rot = 90)),
     axis.label = "Species Pool",
     xlab = list(axis.label, cex=1.0), ylab = list(axis.label, cex=1.0),
-                               ...) {
-    # the matrix to be passed in is found at pmiDiversity()$r.diversity.mat 
+    ...) {
+
+    # the matrix to be passed in is found at diversity()$q$diversity.mat
+    # or ...$r$diversity.mat or ...$q.nielsen$diversity.mat
     statistic = match.arg(statistic)
     # should I be doing this zeroeing?
     diag(pairwise.mat) <- 0
