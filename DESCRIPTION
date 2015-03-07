@@ -23,11 +23,12 @@ Suggests:
     RColorBrewer,
     testthat
 Collate:
+    'diversity.R'
+    'alleleDiversity.R'
     'diversityTests.R'
-    'allelePmiDiversity.R'
     'alleleDiversityTests.R'
-    'pmiDiversity.R'
     'gammaAccum.R'
     'alleleGammaAccum.R'
+    'dispersalDiversity-package.R'
     'membershipPlot.R'
     'plotPairwiseMatrix.R'

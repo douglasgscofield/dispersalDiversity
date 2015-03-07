@@ -6,30 +6,12 @@
 #' as well as alpha, beta, gamma and delta/omega from classical ecology and
 #' applied to a dispersal context by Scofield \emph{et al}. (2012).
 #'
-#' The list returned contains several summary quantities:
-#' \itemize{
-#'     \item \code{table}, the table passed in as \code{tab}
-#'     \item \code{num.groups}, the number of rows in \code{tab}
-#'     \item \code{num.sources}, the number of columns in \code{tab}
-#'     \item \code{num.samples}, the sum of all elements in \code{tab}
-#'     \item \code{num.samples.group}, a vector of length \code{num.groups},
-#'           the sum of elements in each row of \code{tab}
-#'     \item \code{num.sources.group}, a vector of length \code{num.groups},
-#'           the number of distinct groups observed in each row of \code{tab}
-#'     \item \code{num.samples.source}, a vector of length \code{num.sources},
-#'           the sum of elements in each column of \code{tab}
-#'     \item \code{num.groups.source}, a vector of length \code{num.groups},
-#'           the number of distinct groups observed in each row of \code{tab}
-#' }
-#' Some additional statistics representing pooled PMI (Scofield \emph{et al}.
-#' (2010):
-#' \itemize{
-#'     \item \code{y.gh}
-#'     \item \code{prop.y.0.gh}
-#'     \item \code{q.0.gh}
-#' }
-#' The list returned also contains hree forms of diversity statistics, each
-#' returned as lists under separate named elements:
+#' @param tab Table of counts in sites (rows) X sources (columns) format.
+#' If the argument is not a matrix, it is converted to one.  Rows are
+#' not reordered.
+#'
+#' @return A list is returned which contains three forms of diversity
+#' statistics, each' returned as lists under separate named elements:
 #' \itemize{
 #'     \item \code{q}, based on squared frequencies, known to be biased at 
 #'           smaller sample sizes
@@ -50,29 +32,52 @@
 #'     \item \code{d.alpha}, reciprocal of \code{q.unweighted.mean}
 #'     \item \code{d.gamma}, reciprocal of sum of grand squared frequencies
 #'     \item \code{d.beta}, \code{d.gamma / d.alpha}
-#'     \item \code{diversity.mat} DIMS, Chao pairwise off-diagonal, \code{alpha.g}
-#'           on-diagonal
+#'     \item \code{diversity.mat} DIMS, Chao pairwise off-diagonal, 
+#'           \code{alpha.g} on-diagonal
 #'     \item \code{divergence.mat} DIMS, \code{diversity.mat} with \code{0}
 #'           on-diagonal
 #'     \item \code{overlap.mat}, \code{1 - divergence.mat}
 #'     \item \code{overlap}, mean overlap, \eqn{\sum{C} / ((G - 1) \sum{q_{gg}})}
 #'     \item \code{divergence}, mean divergence, \code{1 - overlap}
 #' }
-#'
-#' @param tab Table of counts in sites (rows) X sources (columns) format.
-#' If the argument is not a matrix, it is converted to one.  Rows are
-#' not reordered.
-#'
-#' @return Long list of diversity calculations, see Details
+#' The list also contains the original table passed to \code{diversity},
+#' together with several summary quantities:
+#' \itemize{
+#'     \item \code{table}, the table passed in as \code{tab}
+#'     \item \code{num.groups}, the number of rows in \code{tab}
+#'     \item \code{num.sources}, the number of columns in \code{tab}
+#'     \item \code{num.samples}, the sum of all elements in \code{tab}
+#'     \item \code{num.samples.group}, a vector of length \code{num.groups},
+#'           the sum of elements in each row of \code{tab}
+#'     \item \code{num.sources.group}, a vector of length \code{num.groups},
+#'           the number of distinct groups observed in each row of \code{tab}
+#'     \item \code{num.samples.source}, a vector of length \code{num.sources},
+#'           the sum of elements in each column of \code{tab}
+#'     \item \code{num.groups.source}, a vector of length \code{num.groups},
+#'           the number of distinct groups observed in each row of \code{tab}
+#' }
+#' Finally, some additional statistics representing pooled PMI measures
+#' (Scofield \emph{et al}. 2010) are returned:
+#' \itemize{
+#'     \item \code{y.gh}
+#'     \item \code{prop.y.0.gh}
+#'     \item \code{q.0.gh}
+#' }
 #'
 #' @references
 #'
 #' Simpson, E. D. (1949) Measurement of diversity. \emph{Nature} 163:688.
 #'
-#' Chao et al., for the pairwise formula
+#' Chao, A., Jost, L., Chiang, S. C., Jiang, Y. H., and Chazdon, R. L. (2008)
+#' A two-stage probabilistic approach to multiple-community similarity 
+#' indices.  \emph{Biometrics} 64:1178-1186.
 #'
 #' Grivet, D., Smouse, P. E. and Sork, V. L. (2005) A novel approach to an old
 #' problem: tracking dispersed seeds.  \emph{Molecular Ecology} 14:3585-3595.
+#'
+#' Nielsen, R., Tarpy, D. R. and Reeve, H. K. (2003) Estimating effective
+#' paternity number in social insects and the effective number of alleles in
+#' a population.  \emph{Molecular Ecology} 12:3157-3164.
 #'
 #' Scofield, D. G.,  Sork, V. L. and Smouse, P. E. (2010) Influence of acorn
 #' woodpecker social behaviour on transport of coast live oak
@@ -88,10 +93,6 @@
 #' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#'
-#' Nielsen, R., Tarpy, D. R. and Reeve, H. K. (2003) Estimating effective
-#' paternity number in social insects and the effective number of alleles in
-#' a population.  \emph{Molecular Ecology} 12:3157-3164.
 #
 # @examples
 #
