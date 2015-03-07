@@ -29,6 +29,11 @@
 #
 # 'make clean' removes CHECKDIR and the package tarball
 #
+# 'make data' makes an xyz.RData file from a read.delim-able file in
+# inst/extdata/xyz.txt, with the save()'d variable named xyz
+#
+# 'make testthat' runs `testthat` tests, if they exist
+#
 # Other targets:
 #
 # vars:       Echoes various variables
@@ -66,14 +71,10 @@ vars:
 NEWS: NEWS.md
 	$(PANDOC) -f markdown -t plain -o $@ $^
 
-# can this data section be automated a bit?
-#data: data/Qagr_adult_genotypes.RData data/Qagr_pericarp_genotypes.RData
-#
-#data/Qagr_adult_genotypes.RData: inst/extdata/Qagr_adult_genotypes.txt
-#	cd data && R --quiet -e 'source("../R/readGenalex.R"); Qagr_adult_genotypes <- readGenalex("../inst/extdata/Qagr_adult_genotypes.txt"); save(Qagr_adult_genotypes, file = "Qagr_adult_genotypes.RData")'
-#
-#data/Qagr_pericarp_genotypes.RData: inst/extdata/Qagr_pericarp_genotypes.txt
-#	cd data && R --quiet -e 'source("../R/readGenalex.R"); Qagr_pericarp_genotypes <- readGenalex("../inst/extdata/Qagr_pericarp_genotypes.txt"); save(Qagr_pericarp_genotypes, file = "Qagr_pericarp_genotypes.RData")'
+data: data/granaries_2002_Qlobata.RData data/granaries_2004_Qlobata.RData
+
+data/%.RData: inst/extdata/%.txt
+	R --quiet -e "$* <- as.matrix(read.delim('$^')); save($*, file = '$@')"
 
 doc:
 	R --quiet -e 'devtools::document()'
