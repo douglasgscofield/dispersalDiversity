@@ -5,7 +5,12 @@
 \alias{dispersalDiversity-package}
 \title{Analyse diversity consequences of dispersal}
 \description{
-Description
+A collection of R functions to analyse individual and genetic diversity in
+biological populations, primarily in the context of studying dispersal
+processes.  The basic data format is a types x sites matrix.  Functions are
+provided for calculating alpha, beta, delta/omega and gamma diversity using a
+variety of measures; calculating alpha, beta, delta/omega and gamma diversity
+of allelic variation; and comparing diversity measures between samples.
 }
 \details{
 These statistical tools were developed in collaboration with Peter E.
