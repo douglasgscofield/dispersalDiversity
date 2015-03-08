@@ -29,6 +29,7 @@ Collate:
     'alleleDiversityTests.R'
     'gammaAccum.R'
     'alleleGammaAccum.R'
+    'dispersalDiversity-data.R'
     'dispersalDiversity-package.R'
     'membershipPlot.R'
     'plotPairwiseMatrix.R'

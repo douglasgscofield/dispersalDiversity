@@ -76,4 +76,12 @@ members in more than one site are given a unique colour/hatching
 combination.  An example if its use is in Figure 2A-C of
 Scofield et al. (2012).
 }
+\examples{
+membershipPlot(tab, distinguish.multiton = TRUE)
+}
+\references{
+Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+Use of alpha, beta and gamma diversity measures to characterize seed
+dispersal by animals.  \emph{American Naturalist} 180:719-732.
+}
 

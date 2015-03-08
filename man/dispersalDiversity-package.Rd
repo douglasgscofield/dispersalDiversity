@@ -3,7 +3,7 @@
 \docType{package}
 \name{dispersalDiversity-package}
 \alias{dispersalDiversity-package}
-\title{Analyse diversity consequences of dispersal}
+\title{Analyse individual and genetic diversity of dispersal processes in biological populations}
 \description{
 A collection of R functions to analyse individual and genetic diversity in
 biological populations, primarily in the context of studying dispersal
