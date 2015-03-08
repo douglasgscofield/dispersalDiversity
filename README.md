@@ -7,18 +7,18 @@ This is a collection of [R](http://www.r-project.org) functions to facilitate an
 
 There are also new functions for calculating allelic diversity using these same conceptual and statistical principles, and for comparing allele diversity statistics.
 
+* * *
+
+These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](https://www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
+
+* * *
+
 The **Mann-Whitney-Wilcoxon nested ranks test** we originally provided here has been made an R package:
 ```R
 install.packages("nestedRanksTest")
 vignette("nestedRanksTest")
 ```
 and has been moved to [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
-
-* * *
-
-These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](https://www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
-
-* * *
 
 
 Dispersal Diversity
