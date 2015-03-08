@@ -318,8 +318,15 @@ woodpecker granaries in 2002 and 2004 to seed source trees.
 
 # References
 
+Grivet D, Smouse PE, Sork VL. 2005. A novel approach to an old
+problem: tracking dispersed seeds. [_Molecular Ecology_ 14: 3585-3595](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x).
+
+Nielsen R, Tarpy DR, Reeve HK. 2003. Estimating effective paternity
+number in social insects and the effective number of alleles in a population.
+[_Molecular Ecology_ 12: 3157-3164](http://dx.doi.org/10.1046/j.1365-294X.2003.01994.x).
+
 Scofield DG, Smouse PE, Karubian J, Sork VL.  2012.  Use of
-&alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
+alpha, beta, and gamma diversity measures to characterize seed dispersal by animals.
 [_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202),
 [supplement](http://www.jstor.org/stable/full/10.1086/668202#apa), [data](http://dx.doi.org/10.5061/dryad.40kq7).
 
@@ -332,11 +339,4 @@ Scofield DG, Sork VL, Smouse PE. 2010. Influence of acorn
 woodpecker social behaviour on transport of coast live oak (<i>Quercus agrifolia</i>)
 acorns in a southern California oak savanna. [_Journal of Ecology_ 98: 561-572](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x),
 [supplement](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2010.01649.x/suppinfo).
-
-Grivet D, Smouse PE, Sork VL. 2005. A novel approach to an old
-problem: tracking dispersed seeds. [_Molecular Ecology_ 14: 3585-3595](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x).
-
-Nielsen R, Tarpy DR, Reeve HK. 2003. Estimating effective paternity
-number in social insects and the effective number of alleles in a population.
-[_Molecular Ecology_ 12: 3157-3164](http://dx.doi.org/10.1046/j.1365-294X.2003.01994.x).
 
