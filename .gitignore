@@ -1,15 +1,7 @@
+.DS*
+._*
 .RData
 .Rhistory
-*.csv
-*.txt
-*.RData
-*.Rhistory
 *.swp
-*.zip
-future
-old
 .Rproj.user
 *.Rproj
-readGenalex.R
-testing.R
-testing.txt

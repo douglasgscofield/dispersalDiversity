@@ -71,10 +71,10 @@ vars:
 NEWS: NEWS.md
 	$(PANDOC) -f markdown -t plain -o $@ $^
 
-data: data/granaries_2002_Qlobata.RData data/granaries_2004_Qlobata.RData
+data: data/granaries_2002_Qlob.RData data/granaries_2004_Qlob.RData
 
 data/%.RData: inst/extdata/%.txt
-	R --quiet -e "$* <- as.matrix(read.delim('$^')); save($*, file = '$@')"
+	R --quiet -e "$* <- as.matrix(read.delim('$^')); x <- dimnames($*); names(x) <- c('Granary_Year', 'Source'); dimnames($*) <- x; save($*, file = '$@')"
 
 doc:
 	R --quiet -e 'devtools::document()'

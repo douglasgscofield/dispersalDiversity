@@ -310,6 +310,12 @@ plotGammaAccum(allele.rga.result)
 
 * * *
 
+We also provide the datasets `granaries_2002_Qlob` and `granaries_2004_Qlob`,
+which include assignments of *Quercus lobata* acorns harvested from acorn
+woodpecker granaries in 2002 and 2004 to seed source trees.
+
+* * *
+
 # References
 
 Scofield DG, Smouse PE, Karubian J, Sork VL.  2012.  Use of
