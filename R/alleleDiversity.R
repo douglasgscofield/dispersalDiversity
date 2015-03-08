@@ -58,7 +58,7 @@ NULL
 #'   dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
 #'   gt <- allele.createTableList(dat)
 #'
-#' @export allele.CreateTableList
+#' @export allele.createTableList
 #'
 # TODO
 #
