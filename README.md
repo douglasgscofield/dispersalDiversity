@@ -123,12 +123,12 @@ gray background using the option `distinguish.multiton = TRUE`.  Other options
 are provided for controlling labelling of the plot and producing output to PDF
 or PostScript files.
 
-![membershipPlot output in black and white](membershipPlot_BW.png)
+![membershipPlot output in black and white](membershipPlot_example_BW.png)
 
 If `fill.method = "color"` and the library `RColorBrewer` is available, then
 it is used to pick the colours used for filling groups.
 
-![membershipPlot output in colour](membershipPlot_colour.png)
+![membershipPlot output in colour](membershipPlot_example_colour.png)
 
 Both plots show that hatching is combined with colours if the number of
 categories requiring colour/fill is sufficiently large.  Both plots were
