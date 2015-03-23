@@ -91,30 +91,16 @@ table (one or more) and test diversity statistics within and among them.  See
 (see above) is required to be in the same directory, as it provides functions
 used here.
 
-`alphaDiversityTest(tab)`
-: Test for differences in &alpha; diversity among sites within a single dataset
-
-`alphaContrastTest(tab.a, tab.b)`
-: Test whether there is a difference in the &alpha; diversity between two datasets
-
-`alphaContrastTest.3(tab.a, tab.b, tab.c)`
-: Test whether there is a difference in the &alpha; diversity among three datasets
-
-`plotAlphaTest(result)`
-: Plot the list returned from `alphaDiversityTest()` or `alphaContrastTest()` for evaluation
-
-`pairwiseMeanTest(tab)`
-: Test whether mean pairwise divergence/overlap among sites is different from the null espectation
-
-`plotPairwiseMeanTest()`
-: Plot the list returned from the above test for evaluation
-
-`gammaContrastTest(tab.a, tab.b)`
-: Test whether there is a difference in the &gamma; diversity between two datasets
-
-`gammaContrastTest.3(tab.a, tab.b, tab.c)`
-: Test whether there is a difference in the &gamma; diversity among three datasets
-
+Function | Description
+-------- | -----------
+`alphaDiversityTest(tab)` | Test for differences in &alpha; diversity among sites within a single dataset
+`alphaContrastTest(tab.a, tab.b)` | Test whether there is a difference in the &alpha; diversity between two datasets
+`alphaContrastTest.3(tab.a, tab.b, tab.c)` | Test whether there is a difference in the &alpha; diversity among three datasets
+`plotAlphaTest(result)` | Plot the list returned from `alphaDiversityTest()` or `alphaContrastTest()` for evaluation
+`pairwiseMeanTest(tab)` | Test whether mean pairwise divergence/overlap among sites is different from the null espectation
+`plotPairwiseMeanTest()` | Plot the list returned from the above test for evaluation
+`gammaContrastTest(tab.a, tab.b)` | Test whether there is a difference in the &gamma; diversity between two datasets
+`gammaContrastTest.3(tab.a, tab.b, tab.c)` | Test whether there is a difference in the &gamma; diversity among three datasets
 
 
 ### membershipPlot.R
