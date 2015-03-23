@@ -17,7 +17,7 @@ allele.runGammaAccum(lst, accum.method = c("random", "proximity"),
 (see below).}
 
 \item{resample.method}{\code{"permute"} (default) or \code{"bootstrap"},
-whether to resample sites without (\code{"permute}") or with
+whether to resample sites without (\code{"permute"}) or with
 (\code{"bootstrap"}) replacement}
 
 \item{n.resample}{Number of resamples for accumulation curve}

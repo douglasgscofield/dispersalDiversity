@@ -25,8 +25,8 @@ statistic is being presented}
 e.g., \code{diversity()$q$divergence}.  If provided, this is added to
 the plot in the upper triangle, rounded to three digits, with
 positions specified by \code{mean.positions}.  The value is plotted
-together with '$\bar{\delta} =$' if \code{statistic} is
-\code{"divergence"}, and '$\bar{\omega} =$' if \code{statistic} is
+together with '\eqn{\bar{\delta} = }' if \code{statistic} is
+\code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is
 \code{"overlap"}.}
 
 \item{bty,aspect,col.regions,colorkey,at,scales,xlab,ylab}{Additional

@@ -21,7 +21,7 @@ NULL
 #' (see below).
 #'
 #' @param resample.method \code{"permute"} (default) or \code{"bootstrap"}, 
-#' whether to resample sites without (\code{"permute}") or with 
+#' whether to resample sites without (\code{"permute"}) or with 
 #' (\code{"bootstrap"}) replacement
 #'
 #' @param n.resample Number of resamples for accumulation curve

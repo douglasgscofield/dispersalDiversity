@@ -102,6 +102,13 @@ Function | Description
 `gammaContrastTest(tab.a, tab.b)` | Test whether there is a difference in the &gamma; diversity between two datasets
 `gammaContrastTest.3(tab.a, tab.b, tab.c)` | Test whether there is a difference in the &gamma; diversity among three datasets
 
+An example of the output of `plotAlphaTest()`:
+
+![plotAlphaTest example](plotAlphaTest_example.png)
+
+and of `plotPairwiseMeanTest()`:
+
+![plotPairwiseMeanTest example](plotPairwiseMeanTest_example.png)
 
 ### membershipPlot.R
 
@@ -112,14 +119,20 @@ of membership plots can be seen in Figure 2A-C of Scofield _et al._ 2012 <I>Am
 Nat</I>.  Singleton sources (those that appear just once in just one site) are
 distinguished using a white background, while multiton sources (those that
 appear multiple times but still in just one site) can be distinguished with a
-gray background using the option `distinguish.multiton=TRUE`.  Other options
+gray background using the option `distinguish.multiton = TRUE`.  Other options
 are provided for controlling labelling of the plot and producing output to PDF
 or PostScript files.
+
+![membershipPlot output in black and white](membershipPlot_BW.png)
 
 If `fill.method = "color"` and the library `RColorBrewer` is available, then
 it is used to pick the colours used for filling groups.
 
+![membershipPlot output in colour](membershipPlot_colour.png)
 
+Both plots show that hatching is combined with colours if the number of
+categories requiring colour/fill is sufficiently large.  Both plots were
+produced with `distinguish.multiton = FALSE`.
 
 ### plotPairwiseMatrix.R
 
@@ -144,6 +157,7 @@ plotPairwiseMatrix(pairwise.mat = pmiD$r$divergence.mat,
                    axis.label = "Seed Pool")
 ````
 
+![plotPairwiseMatrix example](plotPairwiseMatrix_example.png)
 
 
 ### gammaAccum.R
@@ -194,6 +208,7 @@ locations of the seed pools named in the row names of tab; only used with
 
 Create a visual plot of &gamma; accumulation results from `runGammaAccum()`.
 
+![plotGammaAccum example](plotGammaAccum_example.png)
 
 #### Additional functions
 
