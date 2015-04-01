@@ -98,7 +98,8 @@
 #
 #' @export diversity
 #'
-diversity <- function(tab) {
+diversity <- function(tab)
+{
     tab <- as.matrix(tab)
     G <- dim(tab)[1]
     K <- dim(tab)[2]
@@ -253,9 +254,7 @@ diversity <- function(tab) {
 #' Nielsen, R., Tarpy, D. R. and Reeve, H. K. (2003) Estimating effective
 #' paternity number in social insects and the effective number of alleles in
 #' a population.  \emph{Molecular Ecology} 12:3157-3164.
-#
-# @examples
-#
+#'
 #' @export nielsenTransform
 #'
 nielsenTransform <- function(q.gg, n.g) {  

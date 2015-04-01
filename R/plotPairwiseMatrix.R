@@ -15,12 +15,12 @@
 #' @param pairwise.mean Mean pairwise divergence or overlap as found at,
 #' e.g., \code{diversity()$q$divergence}.  If provided, this is added to
 #' the plot in the upper triangle, rounded to three digits, with 
-#' positions specified by \code{mean.positions}.  The value is plotted 
+#' positions specified by \code{mean.pos}.  The value is plotted 
 #' together with '\eqn{\bar{\delta} = }' if \code{statistic} is
 #' \code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is 
 #' \code{"overlap"}.
 #'
-#' @param mean.positions If \code{pairwise.mean} is given, the relative
+#' @param mean.pos If \code{pairwise.mean} is given, the relative
 #' X and Y positions within the panel at which the value is plotted, in 
 #' a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
 #' value.
@@ -57,6 +57,7 @@
 #
 # do i need this for the plot?  or is the above import enough?
 # @importMethodsFrom lattice plot.lattice
+# do I even need to do this now?
 #
 #'
 #' @export plotPairwiseMatrix
@@ -71,8 +72,8 @@ plotPairwiseMatrix <- function(pairwise.mat,
     scales = list(draw = FALSE, tck = 0, cex = 0.7, x = list(rot = 90)),
     axis.label = "Species Pool",
     xlab = list(axis.label, cex=1.0), ylab = list(axis.label, cex=1.0),
-    ...) {
-
+    ...)
+{
     # the matrix to be passed in is found at diversity()$q$diversity.mat
     # or ...$r$diversity.mat or ...$q.nielsen$diversity.mat
     statistic = match.arg(statistic)
@@ -82,18 +83,13 @@ plotPairwiseMatrix <- function(pairwise.mat,
     rotateMatrix = function(mat) t(mat[nrow(mat):1, , drop=FALSE])
     pairwise.mat = rotateMatrix(pairwise.mat)
     opa <- par(mar = c(0, 0, 0, 5), ps = 10, xpd = NA)
-    lp <- lattice::levelplot(pairwise.mat, 
-              bty = bty, aspect = aspect, 
-              regions = TRUE, col.regions = col.regions, 
-              colorkey = colorkey,
-              at = at, 
-              scales = scales,
-              xlab = xlab, ylab = ylab,
-              ...)
+    lp <- lattice::levelplot(pairwise.mat, bty = bty, aspect = aspect, 
+        regions = TRUE, col.regions = col.regions, colorkey = colorkey,
+        at = at, scales = scales, xlab = xlab, ylab = ylab, ...)
     lattice::plot(lp, ...)
     if (! is.null(pairwise.mean)) {
         lims <- lapply(lattice::current.panel.limits(), round)
-        # is it sapply that i should use instead of unlist lapply?
+        # TODO: is it sapply that i should use instead of unlist lapply?
         rr <- abs(unlist(lapply(lims, diff)))
         xpr <- if (statistic == "divergence")
             substitute(bar(delta) == OBS, list(OBS = round(pairwise.mean, 3)))
