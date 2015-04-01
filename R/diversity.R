@@ -169,7 +169,7 @@ diversity <- function(tab) {
 
     q.nielsen = list()
 
-    q.nielsen$q.gg <- nielsenTransform(q.nielsen$q.gg, n.g)
+    q.nielsen$q.gg <- nielsenTransform(diag(Q.mat), n.g)
     q.nielsen$q.bar.0 <- sum(n.g * n.g * q.nielsen$q.gg) / sum(n.g * n.g)
     q.nielsen$q.unweighted.mean <- mean(q.nielsen$q.gg)
     q.nielsen$alpha.g <- 1 / q.nielsen$q.gg
@@ -228,6 +228,10 @@ diversity <- function(tab) {
          prop.y.0.gh = prop.y.0.gh,
          q.0.gh      = q.0.gh,
 
+         # Q matrix, used to reconstruct C matrix in (at least) allele code
+         Q.mat     = Q.mat,
+
+         # diversity calculations
          q         = q,
          r         = r, 
          q.nielsen = q.nielsen

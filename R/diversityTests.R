@@ -830,7 +830,8 @@ gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
     V.g <- unlist(lapply(g.vardist, sum)) / (n.g - 1)
     if (zero.var.adjust)
         V.g <- .diversityTest.ZeroVarAdjust(V.g, n.g)
-    V.p <- ss.pooled = sum((n.g - 1) * V.g) / (N - G)
+    # ss.pooled
+    V.p <- sum((n.g - 1) * V.g) / (N - G)
     term.V.g <- sum((n.g - 1) * log(V.g))
     term.V.p <- (N - G) * log(V.p)
     term.denom <- 1 + ((1 / (3 * (G - 1))) *
@@ -840,7 +841,7 @@ gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
     else
         (term.V.g - term.V.p) / term.denom
     DF <- G - 1
-    return(list(V.g=V.g, V.p=V.p, ln.LR=ln.LR, DF=DF))
+    return(list(V.g = V.g, V.p = V.p, ln.LR = ln.LR, DF = DF))
 }
 
 

@@ -5,3 +5,6 @@
 *.swp
 .Rproj.user
 *.Rproj
+HI*Data.txt
+LO*Data.txt
+paper.R
