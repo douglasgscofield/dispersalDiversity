@@ -4,7 +4,7 @@
 \alias{gammaContrastTest.3}
 \title{Test for difference in gamma diversity among three datasets}
 \usage{
-gammaContrastTest.3(tab.a, tab.b, tab.c, zero.var.adjust = TRUE,
+\method{gammaContrastTest}{3}(tab.a, tab.b, tab.c, zero.var.adjust = TRUE,
   n.resample = 10000, method = c("bootstrap", "permute"))
 }
 \arguments{

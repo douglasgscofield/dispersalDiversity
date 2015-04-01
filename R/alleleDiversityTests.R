@@ -33,18 +33,28 @@ NULL
 #'
 #'   dat <- readGenalex("file-of-genotypes-sample-1.txt")
 #'   gt <- allele.createTableList(dat)
-#'   alpha.test <- allele.alphaDiversityTest(gt)
+#'   alpha.test <- alphaDiversityTest(gt)
 #'
-#' @export allele.alphaDiversityTest
+#' @export
 #'
-allele.alphaDiversityTest <- function(lst, 
-                                      zero.var.adjust = TRUE, 
-                                      n.resample = 10000, 
-                                      method = c("bootstrap", "permute")) {
+#' @name alphaDiversityTest
+#'
+NULL
+
+alphaDiversityTest <- function(x, ...) UseMethod("alphaDiversityTest")
+
+
+
+#' @rdname alphaDiversityTest
+#'
+#' @export
+#'
+alphaDiversityTest.allele_tables <- function(lst, zero.var.adjust = TRUE, 
+        n.resample = 10000, method = c("bootstrap", "permute"),
+        test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999)) {
     method <- match.arg(method)
-    name <- deparse(substitute(tab))
+    name <- deparse(substitute(lst))
     nm <- names(lst)
-    q1 <- c(0.5, 0.95, 0.99, 0.999)
 
     ans <- list()
     ans$name <- name
@@ -90,17 +100,18 @@ allele.alphaDiversityTest <- function(lst,
                                             n.resample = n.resample)
         PVAL <- sum(terms$ln.LR <= nulldist)/n.resample
         cat("Comparing against bootstrap X-2 distribution:\n")
-        q2 <- quantile(nulldist, q1)
-        o <- sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f %.2f]  P = %g\n", 
-            N, G, terms$ln.LR, n.resample, paste(collapse = " ", q1), 
-            q2[1], q2[2], q2[3], q2[4], PVAL)
+        q2 <- quantile(nulldist, test.quantiles)
+        o <- sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n", 
+            N, G, terms$ln.LR, n.resample, 
+            paste(collapse = " ", test.quantiles), 
+            paste(collapse = " ", round(q2, 3)),
+            PVAL)
         cat(o)
         this.ans$n.resample <- n.resample
         this.ans$resample.method <- method
         this.ans$quants <- q2
         this.ans$P.empirical <- PVAL
         this.ans$empdist <- nulldist
-        this.ans$version <- .diversityTestsVersion
 
         # add the current locus' results to the grand totals
         ans[[ locus ]] <- this.ans
@@ -117,16 +128,15 @@ allele.alphaDiversityTest <- function(lst,
     cat("Skipping comparison against analytic X^2\n")
     ans$P.empirical <- sum(ans$observed.ln.LR <= ans$empdist)/ans$n.resample
     cat("Contrasting groups, compare summed ln-LR against summed bootstrap X^2 distribution:\n")
-    ans$quants <- quantile(ans$empdist, q1)
-    cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f %.2f]  P = %g\n", 
+    ans$quants <- quantile(ans$empdist, test.quantiles)
+    cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n", 
               ans$N.samples,
               ans$N.groups,
               ans$observed.ln.LR,
               ans$n.resample,
-              paste(collapse = " ", q1),
-              ans$quants[1], ans$quants[2], ans$quants[3], ans$quants[4],
+              paste(collapse = " ", test.quantiles),
+              paste(collapse = " ", round(ans$quants, 3)),
               ans$P.empirical))
-    ans$version <- .alleleDiversityTestsVersion
     ####
     class(ans) <- c(class(ans), "allele.diversityTest")
     invisible(ans)
@@ -138,7 +148,7 @@ allele.alphaDiversityTest <- function(lst,
 #'
 #' From Sork et al., extensions of those from Scofield et al. 2012 American
 #' Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
-#
+#'
 #' @param lst.a  Allele diveristy dataset, a list, one entry per locus, of 
 #'               site x allele counts. Each table must have the same format.
 #'
@@ -157,26 +167,39 @@ allele.alphaDiversityTest <- function(lst,
 #'
 #' # For comparing allele diversity between two different samples:
 #'
-#'   dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
-#'   dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-#'   gt1 <- allele.createTableList(dat1)
-#'   gt2 <- allele.createTableList(dat2)
-#'   alpha.contrast <- allele.alphaContrastTest(gt1, gt2)
+#' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+#' # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+#' # gt1 <- createAlleleTables(dat1)
+#' # gt2 <- createAlleleTables(dat2)
+#' # alpha.contrast <- alphaContrastTest(gt1, gt2)
 #'
-#' @export allele.alphaContrastTest
+#' @export
 #'
-allele.alphaContrastTest <- function(lst.a, lst.b,
-                                     zero.var.adjust = TRUE, 
-                                     n.resample = 10000, 
-                                     method = c("bootstrap", "permute")) {
-    method <- match.arg(method)
-    stopifnot(length(lst.a) == length(lst.b) && all(names(lst.a) == names(lst.b)))
+#' @name alphaContrastTest
+NULL
+
+alphaContrastTest <- function(x, ...) UseMethod("alphaContrastTest")
+
+
+
+#' @rdname alphaContrastTest
+#'
+#' @export
+#'
+alphaContrastTest.allele_tables <- function(lst.a, lst.b,
+        zero.var.adjust = TRUE, n.resample = 10000, 
+        method = c("bootstrap", "permute"),
+        test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999)) {
+
     name.a <- deparse(substitute(lst.a))
     name.b <- deparse(substitute(lst.b))
+    if (! inherits(lst.b, 'allele_tables'))
+        stop("both ", name.a, " and ", name.b, " must be of class 'allele_tables'")
+    method <- match.arg(method)
+    stopifnot(length(lst.a) == length(lst.b) && all(names(lst.a) == names(lst.b)))
     nm <- names(lst.a)
     .RT <- .diversityTest.ReverseTerms
     .diversityTest.ReverseTerms <- FALSE
-    q1 <- c(0.5, 0.95, 0.99, 0.999)
 
     ans <- list()
     ans$name.a <- name.a
@@ -246,10 +269,12 @@ allele.alphaContrastTest <- function(lst.a, lst.b,
                                             zero.var.adjust, method, n.resample)
         PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
         cat("Contrasting groups, compare against bootstrap X^2 distribution:\n")
-        q2 <- quantile(nulldist, q1)
-        o <- sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f %.2f]  P = %g\n\n", 
-              N.a, N.b, G, observed.ln.LR.a.b, n.resample, paste(collapse = " ", q1), 
-              q2[1], q2[2], q2[3], q2[4], PVAL)
+        q2 <- quantile(nulldist, test.quantiles)
+        o <- sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n\n", 
+              N.a, N.b, G, observed.ln.LR.a.b, n.resample, 
+              paste(collapse = " ", test.quantiles), 
+              paste(collapse = " ", round(q2, 3)), 
+              PVAL)
         cat(o)
         this.ans$n.resample <- n.resample
         this.ans$N.a <- N.a
@@ -259,7 +284,6 @@ allele.alphaContrastTest <- function(lst.a, lst.b,
         this.ans$P.empirical <- PVAL
         this.ans$empdist <- nulldist
         this.ans$a.b.vardist <- a.b.vardist
-        this.ans$version <- .diversityTestsVersion
 
         # add the current locus' results to the grand totals
         ans[[ locus ]] <- this.ans
@@ -278,17 +302,16 @@ allele.alphaContrastTest <- function(lst.a, lst.b,
     cat("Skipping comparison against analytic X^2\n")
     ans$P.empirical <- sum(ans$observed.ln.LR <= ans$empdist)/ans$n.resample
     cat("Contrasting groups, compare summed ln-LR against summed bootstrap X^2 distribution:\n")
-    ans$quants <- quantile(ans$empdist, q1)
-    cat(sprintf("Samples N.a = %d, N.b = %d, groups = %d, observed.ln.LR = %f, resamples = %d, boot.x2[%s] = [%.2f %.2f %.2f %.2f]   P = %g\n\n\n",
+    ans$quants <- quantile(ans$empdist, test.quantiles)
+    cat(sprintf("Samples N.a = %d, N.b = %d, groups = %d, observed.ln.LR = %f, resamples = %d, boot.x2[%s] = [%s]   P = %g\n\n\n",
               ans$N.a,
               ans$N.b,
               ans$N.groups,
               ans$observed.ln.LR,
               ans$n.resample,
-              paste(collapse = " ", q1),
-              ans$quants[1], ans$quants[2], ans$quants[3], ans$quants[4],
+              paste(collapse = " ", test.quantiles),
+              paste(collapse = " ", round(ans$quants, 3)), 
               ans$P.empirical))
-    ans$version <- .alleleDiversityTestsVersion
     .diversityTest.ReverseTerms <- .RT
     ####
     class(ans) <- c(class(ans), "allele.diversityTest.AlphaContrast")
@@ -317,25 +340,39 @@ allele.alphaContrastTest <- function(lst.a, lst.b,
 #'
 #' # For comparing allele diversity between two different samples:
 #'
-#'   dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
-#'   dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-#'   gt1 <- allele.createTableList(dat1)
-#'   gt2 <- allele.createTableList(dat2)
-#'   gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
+#' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+#' # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+#' # gt1 <- createAlleleTables(dat1)
+#' # gt2 <- createAlleleTables(dat2)
+#' # gamma.contrast <- gammaContrastTest(gt1, gt2)
 #'
-#' @export allele.gammaContrastTest
+#' @export
 #'
-allele.gammaContrastTest <- function(lst.a, lst.b,
-                                     zero.var.adjust = TRUE, 
-                                     n.resample = 10000, 
-                                     method = c("bootstrap", "permute")) {
+#' @name gammaContrastTest
+#'
+NULL
+
+gammaContrastTest <- function(x, ...) UseMethod("gammaContrastTest")
+
+
+
+#' @rdname gammaContrastTest
+#'
+#' @export
+#'
+gammaContrastTest.allele_tables <- function(lst.a, lst.b,
+        zero.var.adjust = TRUE, n.resample = 10000, 
+        method = c("bootstrap", "permute"),
+        test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999)) {
+
+    name.a <- deparse(substitute(lst.a))
+    name.b <- deparse(substitute(lst.b))
+    if (! inherits(lst.b, 'allele_tables'))
+        stop("both ", name.a, " and ", name.b, " must be of class 'allele_tables'")
     method <- match.arg(method)
     stopifnot(length(lst.a) == length(lst.b) && 
               all(names(lst.a) == names(lst.b)))
-    name.a <- deparse(substitute(lst.a))
-    name.b <- deparse(substitute(lst.b))
     nm <- names(lst.a)
-    q1 <- c(0.5, 0.95, 0.99, 0.999)
 
     ans <- list()
     ans$name.a <- name.a
@@ -415,18 +452,18 @@ allele.gammaContrastTest <- function(lst.a, lst.b,
                                             zero.var.adjust, method, n.resample)
         PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
         cat("Contrasting groups, compare against bootstrap X-2 distribution:\n")
-        q2 <- quantile(nulldist, q1)
-        cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f %.2f]  P = %g\n\n", 
+        q2 <- quantile(nulldist, test.quantiles)
+        cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n\n", 
               N.a, N.b, G, observed.ln.LR.a.b, n.resample, 
-              paste(collapse = " ", q1), 
-              q2[1], q2[2], q2[3], q2[4], PVAL))
+              paste(collapse = " ", test.quantiles), 
+              paste(collapse = " ", round(q2, 3)), 
+              PVAL))
         this.ans$n.resample <- n.resample
         this.ans$resample.method <- method
         this.ans$quants <- q2
         this.ans$P.empirical <- PVAL
         this.ans$empdist <- nulldist
         this.ans$a.b.vardist <- a.b.vardist
-        this.ans$version <- .diversityTestsVersion
 
         # add the current locus' results to the grand totals
         ans[[ locus ]] <- this.ans
@@ -447,8 +484,8 @@ allele.gammaContrastTest <- function(lst.a, lst.b,
     cat("Skipping comparison against analytic X^2\n")
     ans$P.empirical <- sum(ans$observed.ln.LR <= ans$empdist)/ans$n.resample
     cat("Contrasting groups, compare summed ln-LR against summed bootstrap X^2 distribution:\n")
-    ans$quants <- quantile(ans$empdist, q1)
-    cat(sprintf("Samples N.a = %d, G.a = %d, N.b = %d, G.b = %d, groups = %d, observed.ln.LR = %f, resamples = %d, boot.x2[%s] = [%.2f %.2f %.2f %.2f]   P = %g\n\n\n",
+    ans$quants <- quantile(ans$empdist, test.quantiles)
+    cat(sprintf("Samples N.a = %d, G.a = %d, N.b = %d, G.b = %d, groups = %d, observed.ln.LR = %f, resamples = %d, boot.x2[%s] = [%s]   P = %g\n\n\n",
               ans$N.a,
               ans$G.a,
               ans$N.b,
@@ -456,10 +493,9 @@ allele.gammaContrastTest <- function(lst.a, lst.b,
               ans$N.groups,
               ans$observed.ln.LR,
               ans$n.resample,
-              paste(collapse = " ", q1),
-              ans$quants[1], ans$quants[2], ans$quants[3], ans$quants[4],
+              paste(collapse = " ", test.quantiles),
+              paste(collapse = " ", round(ans$quants, 3)),
               ans$P.empirical))
-    ans$version <- .alleleDiversityTestsVersion
     ####
     class(ans) <- c(class(ans), "allele.diversityTest.GammaContrast")
     invisible(ans)

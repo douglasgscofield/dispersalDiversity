@@ -4,7 +4,7 @@
 \alias{alphaContrastTest.3}
 \title{Test for differences in alpha diversity between three data sets}
 \usage{
-alphaContrastTest.3(tab.a, tab.b, tab.c, zero.var.adjust = TRUE,
+\method{alphaContrastTest}{3}(tab.a, tab.b, tab.c, zero.var.adjust = TRUE,
   n.resample = 10000, method = c("bootstrap", "permute"))
 }
 \arguments{

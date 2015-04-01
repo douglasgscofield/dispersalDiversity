@@ -11,15 +11,15 @@ NULL
 # # The workflow to calculate basic allelic diversity statistics:
 #
 #   dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
-#   gt <- allele.createTableList(dat)
-#   div <- allele.diversity(gt)
+#   gt <- createAlleleTables(dat)
+#   div <- diversityMultilocus(gt)
 #
 # # For comparing allele diversity between two different samples:
 #
 #   dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
 #   dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-#   gt1 <- allele.createTableList(dat1)
-#   gt2 <- allele.createTableList(dat2)
+#   gt1 <- createAlleleTables(dat1)
+#   gt2 <- createAlleleTables(dat2)
 #   alpha.contrast <- allele.alphaContrastTest(gt1, gt2)
 #   gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
 #
@@ -28,10 +28,10 @@ NULL
 #
 # allele.diversity() : 
 #    The function calculating diversity for a set of loci.  The single argument
-#    is a list produced by allele.createTableList(), and it uses the function
+#    is a list produced by createAlleleTables(), and it uses the function
 #    allele.diversitySingleLocus().
 #
-# allele.createTableList() :
+# createAlleleTables() :
 #   Take a data.frame of genotypes read by readGenalex(), produce a list of
 #   allele count tables used by the other functions.  Each entry of the list is,
 #   for each locus, a table of site x allele counts, with row names being the
@@ -54,27 +54,42 @@ NULL
 #' @examples
 #'
 #' # The workflow to calculate basic allelic diversity statistics:
+#' #
+#' # dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
+#' # gt <- createAlleleTables(dat)
 #'
-#'   dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
-#'   gt <- allele.createTableList(dat)
+#' @export
 #'
-#' @export allele.createTableList
+#' @name createAlleleTables
 #'
+NULL
+
+createAlleleTables <- function(x, ...) UseMethod("createAlleleTables")
+
+
+
 # TODO
 #
 # as.allele_table.genalex?  as.table_list.genalex?  S3 method
 #
-# remove new.ploidy argument
+# remove new.ploidy argument, see orig code below
 #
-allele.createTableList <- function(dat, new.ploidy = 2, 
-                                   collapse.alleles = TRUE,
-                                   exclude = c(NA, "0"), quiet = FALSE) {
-    if (! is.genalex(dat))
-        stop("input must be class 'genalex'")
-    if (new.ploidy >= 2 && ! collapse.alleles)
-        stop("Must collapse ploidy when new.ploidy >= 2")
-    if (attr(dat, "ploidy") > new.ploidy)
-        dat <- reduceGenalexPloidy(dat, new.ploidy)
+#createAlleleTables.genalex <- function(dat, 
+#                                   collapse.alleles = TRUE,
+#                                   exclude = c(NA, "0"), quiet = FALSE) {
+#    if (! is.genalex(dat))
+#        stop("input must be class 'genalex'")
+#    if (new.ploidy >= 2 && ! collapse.alleles)
+#        stop("Must collapse ploidy when new.ploidy >= 2")
+#    if (attr(dat, "ploidy") > new.ploidy)
+#        dat <- reduceGenalexPloidy(dat, new.ploidy)
+
+#' @rdname createAlleleTables
+#'
+#' @export
+#'
+createAlleleTables.genalex <- function(dat, exclude = c(NA, "0"), 
+                                       quiet = FALSE) {
     lc <- attr(dat, "locus.columns")
     ln <- attr(dat, "locus.names")
     pop <- attr(dat, "pop.title")
@@ -89,29 +104,39 @@ allele.createTableList <- function(dat, new.ploidy = 2,
     if (sum(unlist(ex)) && !quiet)
         cat(sprintf("Excluding %d entries based on 'exclude = c(%s)'\n", 
                     sum(unlist(ex)), paste(collapse = ", ", exclude)))
+    class(ans) <- c('allele_tables', 'list')
     return(ans)
 }
 
 
 
-#' allele.diversity
+#' Calculate diversity across a set of allele tables
 #'
 #' @examples
 #'
 #' # The workflow to calculate basic allelic diversity statistics:
+#' #
+#' # dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
+#' # gt <- createAlleleTables(dat)
+#' # div <- diversityMultilocus(gt)
 #'
-#'   dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
-#'   gt <- allele.createTableList(dat)
-#'   div <- allele.diversity(gt)
+#' @export
 #'
-#' @export allele.diversity
+#' @name diversityMultilocus
 #'
-#
-# allele.diversity.table_list  S3 method
-#
-allele.diversity <- function(lst) {
+NULL
+
+diversityMultilocus <- function(x, ...) UseMethod("diversityMultilocus")
+
+
+
+#' @rdname diversityMultilocus
+#'
+#' @export
+#'
+diversityMultilocus.allele_tables <- function(lst) {
     # calculates diversity statistics for a collection of loci, the argument
-    # is produced by allele.createTableList()
+    # is produced by createAlleleTables()
 
     # create utility zero vectors and matrices
     pop.locus.0 <- matrix(0, nrow = nrow(lst[[1]]), ncol = length(names(lst)), 
@@ -131,7 +156,7 @@ allele.diversity <- function(lst) {
     p <- list()
     # Go through loci, storing diversity values
     for (a in names(lst)) {
-        p[[a]] <- allele.diversitySingleLocus(lst[[a]])
+        p[[a]] <- diversitySingleLocus(lst[[a]])
         alpha.gk[, a] <- p[[a]]$allele.alpha.g
         r.gg[, a] <- p[[a]]$allele.r.gg
         R.0.a[a] <- p[[a]]$allele.R.0
@@ -202,9 +227,9 @@ allele.diversity <- function(lst) {
 #'
 #' @return List of diversity estimates for the locus
 #'
-#' @export allele.diversitySingleLocus
+#' @export diversitySingleLocus
 #'
-allele.diversitySingleLocus <- function(tab) {
+diversitySingleLocus <- function(tab) {
     # diversity() calculates several quantities we use here
     p <- diversity(tab)
 
