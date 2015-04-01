@@ -4,22 +4,23 @@ NULL
 
 
 
-#' Plot the gamma accumulation result from \code{runGammaAccum}
+#' Plot the gamma accumulation result from \code{gammaAccum}
 #'
 #' For an example of its use see Figure 4D-F of Scofield et al. (2012).
 #'
-#' @param gamma.accum Result from \code{\link{runGammaAccum}}
+#' @param g  Object of class \code{'gamma_accum'} returned by
+#' \code{\link{gammaAccum}}
 #' 
-#' @param plot.xmax   Maximum extent of the X-axis in the plot
+#' @param xmax   Maximum extent of the X-axis in the plot
 #' 
-#' @param plot.ymax   Maximum extent of the Y-axis in the plot
+#' @param ymax   Maximum extent of the Y-axis in the plot
 #' 
 #' @param obs.omega   If provided, the observed omega value for the
 #' data underlying the gamma accumulation curve; this value is added to 
 #' the plot
 #' 
-#' @param omega.positions  If \code{obs.omega} is given, the location at
-#' which it is plotted, relative to \code{plot.xmax} and \code{plot.ymax},
+#' @param omega.pos  If \code{obs.omega} is given, the location at
+#' which it is plotted, relative to \code{xmax} and \code{ymax},
 #' in a two-element vector.  1 is added to each dimension.
 #' 
 #' @param pch  Plotting character used for mean gamma values accumulated,
@@ -35,50 +36,52 @@ NULL
 #' \code{\link{lines}} and/or \code{\link{points}}
 #'
 #' @return Nothing returned
-#
-# @references
-#
-# Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-# Use of alpha, beta and gamma diversity measures to characterize seed
-# dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#
-# @examples
-#
-# rga.result = runGammaAccum(tab)
-# plotGammaAccum(rga.result)
-#
-#' @seealso \code{\link{runGammaAccum}}
 #'
-#' @export plotGammaAccum
+#' @references
 #'
-plotGammaAccum <- function(gamma.accum, 
-                           plot.xmax = length(gamma.accum$simple.results$mns), 
-                           plot.ymax = max(gamma.accum$simple.results$mns + 
-                                           gamma.accum$simple.results$SE), 
-                           obs.omega = NULL,
-                           omega.positions = c(0.15, 0.97),
-                           xlab = "Number of seed pools",
-                           ylab = expression("Accumulated  " * gamma * 
-                                             "  diversity"),
-                           pch = 19, pch.gamma = 24,
-                           col = "black", bty = "L", lwd = 1.5, bg = "white",
-                           lty = 2,
-                           ...) {
-    gtr <- gamma.accum$simple.results
-    obs.gamma <- gamma.accum$obs.gamma
-    xmax <- length(gtr$mns)
-    x <- 1:xmax
-    #lim <- c(1, max(xmax + 3, gtr$mns + gtr$SE))
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+#' @examples
+#'
+#' ##TODO: find a tab
+#' #rga.result = gammaAccum(tab)
+#' #plot(rga.result)
+#'
+#' @seealso \code{\link{gammaAccum}}
+#'
+#' @export
+#'
+plot.gamma_accum <- function(g, 
+                             xmax = length(g$simple.results$mns), 
+                             ymax = max(g$simple.results$mns + 
+                                        g$simple.results$SE), 
+                             obs.omega = NULL,
+                             omega.pos = c(0.15, 0.97),
+                             xlab = "Number of groups",
+                             ylab = expression("Accumulated  " * gamma * 
+                                               "  diversity"),
+                             pch = 19, pch.gamma = 24,
+                             col = "black", bty = "L", lwd = 1.5, bg = "white",
+                             lty = 2,
+                             ...)
+{
+    gtr <- g$simple.results
+    obs.gamma <- g$obs.gamma
+    axis.xmax <- length(gtr$mns)
+    x <- 1:axis.xmax
+    #lim <- c(1, max(axis.xmax + 3, gtr$mns + gtr$SE))
     #xlim <- ylim <- lim
-    xlim <- c(1, plot.xmax)
-    ylim <- c(1, plot.ymax)
+    xlim <- c(1, xmax)
+    ylim <- c(1, ymax)
 
     opa <- par(mar = c(2.7, 2.7, 0.5, 0.5), mgp = c(1.7, 0.4, 0), 
                las = 1, ps = 10, tcl = -0.4, xpd = NA)
     plot.separate.gamma <- FALSE
-    if (abs(gtr$mns[xmax] - obs.gamma) < 0.1) {
+    if (abs(gtr$mns[axis.xmax] - obs.gamma) < 0.1) {
         # include gamma in means sequence
-        pch <- c(rep(pch, xmax - 1), pch.gamma)
+        pch <- c(rep(pch, axis.xmax - 1), pch.gamma)
     } else {
         plot.separate.gamma <- TRUE
     }
@@ -87,11 +90,11 @@ plotGammaAccum <- function(gamma.accum,
     lines(x, gtr$mns + gtr$SE, lty = lty, ...)
     lines(x, gtr$mns - gtr$SE, lty = lty, ...)
     if (plot.separate.gamma)
-        points(xmax, obs.gamma, pch = pch.gamma, lwd = lwd, bg = bg, 
+        points(axis.xmax, obs.gamma, pch = pch.gamma, lwd = lwd, bg = bg, 
                cex = 1.2, ...)
     if (! is.null(obs.omega)) {
-        text(x = (omega.positions[1] * xlim[2]) + 1, 
-             y = (omega.positions[2] * ylim[2]) + 1,
+        text(x = (omega.pos[1] * xlim[2]) + 1, 
+             y = (omega.pos[2] * ylim[2]) + 1,
              substitute(bar(omega) == OMEGA, list(OMEGA = obs.omega)),
              cex = 1.2)
     }
@@ -129,17 +132,21 @@ plotGammaAccum <- function(gamma.accum,
 #' \code{"q"} or \code{"q.nielsen"} method (see paper).
 #'
 #' @param \dots Additional parameters passed to \code{runGammaAccumSimple}
-#
-# TODO does runGammaAccumSimple need to be exposed?  does it need more options?
-#
 #'
-#' @seealso \code{\link{plotGammaAccum}}, \code{\link{runGammaAccumSimple}}
+#' TODO does runGammaAccumSimple need to be exposed?  does it need more options?
 #'
-# @examples
 #'
-#' @export runGammaAccum
+#' @seealso \code{\link{plot.gamma_accum}}, \code{\link{runGammaAccumSimple}}
 #'
-runGammaAccum <- function(tab, 
+#' @examples
+#'
+#' ##TODO get examples
+#'
+#' @rdname gammaAccum
+#'
+#' @export
+#'
+gammaAccum.default <- function(tab, 
                           accum.method = c("random", "proximity"),
                           resample.method = c("permute", "bootstrap"),
                           gamma.method = c("r", "q.nielsen", "q"),
@@ -151,12 +158,14 @@ runGammaAccum <- function(tab,
     gamma.method <- match.arg(gamma.method)
     pmiD <- diversity(tab)
     ans <- list()
+    #TODO: account for new diversity return value?
     ans$obs.gamma <- pmiD[[paste(sep="", "d.gamma.", gamma.method)]]
     ans$obs.omega.mean <- pmiD[[paste(sep="", gamma.method, ".overlap")]]
     ans$obs.delta.mean <- pmiD[[paste(sep="", gamma.method, ".divergence")]]
     ans$simple.results <- runGammaAccumSimple(tab,
         accum.method = accum.method, resample.method = resample.method,
         gamma.method = gamma.method, distance.file = distance.file, ...)
+    class(ans) <- c('gamma_accum', 'list')
     return(ans)
 }
 
@@ -186,70 +195,70 @@ runGammaAccum <- function(tab,
 #---------------------------------------------
 
 
-runGammaAccumSimple <- function(tab, ...)
+gammaAccumSimple.default <- function(tab, ...)
 {
-  return(gammaAccumStats(gammaAccum(tab, ...)))
+    return(gammaAccumStats(gammaAccumWorker(tab, ...)))
 }
 
 
 #---------------------------------------------
 
 
-gammaAccumStats <- function(gammaAccum.results)
+gammaAccumStats <- function(ga)
 {
-  f = function(x, FUN) {
-    recip = 1/x; rmax = max(recip[recip != Inf]); recip[recip == Inf] = rmax; FUN(recip)
-  }
-  mns <- unlist(lapply(gammaAccum.results, f, mean))
-  vars <- unlist(lapply(gammaAccum.results, f, var))
-  SE <- sqrt(vars)
-  quants <- lapply(gammaAccum.results, 
-                   function(x) quantile(1/x, c(0.05, 0.5, 0.95)))
-  ####
-  return(list(mns=mns, vars=vars, SE=SE, quants=quants))
-}
-
-
-#---------------------------------------------
-
-
-gammaAccum <- function(tab, 
-                       n.sites=dim(tab)[1],
-                       n.resample=1000,
-                       accum.method=c("random", "proximity"),
-                       resample.method=c("permute", "bootstrap"),
-                       distance.file=NULL,
-                       gamma.method=c("r", "q.nielsen", "q"))
-{
-  # If used, the distance.file has three columns, with names: pool, X, Y
-  # It is either a filename to read, or a data.frame
-  accum.method <- match.arg(accum.method)
-  resample.method <- match.arg(resample.method)
-  gamma.method <- match.arg(gamma.method)
-  pool.names <- dimnames(tab)[[1]]
-  G <- dim(tab)[1]
-  K <- dim(tab)[2]
-  N <- sum(tab)
-  if (accum.method == "proximity") {
-      if (! is.null(distance.file))
-          gxy = .loadDistanceFile(distance.file, pool.names)
-      else stop("distance.file must be provided")
-  }
-
-  ans = lapply(1:n.sites, function(x) numeric(0))
-  for (i in 1:n.resample) {
-    row.order <- sample(1:G,
-                        size=n.sites,
-                        replace=ifelse(resample.method=="bootstrap", TRUE, FALSE))
-    if (accum.method == "proximity")
-      row.order = .reorderByProximity(row.order, gxy, pool.names)
-    for (g in 1:n.sites) {
-      this.gamma = .calculateGammaAccum(apply(tab[row.order[1:g], , drop=FALSE], 2, sum),
-                                        gamma.method)
-      ans[[g]] = c(ans[[g]], this.gamma)
+    f = function(x, FUN) {
+        recip = 1/x
+        rmax = max(recip[recip != Inf])
+        recip[recip == Inf] = rmax
+        FUN(recip)
     }
-  }
-  return(ans)
+    mns <- unlist(lapply(ga, f, mean))
+    vars <- unlist(lapply(ga, f, var))
+    SE <- sqrt(vars)
+    quants <- lapply(ga, function(x) quantile(1/x, c(0.05, 0.5, 0.95)))
+    ####
+    return(list(mns = mns, vars = vars, SE = SE, quants = quants))
+}
+
+
+#---------------------------------------------
+
+# dispatch method defined in alleleGammaAccum.R
+
+gammaAccumWorker.default <- function(tab, n.sites=dim(tab)[1],
+    n.resample=1000, accum.method=c("random", "proximity"),
+    resample.method=c("permute", "bootstrap"), distance.file=NULL,
+    gamma.method=c("r", "q.nielsen", "q"))
+{
+    # If used, the distance.file has three columns, with names: pool, X, Y
+    # It is either a filename to read, or a data.frame
+    accum.method <- match.arg(accum.method)
+    resample.method <- match.arg(resample.method)
+    gamma.method <- match.arg(gamma.method)
+    pool.names <- dimnames(tab)[[1]]
+    G <- dim(tab)[1]
+    K <- dim(tab)[2]
+    N <- sum(tab)
+    if (accum.method == "proximity") {
+        if (! is.null(distance.file))
+            gxy = .loadDistanceFile(distance.file, pool.names)
+        else stop("distance.file must be provided")
+    }
+
+    ans = lapply(1:n.sites, function(x) numeric(0))
+    for (i in 1:n.resample) {
+        row.order <- sample(1:G,
+                            size=n.sites,
+                            replace=ifelse(resample.method=="bootstrap", TRUE, FALSE))
+        if (accum.method == "proximity")
+            row.order = .reorderByProximity(row.order, gxy, pool.names)
+        for (g in 1:n.sites) {
+            this.gamma = .calculateGammaAccum(apply(tab[row.order[1:g], , drop=FALSE], 2, sum),
+                                              gamma.method)
+            ans[[g]] = c(ans[[g]], this.gamma)
+        }
+    }
+    return(ans)
 }
 
 
@@ -258,60 +267,65 @@ gammaAccum <- function(tab,
 
 .calculateGammaAccum = function(this.accum, gamma.method)
 {
-  sum.accum <- sum(this.accum)
-  this.prop <- this.accum / sum.accum
-  sum.prop <- sum(this.prop * this.prop)
-  switch(gamma.method,
-    q         = sum.prop,
-    q.nielsen = nielsenTransform(sum.prop, sum.accum),
-    r         = (((sum.accum * sum.prop) - 1) / (sum.accum - 1)))
+    sum.accum <- sum(this.accum)
+    this.prop <- this.accum / sum.accum
+    sum.prop <- sum(this.prop * this.prop)
+    ans <- switch(gamma.method,
+                  q         = sum.prop,
+                  q.nielsen = nielsenTransform(sum.prop, sum.accum),
+                  r         = (((sum.accum * sum.prop) - 1) / (sum.accum - 1)))
+    return(ans)
 }
 
 
 .reorderByProximity = function(row.order, gxy, pool.names)
 {
-  new.row.order <- c()
-  pools <- gxy[pool.names[row.order], ]
-  dm <- .createSpatialDistmat(pools$X, pools$Y, names.1=pools$pool)
-  diag(dm) <- +Inf  # distance to same pool is always farthest
-  next.row.i <- 1
-  new.row.order <- c(new.row.order, row.order[next.row.i])
-  dm[, next.row.i] <- Inf  # distance to same pool is always farthest
-  for (r in 2:n.sites) {
-    next.row.i <- which(dm[next.row.i, ] == min(dm[next.row.i, ]))[1]
-    dm[, next.row.i] <- Inf
+    new.row.order <- c()
+    pools <- gxy[pool.names[row.order], ]
+    dm <- .createSpatialDistmat(pools$X, pools$Y, names.1=pools$pool)
+    diag(dm) <- +Inf  # distance to same pool is always farthest
+    next.row.i <- 1
     new.row.order <- c(new.row.order, row.order[next.row.i])
-  }
-  new.row.order
+    dm[, next.row.i] <- Inf  # distance to same pool is always farthest
+    for (r in 2:n.sites) {
+        next.row.i <- which(dm[next.row.i, ] == min(dm[next.row.i, ]))[1]
+        dm[, next.row.i] <- Inf
+        new.row.order <- c(new.row.order, row.order[next.row.i])
+    }
+    return(new.row.order)
 }
 
 
 .createSpatialDistmat <- function(x.1, y.1, x.2, y.2, names.1, names.2)
 {
-    if (! missing(names.1)) names(x.1) = names.1
-    if (missing(x.2)) x.2 <- x.1
-    if (! missing(names.2)) names(x.2) = names.2
-    if (missing(y.2)) y.2 <- y.1
+    if (! missing(names.1)) 
+        names(x.1) <- names.1
+    if (missing(x.2)) 
+        x.2 <- x.1
+    if (! missing(names.2)) 
+        names(x.2) <- names.2
+    if (missing(y.2)) 
+        y.2 <- y.1
     xx <- outer(x.1, x.2, "-")
     xx <- xx * xx
     yy <- outer(y.1, y.2, "-")
     yy <- yy * yy
     ans <- sqrt(xx + yy)
     dimnames(ans) <- list(names(x.1), names(x.2))
-    ans
+    return(ans)
 }
 
 
 .loadDistanceFile = function(distance.file, pool.names)
 {
-  if (is.character(distance.file))
-    gxy <- read.delim(file=distance.file)
-  else if ("data.frame" %in% class(distance.file))
-    gxy <- distance.file
-  else
-    stop("unknown type of distance information for", 
-        deparse(substitute(distance.file)), " with class ", 
-        paste(sep=", ", class(distance.file)))
-  subset(gxy, pool %in% pool.names)
+    if (is.character(distance.file))
+        gxy <- read.delim(file=distance.file)
+    else if ("data.frame" %in% class(distance.file))
+        gxy <- distance.file
+    else
+        stop("unknown type of distance information in", 
+             deparse(substitute(distance.file)))
+    ans <- subset(gxy, pool %in% pool.names)
+    return(ans)
 }
 

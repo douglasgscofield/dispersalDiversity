@@ -5,8 +5,8 @@
 \alias{createAlleleTables.genalex}
 \title{Convert class \code{'genalex'} object to a list of allele count tables}
 \usage{
-\method{createAlleleTables}{genalex}(dat, exclude = c(NA, "0"),
-  quiet = FALSE)
+\method{createAlleleTables}{genalex}(dat, new.ploidy = 2,
+  collapse.alleles = TRUE, exclude = c(NA, "0"), quiet = FALSE)
 }
 \description{
 S3 method to convert an object of class \code{'genalex'} to a list of

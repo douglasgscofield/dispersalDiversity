@@ -7,6 +7,18 @@
 #' variety of measures; calculating alpha, beta, delta/omega and gamma diversity
 #' of allelic variation; and comparing diversity measures between samples.
 #'
+#' A similar set of functions provides analyses of two similar dispersal data
+#' sets.  The first is ecological sites-by-counts data, and in this context the
+#' alpha, beta and gamma quantities produced should be similar.  The second is
+#' genetic data such as allele identities, which is analysed to partition
+#' diversity into a structure similar to alpha, beta etc.  See Sork et al.
+#'
+#' The function \code{createAlleleTables} accepts an argument of class
+#' \code{'genalex'} and creates an object of class \code{'allele_tables'}, a
+#' list of site-by-allele count tables, one per locus.  Further analyses may be
+#' applied to objects of class \code{'allele_tables'}, including structural
+#' tests and comparisons.
+#'
 #' These statistical tools were developed in collaboration with Peter E.
 #' Smouse (Rutgers University) and Victoria L. Sork (UCLA) and were funded by
 #' U.S. National Science Foundation awards NSF-DEB-0514956 and

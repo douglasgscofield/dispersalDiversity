@@ -4,7 +4,7 @@
 \alias{diversitySingleLocus}
 \title{Calculate allelic diversity for a single locus}
 \usage{
-diversitySingleLocus(tab)
+diversitySingleLocus(tab, method = c("r", "q.nielsen", "q"))
 }
 \arguments{
 \item{tab}{Table of site x allele counts, with row names being the site

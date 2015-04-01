@@ -48,55 +48,71 @@ NULL
 #' @examples
 #'
 #' dat <- readGenalex("genotypes.txt")
-#' lst <- allele.createTableList(dat)
-#' allele.rga.result <- allele.runGammaAccum(lst)
-#' plotGammaAccum(allele.rga.result)
+#' lst <- createAlleleTables(dat)
+#' allele.rga.result <- gammaAccum(lst)
+#' plot(allele.rga.result)
 #'
-#' @export allele.runGammaAccum
+#' @export
 #'
-allele.runGammaAccum <- function(lst, 
+#' @name gammaAccum
+#'
+NULL
+
+gammaAccum <- function(x, ...) UseMethod("gammaAccum")
+
+
+
+#' @rdname gammaAccum
+#'
+#' @export
+#'
+gammaAccum.allele_tables <- function(lst, 
     accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
-    gamma.method = c("r", "q.nielsen", "q"), distance.file=NULL,
-    ...) {
+    gamma.method = c("r", "q.nielsen", "q"),
+    distance.file=NULL,
+    ...)
+{
     accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)
     gamma.method <- match.arg(gamma.method)
-    if (gamma.method != "r")
-        warning("allele.runGammaAccum() should be used with gamma.method == 'r'", 
-                immediate. = TRUE)
-    pmiD <- allele.diversity(lst)
+    d <- diversityMultilocus(lst)
     ans <- list()
-    ans$obs.gamma <- pmiD$gamma
-    ans$obs.omega.mean <- pmiD$overlap
-    ans$obs.delta.mean <- pmiD$divergence
-    ans$simple.results <- allele.runGammaAccumSimple(lst, 
-                            accum.method = accum.method,
-                            resample.method = resample.method,
-                            n.resample = n.resample,
-                            gamma.method = gamma.method,
-                            distance.file = distance.file,
-                            ...)
+    ans$obs.gamma <- d$gamma
+    ans$obs.omega.mean <- d$overlap
+    ans$obs.delta.mean <- d$divergence
+    ans$simple.results <- 
+        gammaAccumSimple(lst, accum.method = accum.method,
+                         resample.method = resample.method,
+                         n.resample = n.resample,
+                         gamma.method = gamma.method,
+                         distance.file = distance.file,
+                         ...)
+    class(ans) <- c('gamma_accum', 'list')
     return(ans)
 }
 
 
 
+gammaAccumSimple <- function(x, ...) UseMethod("gammaAccumSimple")
+
 # Wrapper that runs and then return stats from allele.gammaAccum()
 #
-allele.runGammaAccumSimple <- function(lst, ...) {
-    return(gammaAccumStats(allele.gammaAccum(lst, ...)))
+gammaAccumSimple.allele_tables <- function(lst, ...)
+{
+    return(gammaAccumStats(gammaAccumWorker(lst, ...)))
 }
 
 
+gammaAccumWorker <- function(x, ...) UseMethod("gammaAccumWorker")
 
 # Actually perform the gamma accumulation
 #
-allele.gammaAccum <- function(lst, n.sites = dim(lst[[1]])[1],
+gammaAccumWorker.allele_tables <- function(lst, n.sites = dim(lst[[1]])[1],
     accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
-    distance.file = NULL, gamma.method = c("r", "q.nielsen", "q")) {
-
+    distance.file = NULL, gamma.method = c("r", "q.nielsen", "q"))
+{
     # If used, the distance.file has three columns, with names: pool, X, Y
     # It is either a filename to read, or a data.frame
     accum.method <- match.arg(accum.method)
@@ -105,8 +121,11 @@ allele.gammaAccum <- function(lst, n.sites = dim(lst[[1]])[1],
     pool.names <- dimnames(lst[[1]])[[1]]
     L <- names(lst)
     G <- dim(lst[[1]])[1]
-    if (accum.method == "proximity")
-        gxy <- .loadDistanceFile(distance.file, pool.names)
+    if (accum.method == "proximity") {
+        if (! is.null(distance.file))
+            gxy = .loadDistanceFile(distance.file, pool.names)
+        else stop("with accum.method = 'proximity', distance.file must be provided")
+    }
 
     ans <- lapply(1:n.sites, function(x) numeric(0))
     for (i in 1:n.resample) {
