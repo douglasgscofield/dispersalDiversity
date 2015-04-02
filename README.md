@@ -1,11 +1,20 @@
-Dispersal Diversity : Statistics and Tests
-==========================================
+`dispersalDiversity`: Statistics and Tests
+------------------------------------------
 
+This is a collection of [R](http://www.r-project.org) functions to facilitate
+analysis of dispersal in biological communities.  The bulk of the functions
+calculate dispersal diversity statistics and allow for comparison of diversity
+statistics, as described in Scofield _et al._ 2012 [_American Naturalist_ 180:
+719-732](http://www.jstor.org/stable/10.1086/668202).  We originally developed
+the diversity tests to understand seed dispersal in plant populations, but the
+tests themselves should be useful for biodiversity data or any other
+diversity-like data that can be expressed with this same data structure.
 
-This is a collection of [R](http://www.r-project.org) functions to facilitate analysis of dispersal in biological communities.  The bulk of the functions calculate dispersal diversity statistics and allow for comparison of diversity statistics, as described in Scofield _et al._ 2012
-[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202).
+There are also new functions for calculating allelic diversity using these same
+conceptual and statistical principles, and for comparing allele diversity
+statistics.
 
-There are also new functions for calculating allelic diversity using these same conceptual and statistical principles, and for comparing allele diversity statistics.
+**NOTE: This branch (`make_R_package`) has major changes to the interface, for the better I hope.  This README might not match the code.**
 
 * * *
 
@@ -21,27 +30,139 @@ vignette("nestedRanksTest")
 and has been moved to [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
 
 
-Dispersal Diversity
--------------------
 
-### Input requirements
+Installation
+------------
 
-All functions take as input a simple data structure: a table of site (rows) by
-source (columns) counts.  Though we originally developed the diversity tests to
-understand seed dispersal in plant populations, the tests themselves should be
-useful for biodiversity data or any other diversity-like data that can be expressed
-with this same data structure.
+Install this branch from github using `devtools`:
 
-### Getting started
+```R
+install.packages("devtools")
+devtools::install_github("douglasgscofield/dispersalDiversity", ref = "make_R_package")
+library(dispersalDiversity)
+```
 
-The `pmiDiversity.R` and `diversityTests.R` source files are required for
-performing diversity tests.  If all that is desired are PMI ([Grivet _et al._
-2005](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x), [Scofield _et al._ 2010](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [Scofield _et al._ 2011](http://dx.doi.org/10.1007/s00442-010-1828-5)) and diversity ([Scofield _et al._ 2012](http://www.jstor.org/stable/10.1086/668202)) statistics (<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the source
-file `pmiDiversity.R` contains the `pmiDiversity()` function that provides these
-and can be used separately.
 
-Put all the source files in the same directory, and within your R session
-simply
+
+Prerequisites
+-------------
+
+This package requires the `readGenalex` package available from CRAN, which will
+be installed by default.  I have made major changes to `readGenalex` since the
+current CRAN release, and recommend you use the development version, available
+for installation using the `devtools` package:
+
+```R
+devtools::install_github("douglasgscofield/readGenalex")
+library(readGenalex)
+```
+
+For producing plots, many find aesthetic colour choices to be available through
+palettes in the `RColorBrewer` package.  `membershipPlot` (see below) will use
+this package if it is available.  You may already have it installed, and the
+metadata for `dispersalDiversity` lists it as a suggested package.  If it is
+not installed, get it from CRAN:
+
+```R
+install.package("RColorBrewer")
+```
+
+
+Input requirements
+------------------
+
+Most functions take as input a simple data structure: a table of site (rows) by
+source (columns) counts, which each cell representing the number of times that
+source/species/type was observed at that site.  The cells need not be integer
+counts, they can be e.g., proportional representations, and *I think* the
+statistics are robust to this, but some summaries expect counts and may not be
+sensible.
+
+This table will be converted to class `'matrix'` by each such function.
+
+To create a random matrix:
+
+```R
+n.sites <- 5
+n.sources <- 10
+n.samples <- 1000
+## data frame of site-source pairs
+t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+                source = round(runif(n.samples) * n.sources + 0.5))
+
+## site-by-source matrix
+m1 <- do.call(rbind, lapply(split(t, t$site), function(x) table(x$source)))
+# this creates a class c("matrix")
+
+## or use xtabs
+m2 <- xtabs(data = t)
+## this creates a class c("xtabs","table")
+```
+
+Both the above methods create a table with rownames of site levels, and column
+names of source levels.  `xtabs` also names the dims after the variables
+(`site` and `source`).
+
+
+
+Membership plots
+----------------
+
+One of the first things you may want to do is produce a membership plot.
+Membership plots provide a visual representation of the site-by-source table.
+
+**change these to plots from a random matrix**
+
+![membershipPlot output in black and white](membershipPlot_example_BW.png)
+
+If `fill.method = "color"` and the library `RColorBrewer` is available, then
+it is used to pick the colours used for filling groups.
+
+![membershipPlot output in colour](membershipPlot_example_colour.png)
+
+Singleton sources (those that appear just once in just one site) are
+distinguished using a white background, while multiton sources (those that
+appear multiple times but still in just one site) can be distinguished with a
+gray background using the option `distinguish.multiton = TRUE`.  Other options
+are provided for controlling labelling of the plot and producing output to PDF
+or PostScript files.
+
+Both plots show that if the number of categories requiring colour/fill is
+sufficiently large, hatching is combined with colours.  Both plots were
+produced with `distinguish.multiton = FALSE`.
+
+Further published examples of membership plots produced by this code or earlier
+versions of this code can be seen Scofield _et al._ 2010, 2011, 2012.
+
+
+
+Diversity statistics
+--------------------
+
+To calculate PMI statistics ([Grivet _et al._
+2005](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x), [Scofield _et al._
+2010](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [Scofield _et al._
+2011](http://dx.doi.org/10.1007/s00442-010-1828-5)) and dispersal diversity
+statistics([Scofield _et al._
+2012](http://www.jstor.org/stable/10.1086/668202)) statistics
+(<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the function
+`diversity()` has you covered.  It takes a site-by-source table and
+calculates PMI and diversity statistics three different ways, each of
+which treats possible bias differently and each of which is returned in
+an otherwise identical sublist:
+
+* `q` sublist, containing <i>q<sub>gg</sub></i>-based statistics, known to be 
+  biased (Grivet _et al._ 2005)
+
+* `q.nielsen`sublist, <i>q<sup>*</sup><sub>gg</sub></i>-based, which apply the
+  transformation developed by Nielsen _et al._ (2003) to be unbiased and seem
+  to perform well (Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et
+  al._ 2012).
+
+* `r` sublist, <i>r<sub>gg</sub></i>-based, unbiased but poor performers at low
+  sample sizes (Grivet _et al._ 2005, Scofield _et al._ 2012)
+
+
 
 ```R
 source("diversityTests.R")
@@ -64,24 +185,6 @@ directory:
 ```R
 source("gammaAccum.R")
 ```
-
-### pmiDiversity.R
-
-Defines the R function `pmiDiversity()` which takes a site-by-source table and
-produces statistics for Probability of Maternal Identity aka PMI (Grivet _et al._
-2005, Scofield _et al._ 2010, Scofield _et al._ 2011) and dispersal
-diversity (Scofield _et al._ 2012).  Three different PMI and diversity
-statistics are calculated:
-
-* <i>q<sub>gg</sub></i>-based, known to be biased (Grivet _et al._ 2005)
-
-* <i>r<sub>gg</sub></i>-based, unbiased but poor performers at low sample sizes
-  (Grivet _et al._ 2005, Scofield _et al._ 2012)
-
-* <i>q<sup>*</sup><sub>gg</sub></i>-based, which apply the transformation
-  developed by Nielsen _et al._ (2003) to be unbiased and seem to perform well
-(Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et al._ 2012).
-
 
 ### diversityTests.R
 
@@ -110,29 +213,7 @@ and of `plotPairwiseMeanTest()`:
 
 ![plotPairwiseMeanTest example](plotPairwiseMeanTest_example.png)
 
-### membershipPlot.R
 
-Provides the function `membershipPlot()` for plotting relative representations
-of sources within sites, and source sharing across sites, using the same
-site-by-source table used for input to the `pmiDiversity()` function.  Examples
-of membership plots can be seen in Figure 2A-C of Scofield _et al._ 2012 <I>Am
-Nat</I>.  Singleton sources (those that appear just once in just one site) are
-distinguished using a white background, while multiton sources (those that
-appear multiple times but still in just one site) can be distinguished with a
-gray background using the option `distinguish.multiton = TRUE`.  Other options
-are provided for controlling labelling of the plot and producing output to PDF
-or PostScript files.
-
-![membershipPlot output in black and white](membershipPlot_example_BW.png)
-
-If `fill.method = "color"` and the library `RColorBrewer` is available, then
-it is used to pick the colours used for filling groups.
-
-![membershipPlot output in colour](membershipPlot_example_colour.png)
-
-Both plots show that hatching is combined with colours if the number of
-categories requiring colour/fill is sufficiently large.  Both plots were
-produced with `distinguish.multiton = FALSE`.
 
 ### plotPairwiseMatrix.R
 
