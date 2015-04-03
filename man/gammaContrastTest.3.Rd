@@ -8,11 +8,11 @@
   n.resample = 10000, method = c("bootstrap", "permute"))
 }
 \arguments{
-\item{tab.a}{First site x soure table}
+\item{tab.a}{First site x source table}
 
-\item{tab.b}{Second site x soure table}
+\item{tab.b}{Second site x source table}
 
-\item{tab.c}{Third site x soure table}
+\item{tab.c}{Third site x source table}
 
 \item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
 with minimum value, see \code{\link{BLAHBLAH}}}

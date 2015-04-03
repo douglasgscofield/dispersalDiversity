@@ -5,7 +5,8 @@
 \title{Test for differences in alpha diversity between three data sets}
 \usage{
 \method{alphaContrastTest}{3}(tab.a, tab.b, tab.c, zero.var.adjust = TRUE,
-  n.resample = 10000, method = c("bootstrap", "permute"))
+  n.resample = 10000, method = c("bootstrap", "permute"),
+  test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 }
 \arguments{
 \item{tab.a}{First ite x soure table}

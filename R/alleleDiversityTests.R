@@ -29,11 +29,11 @@ NULL
 #'
 #' @examples
 #'
-#' # For comparing allele diversity between two different samples:
-#'
-#'   dat <- readGenalex("file-of-genotypes-sample-1.txt")
-#'   gt <- allele.createTableList(dat)
-#'   alpha.test <- alphaDiversityTest(gt)
+#' ## For comparing allele diversity between sites in the same sample
+#' #
+#' # dat <- readGenalex("file-of-genotypes-sample-1.txt")
+#' # gt <- createAlleleTables(dat)
+#' # alpha.test <- alphaDiversityTest(gt)
 #'
 #' @export
 #'

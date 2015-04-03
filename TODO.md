@@ -1,13 +1,15 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* make `createAlleleTables` return matrices?  or perhaps I have settled on a table as the input class?
+* finish pooled PMI description in `diversity`
+* copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
 * Incorporate weighted means and variances equations from Scofield et al. 2011
 * sort out reverseTerms stuff
-* rename `allele.createTableList` and all the stuff in allelePmiDiversity.R
-* make `allele.createTableList` an S3 generic that operates on class `genalex`
+* reverseTerms especially with empirical PVAL calculation with pchisq
 * make allele diversity function returns match `pmiDiversity` function returns
-* expand documentation for `pmiDiversity` and `nielsenTransform`
+* expand documentation for `nielsenTransform`
 * Get data permission from VLS
 * Do I need to do a types x sites data structure, or is that a 2d table? Perhaps provide functions to convert tables and xtabs to this?
 * Tests
@@ -15,6 +17,7 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* Renamed `allele.createTableList` to S3 generic and method `createAlleleTables` and `createAlleleTables.genalex`
 * Started streamlining with S3 classes.
 * Incorporated random distance matrix creation in to README.
 * Changes function name of `pmiDiversity` to `diversity`

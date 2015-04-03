@@ -5,8 +5,8 @@
 \alias{diversityMultilocus.allele_tables}
 \title{Calculate diversity across a set of allele tables}
 \usage{
-\method{diversityMultilocus}{allele_tables}(lst, method = c("r", "q.nielsen",
-  "q"))
+\method{diversityMultilocus}{allele_tables}(lst, ploidy = 2, method = c("r",
+  "q.nielsen", "q"))
 }
 \description{
 Calculate diversity across a set of allele tables

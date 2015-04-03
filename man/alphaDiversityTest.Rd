@@ -42,11 +42,11 @@ Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
 Test for differences in alpha diversity among sites within a single data set
 }
 \examples{
-# For comparing allele diversity between two different samples:
-
-  dat <- readGenalex("file-of-genotypes-sample-1.txt")
-  gt <- allele.createTableList(dat)
-  alpha.test <- alphaDiversityTest(gt)
+## For comparing allele diversity between sites in the same sample
+#
+# dat <- readGenalex("file-of-genotypes-sample-1.txt")
+# gt <- createAlleleTables(dat)
+# alpha.test <- alphaDiversityTest(gt)
 }
 \author{
 Douglas G. Scofield

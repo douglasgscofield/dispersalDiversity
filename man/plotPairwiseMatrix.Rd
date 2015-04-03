@@ -24,7 +24,7 @@ statistic is being presented}
 \item{pairwise.mean}{Mean pairwise divergence or overlap as found at,
 e.g., \code{diversity()$q$divergence}.  If provided, this is added to
 the plot in the upper triangle, rounded to three digits, with
-positions specified by \code{mean.positions}.  The value is plotted
+positions specified by \code{mean.pos}.  The value is plotted
 together with '\eqn{\bar{\delta} = }' if \code{statistic} is
 \code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is
 \code{"overlap"}.}
@@ -35,7 +35,7 @@ plot options passed to \code{\link{lattice::levelplot}}}
 \item{axis.label}{Label used for the X and Y axes, the X and Y axis
 labels can be changed with \code{xlab} and \code{ylab}}
 
-\item{mean.positions}{If \code{pairwise.mean} is given, the relative
+\item{mean.pos}{If \code{pairwise.mean} is given, the relative
 X and Y positions within the panel at which the value is plotted, in
 a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
 value.}

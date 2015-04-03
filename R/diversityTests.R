@@ -72,8 +72,9 @@ NULL
 #' @export alphaDiversityTest
 #'
 alphaDiversityTest <- function(tab, zero.var.adjust = TRUE,
-                               n.resample = 10000,
-                               method = c("bootstrap", "permute")) {
+    n.resample = 10000, method = c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+{
     method <- match.arg(method)
     ans <- list()
     g.distmat <- .diversityTest.distmat(tab)
@@ -85,8 +86,8 @@ alphaDiversityTest <- function(tab, zero.var.adjust = TRUE,
     ans$N.groups <- G
 
     terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
-    PVAL = pchisq(terms$ln.LR, df = terms$DF,
-                lower.tail = ifelse(.diversityTest.ReverseTerms, FALSE, TRUE))
+    PVAL = pchisq(terms$ln.LR, df = terms$DF, TRUE)
+                #lower.tail = ifelse(.diversityTest.ReverseTerms, FALSE, TRUE))
     cat("Bartlett's Test for Heteroscedasticity in Intra-group Variances\n\n")
     cat("Comparing against X-2 distribution directly:\n")
     cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  df=(G-1) = %d  P = %g\n",
@@ -102,16 +103,15 @@ alphaDiversityTest <- function(tab, zero.var.adjust = TRUE,
                                         n.resample=n.resample)
     PVAL <- sum(terms$ln.LR <= nulldist)/n.resample
     cat("\nComparing against bootstrap X-2 distribution:\n")
-    q1 <- if(.diversityTest.ReverseTerms)
-        c(0.5, 0.99, 0.999)
-    else c(0.5, 0.01, 0.001)
-    q2 <- quantile(nulldist, q1)
-    cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
-        N, G, terms$ln.LR, n.resample, paste(collapse=" ", q1),
-        q2[1], q2[2], q2[3], PVAL))
+    q2 <- quantile(nulldist, test.quantiles)
+    cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
+        N, G, terms$ln.LR, n.resample, 
+        paste(collapse=" ", test.quantiles),
+        paste(collapse=" ", q2),
+        PVAL))
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quants <- q2
+    ans$quantiles <- q2
     ans$P.empirical <- PVAL
     ans$empdist <- nulldist
     ####
@@ -152,13 +152,13 @@ alphaDiversityTest <- function(tab, zero.var.adjust = TRUE,
 #
 #' @export alphaContrastTest
 #'
-alphaContrastTest <- function(tab.a, tab.b,
-                              zero.var.adjust = TRUE,
-                              n.resample = 10000,
-                              method = c("bootstrap", "permute")) {
+alphaContrastTest <- function(tab.a, tab.b, zero.var.adjust = TRUE,
+    n.resample = 10000, method = c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+{
     method <- match.arg(method)
-    .RT = .diversityTest.ReverseTerms
-    .diversityTest.ReverseTerms = FALSE
+    #.RT = .diversityTest.ReverseTerms
+    #.diversityTest.ReverseTerms = FALSE
     ans <- list()
     a.distmat <- .diversityTest.distmat(tab.a)
     a.vardist <- lapply(a.distmat, function(x) diag(.diversityTest.gower(x)))
@@ -209,18 +209,19 @@ alphaContrastTest <- function(tab.a, tab.b,
                                         n.resample)
     PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
     cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
-    q1 <- c(0.5, 0.01, 0.001)
-    q2 <- quantile(nulldist, q1)
-    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
+    q2 <- quantile(nulldist, test.quantiles)
+    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
                 N.a, N.b, G, observed.ln.LR.a.b, n.resample, 
-                paste(collapse = " ", q1), q2[1], q2[2], q2[3], PVAL))
+                paste(collapse = " ", test.quantiles), 
+                paste(collapse = " ", q2), 
+                PVAL))
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quants <- q2
+    ans$quantiles <- q2
     ans$P.empirical <- PVAL
     ans$empdist <- nulldist
     ans$a.b.vardist = a.b.vardist
-    .diversityTest.ReverseTerms = .RT
+    #.diversityTest.ReverseTerms = .RT
     ####
     class(ans) <- c(class(ans), "diversityTest.AlphaContrast")
     invisible(ans)
@@ -261,13 +262,13 @@ alphaContrastTest <- function(tab.a, tab.b,
 #
 #' @export alphaContrastTest
 #'
-alphaContrastTest.3 <- function(tab.a, tab.b, tab.c,
-                                zero.var.adjust = TRUE,
-                                n.resample = 10000,
-                                method = c("bootstrap", "permute")) {
+alphaContrastTest.3 <- function(tab.a, tab.b, tab.c, zero.var.adjust = TRUE,
+    n.resample = 10000, method = c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+{
     method <- match.arg(method)
-    .RT <- .diversityTest.ReverseTerms
-    .diversityTest.ReverseTerms <- FALSE
+    #.RT <- .diversityTest.ReverseTerms
+    #.diversityTest.ReverseTerms <- FALSE
     ans <- list()
 
     a.distmat <- .diversityTest.distmat(tab.a)
@@ -338,16 +339,18 @@ alphaContrastTest.3 <- function(tab.a, tab.b, tab.c,
     cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
     q1 <- c(0.5, 0.01, 0.001)
     q2 <- quantile(nulldist, q1)
-    cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b.c = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
+    cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b.c = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
         N.a, N.b, N.c, G, observed.ln.LR.a.b.c, n.resample, 
-        paste(collapse = " ", q1), q2[1], q2[2], q2[3], PVAL))
+        paste(collapse = " ", test.quantiles), 
+        paste(collapse = " ", q2), 
+        PVAL))
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quants <- q2
+    ans$quantiles <- q2
     ans$P.empirical <- PVAL
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
-    .diversityTest.ReverseTerms <- .RT
+    #.diversityTest.ReverseTerms <- .RT
     ####
     class(ans) <- c(class(ans), "diversityTest.AlphaContrast.3")
     invisible(ans)
@@ -357,256 +360,224 @@ alphaContrastTest.3 <- function(tab.a, tab.b, tab.c,
 #---------------------------------------------
 
 
-plotAlphaTest <- function(result,
-                          add.analytic=FALSE,
-                          compress.x=TRUE,
-                          do.postscript=FALSE,
-                          ...)
+plotAlphaTest <- function(result, add.analytic=FALSE, 
+    compress.x=TRUE, do.postscript=FALSE, ...)
 {
-  if (! "diversityTest" %in% class(result) &&
-      ! "diversityTest.AlphaContrast" %in% class(result))
-    stop(deparse(substitute(result)), "not a result of alphaDiversityTest() or alphaContrastTest()")
-  if (do.postscript)
-    eps("pBDT.eps", width=8, height=3)
-  par(mar=c(3.5, 3.5, 1.5, 1), mgp=c(2, 0.5, 0))
-  plotted.observed.ln.LR <- result$observed.ln.LR
-  empdist.range <- diff(range(result$empdist[-result$n.resample]))
-  full.range <- diff(range(result$empdist))
-  breaks <- 50
-  compressed.ratio <- 1.2
-  if (compress.x && full.range > empdist.range * compressed.ratio) {
-    xlim <- range(result$empdist[-result$n.resample])
-    h <- hist(result$empdist[-result$n.resample],
-              breaks=seq(xlim[1], xlim[2], length.out=breaks),
-              plot=FALSE)
-    xlim <- xlim * c(1, compressed.ratio)
-    plotted.observed.ln.LR <- xlim[2]
-  } else {
-    h <- hist(result$empdist[-result$n.resample], breaks=50, plot=FALSE)
-    xlim <- range(c(h$breaks, result$empdist[result$n.resample]))
-  }
-  if (add.analytic) {
-    analytic.x <- seq(xlim[1], xlim[2], length.out=200)
-    analytic.X2 <- dchisq(x=analytic.x, df=result$df.ln.LR)
-    ylim <- range(c(0, h$count, analytic.X2))
-  } else {
-    ylim <- range(c(0, h$count))
-  }
-  plot(h, xlim=xlim, ylim=ylim, freq=TRUE,
-       xlab=expression("ln(LR) value"),
-       ylab="Frequency",
-       main="", ...)
-  lines(rep(plotted.observed.ln.LR, 2), c(ylim[1], ylim[2]*0.5), col="darkgray", lty=1, lwd=2)
-  if (add.analytic) {
-    lines(analytic.x, analytic.X2, lty=3, lwd=1)
-  }
-  legend("topright",
-         legend=substitute("Observed ln(LR)" == OX2,
-                           list(OX2=sprintf("%.3f", round(result$observed.ln.LR, 3)))),
-         bty="n")
-  if (do.postscript)
-    dev.off()
-}
-
-
-#---------------------------------------------
-
-
-pairwiseMeanTest <- function(tab,
-                             n.iter=10000,
-                             method=c("r", "q", "q.nielsen"),
-                             statistic=c("divergence", "overlap"))
-{
-  method <- match.arg(method)
-  statistic <- match.arg(statistic)
-  pmiresults <- diversity(tab)
-  gammafreq <- apply(tab, 2, sum)
-  K <- sum(gammafreq > 0)
-  n.g <- apply(tab, 1, sum)
-  names.g <- rownames(tab)
-  G <- length(n.g)
-  K <- length(gammafreq)
-  obs <- if (method == "r") {
-    if (statistic == "divergence") { pmiresults$r.divergence } else { pmiresults$r.overlap }
-  } else if (method == "q") {
-    if (statistic == "divergence") { pmiresults$q.divergence } else { pmiresults$q.overlap }
-  } else if (method == "q.nielsen") {
-    if (statistic == "divergence") { pmiresults$q.nielsen.divergence } else { pmiresults$q.nielsen.overlap }
-  } else {
-    stop("unimplemented method")
-  }
-  nulldist <- numeric(n.iter)
-  for (i in 1:(n.iter - 1)) {
-    mat <- c()
-    for (g in 1:G) {
-      mat <- rbind(mat, t(rmultinom(1, n.g[g], gammafreq)))
-    }
-    reltab <- sweep(mat, 1, n.g, FUN="/")
-    Q.mat <- reltab %*% t(reltab)
-    cache.gg <- diag(Q.mat) # q.gg
-    diag(Q.mat) <- 0
-    if (method == "r") {
-      cache.gg <- ((n.g * cache.gg) - 1) / (n.g - 1) # r.gg
-    } else if (method == "q.nielsen") {
-      cache.gg <- nielsenTransform(cache.gg) # q.nielsen.gg
-    }
-    if (statistic == "divergence") {
-      nulldist[i] <- 1 - sum(Q.mat)/((G - 1)*sum(cache.gg))
+    if (! (inherits(result, "diversityTest") ||
+           inherits(result, "diversityTest.AlphaContrast")))
+        stop(deparse(substitute(result)), 
+             "not a result of alphaDiversityTest() or alphaContrastTest()")
+    if (do.postscript)
+        eps("pBDT.eps", width = 8, height = 3)
+    par(mar = c(3.5, 3.5, 1.5, 1), mgp = c(2, 0.5, 0))
+    plotted.observed.ln.LR <- result$observed.ln.LR
+    empdist.range <- diff(range(result$empdist[-result$n.resample]))
+    full.range <- diff(range(result$empdist))
+    breaks <- 50
+    compressed.ratio <- 1.2
+    if (compress.x && full.range > empdist.range * compressed.ratio) {
+        xlim <- range(result$empdist[-result$n.resample])
+        h <- hist(result$empdist[-result$n.resample],
+                  breaks = seq(xlim[1], xlim[2], length.out = breaks),
+                  plot = FALSE)
+        xlim <- xlim * c(1, compressed.ratio)
+        plotted.observed.ln.LR <- xlim[2]
     } else {
-      nulldist[i] <- sum(Q.mat)/((G - 1)*sum(cache.gg))
+        h <- hist(result$empdist[-result$n.resample], breaks = 50, plot = FALSE)
+        xlim <- range(c(h$breaks, result$empdist[result$n.resample]))
     }
-  }
-  nulldist[n.iter] <- obs
-  P.lower <- sum(obs >= nulldist) / n.iter
-  P.upper <- sum(obs <= nulldist) / n.iter
-  ans <- list(n.cache=G, n.source=K, n.seed=sum(n.g),
-              obs=obs, n.iter=n.iter, nulldist=nulldist,
-              P.lower=P.lower, P.upper=P.upper, method=method, statistic=statistic)
-  class(ans) <- c(class(ans), "class.PairwiseMeanTest")
-  ####
-  ans
+    if (add.analytic) {
+        analytic.x <- seq(xlim[1], xlim[2], length.out = 200)
+        analytic.X2 <- dchisq(x = analytic.x, df = result$df.ln.LR)
+        ylim <- range(c(0, h$count, analytic.X2))
+    } else {
+        ylim <- range(c(0, h$count))
+    }
+    plot(h, xlim = xlim, ylim = ylim, freq = TRUE, 
+         xlab = expression("ln(LR) value"), ylab = "Frequency",
+         main = "", ...)
+    lines(rep(plotted.observed.ln.LR, 2), c(ylim[1], ylim[2]*0.5),
+          col = "darkgray", lty = 1, lwd = 2)
+    if (add.analytic) {
+        lines(analytic.x, analytic.X2, lty=3, lwd=1)
+    }
+    legend("topright", bty = "n",
+           legend=substitute("Observed ln(LR)" == OX2,
+                             list(OX2 = sprintf("%.3f", 
+                                                round(result$observed.ln.LR, 3)))))
+    if (do.postscript)
+        dev.off()
 }
 
 
-#---------------------------------------------
+
+pairwiseMeanTest <- function(tab, n.iter = 10000,
+    method = c("r", "q", "q.nielsen"), 
+    statistic = c("divergence", "overlap"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+{
+    method <- match.arg(method)
+    statistic <- match.arg(statistic)
+    d <- diversity(tab)
+    gammafreq <- d$num.samples.source
+    K <- d$num.sources
+    n.g <- d$num.samples.group
+    names.g <- rownames(tab)
+    G <- length(n.g)
+    obs <- NULL
+    p <- d[[method]]
+    obs <- p[[statistic]]
+
+    nulldist <- numeric(n.iter)
+    for (i in 1:(n.iter - 1)) {
+        mat <- c()
+        for (g in 1:G)
+            mat <- rbind(mat, t(rmultinom(1, n.g[g], gammafreq)))
+        reltab <- sweep(mat, 1, n.g, FUN="/")
+        Q.mat <- reltab %*% t(reltab)
+        cache.gg <- diag(Q.mat) # q.gg
+        diag(Q.mat) <- 0
+        cache.gg <- switch(method,
+                           q = cache.gg,
+                           r = (((n.g * cache.gg) - 1) / (n.g - 1)),
+                           q.nielsen = nielsenTransform(cache.gg, n.g))
+        stat <- sum(Q.mat) / ((G - 1)*sum(cache.gg))
+        nulldist[i] <- if (statistic == "divergence") (1 - stat) else stat
+    }
+    nulldist[n.iter] <- obs
+    P.lower <- sum(obs >= nulldist) / n.iter
+    P.upper <- sum(obs <= nulldist) / n.iter
+    q2 <- quantiles(nulldist, test.quantiles)
+    ans <- list(n.cache = G, n.source = K, n.seed = sum(n.g),
+                obs = obs, n.iter = n.iter, nulldist = nulldist,
+                P.lower = P.lower, P.upper = P.upper,
+                quantiles = q1, method = method, statistic = statistic)
+    class(ans) <- c(class(ans), "class.PairwiseMeanTest")
+    ####
+    return(ans)
+}
+
 
 
 plotPairwiseMeanTest <- function(result, ...)
 {
-  if (! "class.PairwiseMeanTest" %in% class(result))
-    stop(deparse(substitute(result)), "not a result of pairwiseMeanTest()")
-  par(mar=c(2.8, 2.8, 0.5, 0), mgp=c(1.6, 0.4, 0), tcl=-0.25, cex=0.9)
-  xlim <- range(c(0, 1, result$nulldist))
-  breaks <- seq(xlim[1], xlim[2], length.out=50)
-  h <- hist(result$nulldist[-result$n.iter], breaks=breaks, plot=FALSE)
-  ylim <- range(c(0, h$counts))
-  if (result$method == "q") {
-    if (result$statistic == "overlap") {
-      plot(h, xlim=xlim, ylim=ylim, freq=TRUE,
-          xlab=expression(bar(omega)*minute*" value"), ylab="Frequency", main="", ...)
-    } else {
-      plot(h, xlim=xlim, ylim=ylim, freq=TRUE,
-          xlab=expression(bar(delta)*minute*" value"), ylab="Frequency", main="", ...)
-    }
-  } else {
-    if (result$statistic == "overlap") {
-      plot(h, xlim=xlim, ylim=ylim, freq=TRUE,
-         xlab=expression(bar(omega)*" value"), ylab="Frequency", main="", ...)
-    } else {
-      plot(h, xlim=xlim, ylim=ylim, freq=TRUE,
-          xlab=expression(bar(delta)*" value"), ylab="Frequency", main="", ...)
-    }
-  }
-  lines(rep(result$obs, 2), c(ylim[1], ylim[2]*0.5), col="black", lty=2, lwd=4)
-  if (result$method == "q") {
-    if (result$statistic == "overlap") {
-      legend("topleft", bty="n", legend=substitute("Observed "*bar(omega)*minute == OBS,
-                               list(OBS=round(result$obs, 3))))
-    } else {
-      legend("topleft", bty="n", legend=substitute("Observed "*bar(delta)*minute == OBS,
-                               list(OBS=round(result$obs, 3))))
-    }
-  } else {
-    if (result$statistic == "overlap") {
-      legend("topleft", bty="n", legend=substitute("Observed "*bar(omega) == OBS,
-                               list(OBS=round(result$obs, 3))))
-    } else {
-      legend("topleft", bty="n", legend=substitute("Observed "*bar(delta) == OBS,
-                               list(OBS=round(result$obs, 3))))
-    }
-  }
+    if (! inherits(result, "class.PairwiseMeanTest"))
+        stop(deparse(substitute(result)), "not a result of pairwiseMeanTest()")
+    par(mar = c(2.8, 2.8, 0.5, 0), mgp = c(1.6, 0.4, 0), tcl = -0.25, cex = 0.9)
+    xlim <- range(c(0, 1, result$nulldist))
+    breaks <- seq(xlim[1], xlim[2], length.out=50)
+    h <- hist(result$nulldist[-result$n.iter], breaks = breaks, plot = FALSE)
+    ylim <- range(c(0, h$counts))
+    xlab <- switch(result$statistic,
+                overlap = switch(result$method,
+                    q = expression(bar(omega)[q]*" value"),
+                    q.nielsen = expression(bar(omega)[q^'*']*" value"),
+                    r = expression(bar(omega)[r]*" value")),
+                divergence = switch(result$method,
+                    q = expression(bar(delta)[q]*" value"),
+                    q.nielsen = expression(bar(delta)[q^'*']*" value"),
+                    r = expression(bar(delta)[r]*" value")))
+    plot(h, xlim = xlim, ylim = ylim, freq = TRUE, xlab = xlab,
+         ylab = "Frequency", main = "", ...)
+    lines(rep(result$obs, 2), c(ylim[1], ylim[2]*0.5), col="black", lty=2, lwd=4)
+    OBS <- round(result$obs, 3)
+    leg <- switch(result$statistic,
+               overlap = switch(result$method,
+                   q = bquote("Observed "*bar(omega)[q] == .(OBS)),
+                   q.nielsen = bquote("Observed "*bar(omega)[q^'*'] == .(OBS)),
+                   r = bquote("Observed "*bar(omega)[r] == .(OBS))),
+               divergence = switch(result$method,
+                   q = bquote("Observed "*bar(delta)[q] == .(OBS)),
+                   q.nielsen = bquote("Observed "*bar(delta)[q^'*'] == .(OBS)),
+                   r = bquote("Observed "*bar(delta)[r] == .(OBS))))
+    legend("topleft", bty = "n", legend = leg)
 }
 
 
-#---------------------------------------------
 
-
-gammaContrastTest = function(tab.a, tab.b,
-                  zero.var.adjust=TRUE,
-                  n.resample=10000,
-                  method=c("bootstrap", "permute"))
+gammaContrastTest = function(tab.a, tab.b, zero.var.adjust=TRUE,
+    n.resample=10000, method=c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
-  ans = list()
-  X.a.k = apply(tab.a, 2, sum)
-  X.b.k = apply(tab.b, 2, sum)
-  N.a = sum(X.a.k)
-  N.b = sum(X.b.k)
-  R.a.0 = sum((X.a.k * (X.a.k - 1)) / (N.a * (N.a - 1)))
-  R.b.0 = sum((X.b.k * (X.b.k - 1)) / (N.b * (N.b - 1)))
-  V.a.tot = 1 - R.a.0
-  V.b.tot = 1 - R.b.0
-  V.a.b.tot = ((N.a - 1) * V.a.tot + (N.b - 1) * V.b.tot) / (N.a + N.b - 2)
-  observed.ln.LR.a.b = ((N.a + N.b - 2) * log(V.a.b.tot)) - ((N.a - 1) * log(V.a.tot)) - ((N.b - 1) * log(V.b.tot))
+    ans <- list()
+    X.a.k <- apply(tab.a, 2, sum)
+    X.b.k <- apply(tab.b, 2, sum)
+    N.a <- sum(X.a.k)
+    N.b <- sum(X.b.k)
+    R.a.0 <- sum((X.a.k * (X.a.k - 1)) / (N.a * (N.a - 1)))
+    R.b.0 <- sum((X.b.k * (X.b.k - 1)) / (N.b * (N.b - 1)))
+    V.a.tot <- 1 - R.a.0
+    V.b.tot <- 1 - R.b.0
+    V.a.b.tot <- ((N.a - 1) * V.a.tot + (N.b - 1) * V.b.tot) / (N.a + N.b - 2)
+    observed.ln.LR.a.b <- ((N.a + N.b - 2) * log(V.a.b.tot)) - 
+                          ((N.a - 1) * log(V.a.tot)) - 
+                          ((N.b - 1) * log(V.b.tot))
+    a.vardist <- list(a = diag(.diversityTest.gower(.diversityTest.distmat(X.a.k))))
+    n.a <- sapply(a.vardist, length)
+    stopifnot(sum(n.a) == N.a)
+    G.a <- length(n.a)
+    ans$N.a <- N.a
+    ans$G.a <- G.a
+    terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+    cat(sprintf("terms.a$V.p = %f  V.a.tot = %f\n", terms.a$V.p, V.a.tot))
 
+    b.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.b.k))))
+    n.b <- unlist(lapply(b.vardist, length))
+    stopifnot(sum(n.b) == N.b)
+    G.b <- length(n.b)
+    ans$N.b <- N.b
+    ans$G.b <- G.b
+    terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+    cat(sprintf("terms.b$V.p = %f  V.b.tot = %f\n", terms.b$V.p, V.b.tot))
 
-  a.vardist <- list(a=diag(.diversityTest.gower(.diversityTest.distmat(X.a.k))))
-  n.a <- unlist(lapply(a.vardist, length))
-  stopifnot(sum(n.a) == N.a)
-  N.a <- sum(n.a)
-  G.a <- length(n.a)
-  ans$N.a <- N.a
-  ans$G.a <- G.a
-  terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
-  cat(sprintf("terms.a$V.p = %f  V.a.tot = %f\n", terms.a$V.p, V.a.tot))
-
-  b.vardist <- list(b=diag(.diversityTest.gower(.diversityTest.distmat(X.b.k))))
-  n.b <- unlist(lapply(b.vardist, length))
-  stopifnot(sum(n.b) == N.b)
-  N.b <- sum(n.b)
-  G.b <- length(n.b)
-  ans$N.b <- N.b
-  ans$G.b <- G.b
-  terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
-  cat(sprintf("terms.b$V.p = %f  V.b.tot = %f\n", terms.b$V.p, V.b.tot))
-
-  # Combine A and B into stratta for comparison
-  n.a.b = c(a=N.a, b=N.b)
-  a.b.vardist = list(a=unlist(a.vardist, use.names=FALSE), b=unlist(b.vardist, use.names=FALSE))
-  N = sum(n.a.b)
-  G = length(n.a.b)
-  DF = G -1
-  ans$N.samples <- N
-  ans$N.groups <- G
-  PVAL = pchisq(observed.ln.LR.a.b, df=DF, lower.tail=TRUE)
-  cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Gamma Variances\n\n")
-  cat("Comparing against X-2 distribution directly:\n")
-  cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  df=(G-1) = %d  P = %g\n",
+    # Combine A and B into stratta for comparison
+    n.a.b <- c(a = N.a, b = N.b)
+    a.b.vardist <- list(a = unlist(a.vardist, use.names = FALSE),
+                        b = unlist(b.vardist, use.names = FALSE))
+    N <- sum(n.a.b)
+    G <- length(n.a.b)
+    DF <- G - 1
+    ans$N.samples <- N
+    ans$N.groups <- G
+    PVAL <- pchisq(observed.ln.LR.a.b, df = DF, lower.tail = TRUE)
+    cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Gamma Variances\n\n")
+    cat("Comparing against X-2 distribution directly:\n")
+    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  df=(G-1) = %d  P = %g\n",
         N.a, N.b, G, observed.ln.LR.a.b, DF, PVAL))
-  ans$observed.ln.LR <- observed.ln.LR.a.b
-  ans$df.X2 <- DF
-  ans$P.analytic <- PVAL
-  nulldist = .diversityTest.NullDist(obs=observed.ln.LR.a.b,
-                                             n.g=n.a.b,
-                                             g.vardist=a.b.vardist,
-                                             zero.var.adjust, method, n.resample)
-  PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
-  cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
-  q1 <- c(0.5, 0.01, 0.001)
-  q2 <- quantile(nulldist, q1)
-  cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
-        N.a, N.b, G, observed.ln.LR.a.b, n.resample, paste(collapse=" ", q1),
-        q2[1], q2[2], q2[3], PVAL))
-  ans$n.resample <- n.resample
-  ans$resample.method <- method
-  ans$quants <- q2
-  ans$P.empirical <- PVAL
-  ans$empdist <- nulldist
-  ans$a.b.vardist = a.b.vardist
-  ####
-  class(ans) <- c(class(ans), "diversityTest.GammaContrast")
-  invisible(ans)
-
+    ans$observed.ln.LR <- observed.ln.LR.a.b
+    ans$df.X2 <- DF
+    ans$P.analytic <- PVAL
+    nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b,
+                                        n.g = n.a.b, g.vardist = a.b.vardist,
+                                        zero.var.adjust, method, n.resample)
+    PVAL <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
+    cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
+    q2 <- quantile(nulldist, test.quantiles)
+    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
+        N.a, N.b, G, observed.ln.LR.a.b, n.resample, 
+        paste(collapse=" ", test.quantiles),
+        paste(collapse=" ", q2),
+        PVAL))
+    ans$n.resample <- n.resample
+    ans$resample.method <- method
+    ans$quantiles <- q2
+    ans$P.empirical <- PVAL
+    ans$empdist <- nulldist
+    ans$a.b.vardist = a.b.vardist
+    ####
+    class(ans) <- c(class(ans), "diversityTest.GammaContrast")
+    invisible(ans)
 }
 
 
 
 #' Test for difference in gamma diversity among three datasets
 #'
-#' @param tab.a First site x soure table
+#' @param tab.a First site x source table
 #'
-#' @param tab.b Second site x soure table
+#' @param tab.b Second site x source table
 #'
-#' @param tab.c Third site x soure table
+#' @param tab.c Third site x source table
 #'
 #' @param zero.var.adjust Logical, whether to adjust zero-variance groups
 #' with minimum value, see \code{\link{BLAHBLAH}}
@@ -634,9 +605,9 @@ gammaContrastTest = function(tab.a, tab.b,
 #' @export gammaContrastTest.3
 #'
 gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
-                                zero.var.adjust = TRUE,
-                                n.resample = 10000,
-                                method = c("bootstrap", "permute")) {
+    zero.var.adjust = TRUE, n.resample = 10000,
+    method = c("bootstrap", "permute"))
+{
     method <- match.arg(method)
     ans <- list()
     X.a.k <- apply(tab.a, 2, sum)
@@ -718,12 +689,12 @@ gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
     cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
     q1 <- c(0.5, 0.01, 0.001)
     q2 <- quantile(nulldist, q1)
-    cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%.2f %.2f %.2f]  P = %g\n",
+    cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
         N.a, N.b, N.c, G, observed.ln.LR.a.b.c, n.resample,
         paste(collapse = " ", q1), q2[1], q2[2], q2[3], PVAL))
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quants <- q2
+    ans$quantiles <- q2
     ans$P.empirical <- PVAL
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
@@ -750,7 +721,8 @@ gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
 # construct a distance matrix from the site x group matrix
 #
 .diversityTest.distmat <- function(tab, group = dimnames(tab)[[1]],
-                                   drop = TRUE) {
+                                   drop = TRUE)
+{
     if (is.null(dim(tab))) {
         dim(tab) <- c(1, length(tab))
         dimnames(tab) <- list(Site = "onedim", Genotype = names(tab))
@@ -785,7 +757,8 @@ gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
 # Gower JC. 1966. Some distance properties of latent root and vector
 # methods used in multivariate analysis.  Biometrika 53:325-338.
 #
-.diversityTest.gower <- function(dmat) {
+.diversityTest.gower <- function(dmat)
+{
     if (is.null(dim(dmat))) {
         dim(dmat) <- c(1, length(dmat))
         dimnames(dmat) <- list(Site = "onedim", Genotype = names(dmat))
@@ -813,7 +786,8 @@ gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
 #
 #        1 / ((4 * n.g * n.g) * (n.g - 1))
 #
-.diversityTest.ZeroVarAdjust <- function(ss.g, n.g) {
+.diversityTest.ZeroVarAdjust <- function(ss.g, n.g)
+{
     nn <- names(ss.g[ss.g == 0]) # names of ss.g==0 elements
     if (length(nn)) # index by names
         ss.g[nn] <- 1 / (4 * n.g[nn] * n.g[nn] * (n.g[nn] - 1))
@@ -848,9 +822,9 @@ gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
 
 # Construct null distribution of the variance
 .diversityTest.NullDist <- function(obs, n.g, g.vardist,
-                                    zero.var.adjust = TRUE,
-                                    method = c("bootstrap", "permute"),
-                                    n.resample = 10000) {
+    zero.var.adjust = TRUE, method = c("bootstrap", "permute"),
+    n.resample = 10000)
+{
     method <- match.arg(method)
     N <- sum(n.g)
     G <- length(n.g)

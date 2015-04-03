@@ -143,7 +143,8 @@ diversityMultilocus <- function(x, ...) UseMethod("diversityMultilocus")
 #'
 #' @export
 #'
-diversityMultilocus.allele_tables <- function(lst, method = c("r", "q.nielsen", "q"))
+diversityMultilocus.allele_tables <- function(lst, 
+    ploidy = 2, method = c("r", "q.nielsen", "q"))
 {
     # calculates diversity statistics for a collection of loci, the argument
     # is produced by createAlleleTables()
@@ -199,8 +200,8 @@ diversityMultilocus.allele_tables <- function(lst, method = c("r", "q.nielsen", 
     overlap.mean <- mean(overlap.a)
     divergence.mean <- mean(divergence.a)
     # scaled values, note that N here is already 2*N when diploid
-    alpha.max <- (N - G) / G
-    gamma.max <- (N - 1)
+    alpha.max <- ((ploidy * N) - G) / G
+    gamma.max <- ((ploidy * N) - G)
     beta.max <- G
     alpha.scaled <- ((alpha.bar.weighted - 1) / alpha.bar.weighted) * 
                     (alpha.max / (alpha.max - 1))
@@ -278,17 +279,19 @@ diversitySingleLocus <- function(tab, method = c("r", "q.nielsen", "q"))
     allele.func.scale.alpha <- function(a, ploidy = 2) {
         N <- allele.N
         G <- allele.G
-        alpha.max <- (ploidy * N - G) / G
+        alpha.max <- ((ploidy * N) - G) / G
         ((a - 1) / a) * (alpha.max / (alpha.max - 1))
     }
     body(allele.func.scale.alpha)[[2]][[3]] <- allele.N
     body(allele.func.scale.alpha)[[3]][[3]] <- allele.G
     allele.func.scale.gamma <- function(g, ploidy=2) {
         N <- allele.N
-        gamma.max <- N - 1
-        ((g - 1) / g) * (N / (N - 1))
+        G <- allele.G
+        gamma.max <- (ploidy * N) - G
+        ((g - 1) / g) * (gamma.max / (gamma.max - 1))
     }
     body(allele.func.scale.gamma)[[2]][[3]] <- allele.N
+    body(allele.func.scale.gamma)[[3]][[3]] <- allele.G
     allele.func.scale.beta <- function(b, ploidy = 2) {
         G <- allele.G
         beta.max <- G
