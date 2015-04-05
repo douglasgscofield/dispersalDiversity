@@ -50,8 +50,9 @@ alphaDiversityTest <- function(x, ...) UseMethod("alphaDiversityTest")
 #' @export
 #'
 alphaDiversityTest.allele_tables <- function(lst, zero.var.adjust = TRUE, 
-        n.resample = 10000, method = c("bootstrap", "permute"),
-        test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999)) {
+    n.resample = 10000, method = c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+{
     method <- match.arg(method)
     name <- deparse(substitute(lst))
     nm <- names(lst)
@@ -187,9 +188,10 @@ alphaContrastTest <- function(x, ...) UseMethod("alphaContrastTest")
 #' @export
 #'
 alphaContrastTest.allele_tables <- function(lst.a, lst.b,
-        zero.var.adjust = TRUE, n.resample = 10000, 
-        method = c("bootstrap", "permute"),
-        test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999)) {
+    zero.var.adjust = TRUE, n.resample = 10000, 
+    method = c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+{
 
     name.a <- deparse(substitute(lst.a))
     name.b <- deparse(substitute(lst.b))
@@ -361,10 +363,10 @@ gammaContrastTest <- function(x, ...) UseMethod("gammaContrastTest")
 #' @export
 #'
 gammaContrastTest.allele_tables <- function(lst.a, lst.b,
-        zero.var.adjust = TRUE, n.resample = 10000, 
-        method = c("bootstrap", "permute"),
-        test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999)) {
-
+    zero.var.adjust = TRUE, n.resample = 10000, 
+    method = c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+{
     name.a <- deparse(substitute(lst.a))
     name.b <- deparse(substitute(lst.b))
     if (! inherits(lst.b, 'allele_tables'))

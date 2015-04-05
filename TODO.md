@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Class returned by functions that is plottable by plotAlphaTest... or is this plottable by `htest_boot`
 * make `createAlleleTables` return matrices?  or perhaps I have settled on a table as the input class?
 * finish pooled PMI description in `diversity`
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
@@ -17,6 +18,7 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* Quantiles checked are now richer and symmetric
 * Renamed `allele.createTableList` to S3 generic and method `createAlleleTables` and `createAlleleTables.genalex`
 * Started streamlining with S3 classes.
 * Incorporated random distance matrix creation in to README.

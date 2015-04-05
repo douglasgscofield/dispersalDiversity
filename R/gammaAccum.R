@@ -53,19 +53,13 @@ NULL
 #'
 #' @export
 #'
-plot.gamma_accum <- function(g, 
-                             xmax = length(g$simple.results$mns), 
-                             ymax = max(g$simple.results$mns + 
-                                        g$simple.results$SE), 
-                             obs.omega = NULL,
-                             omega.pos = c(0.15, 0.97),
-                             xlab = "Number of groups",
-                             ylab = expression("Accumulated  " * gamma * 
-                                               "  diversity"),
-                             pch = 19, pch.gamma = 24,
-                             col = "black", bty = "L", lwd = 1.5, bg = "white",
-                             lty = 2,
-                             ...)
+plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns), 
+    ymax = max(g$simple.results$mns + g$simple.results$SE), 
+    obs.omega = NULL, omega.pos = c(0.15, 0.97),
+    xlab = "Number of groups",
+    ylab = expression("Accumulated  " * gamma * "  diversity"),
+    pch = 19, pch.gamma = 24, col = "black", bty = "L", lwd = 1.5,
+    bg = "white", lty = 2, ...)
 {
     gtr <- g$simple.results
     obs.gamma <- g$obs.gamma
@@ -147,11 +141,10 @@ plot.gamma_accum <- function(g,
 #' @export
 #'
 gammaAccum.default <- function(tab, 
-                          accum.method = c("random", "proximity"),
-                          resample.method = c("permute", "bootstrap"),
-                          gamma.method = c("r", "q.nielsen", "q"),
-                          distance.file = NULL,
-                          ...)
+    accum.method = c("random", "proximity"),
+    resample.method = c("permute", "bootstrap"),
+    gamma.method = c("r", "q.nielsen", "q"),
+    distance.file = NULL, ...)
 {
     accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)

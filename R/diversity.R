@@ -257,7 +257,8 @@ diversity <- function(tab)
 #'
 #' @export nielsenTransform
 #'
-nielsenTransform <- function(q.gg, n.g) {  
+nielsenTransform <- function(q.gg, n.g)
+{  
     (((q.gg * (n.g+1) * (n.g - 2)) + (3 - n.g)) / ((n.g - 1)^2))
 }
 

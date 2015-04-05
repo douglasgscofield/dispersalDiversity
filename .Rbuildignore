@@ -6,3 +6,6 @@
 ^check_tmp$
 ^NEWS.md$
 ^TODO.md$
+^HI.*.txt$
+^LO.*.txt$
+^.*.png$

@@ -89,9 +89,7 @@ createAlleleTables <- function(x, ...) UseMethod("createAlleleTables")
 #' @export
 #'
 createAlleleTables.genalex <- function(dat, new.ploidy = 2,
-                                       collapse.alleles = TRUE,
-                                       exclude = c(NA, "0"), 
-                                       quiet = FALSE)
+    collapse.alleles = TRUE, exclude = c(NA, "0"), quiet = FALSE)
 {
     if (new.ploidy >= 2 && ! collapse.alleles)
         stop("Must collapse ploidy when new.ploidy >= 2")
@@ -143,8 +141,8 @@ diversityMultilocus <- function(x, ...) UseMethod("diversityMultilocus")
 #'
 #' @export
 #'
-diversityMultilocus.allele_tables <- function(lst, 
-    ploidy = 2, method = c("r", "q.nielsen", "q"))
+diversityMultilocus.allele_tables <- function(lst, ploidy = 2, 
+    method = c("r", "q.nielsen", "q"))
 {
     # calculates diversity statistics for a collection of loci, the argument
     # is produced by createAlleleTables()

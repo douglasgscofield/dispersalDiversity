@@ -69,9 +69,7 @@ gammaAccum <- function(x, ...) UseMethod("gammaAccum")
 gammaAccum.allele_tables <- function(lst, 
     accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
-    gamma.method = c("r", "q.nielsen", "q"),
-    distance.file=NULL,
-    ...)
+    gamma.method = c("r", "q.nielsen", "q"), distance.file=NULL, ...)
 {
     accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)

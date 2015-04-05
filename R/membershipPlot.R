@@ -81,8 +81,8 @@ membershipPlot <- function(tab, method = c("bar", "pie"),
     xlab = "Site", ylab = "Membership", las = 1, 
     x.mar.width = ifelse(las >= 2, 4, 3), 
     cex = 0.7, header.cex = 0.9, cex.names = 0.85, 
-    l1 = NULL, l2 = NULL, ...) {
-    
+    l1 = NULL, l2 = NULL, ...)
+{
     .eps <- function(...) {
         postscript(onefile = FALSE, horizontal = FALSE, paper = "special", ...)
     }
