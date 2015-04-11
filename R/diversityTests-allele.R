@@ -1,5 +1,5 @@
-#' @include alleleDiversity.R
-#' @include diversityTests.R
+#' @include diversity-allele.R
+#' @include diversityTests-table.R
 # For collation, load after the above
 NULL
 

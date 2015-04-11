@@ -1,4 +1,4 @@
-#' @include diversity.R
+#' @include diversity-table.R
 # for collation
 NULL
 

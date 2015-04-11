@@ -1,8 +1,8 @@
-#' @include diversity.R
+#' @include diversity-table.R
 # for collation
 NULL
 
-# diversityTests.R
+# diversityTests-table.R
 
 # Provide functions for performing dispersal diversity tests (Scofield et al
 # 2012 American Naturalist 180(6) 719-732,

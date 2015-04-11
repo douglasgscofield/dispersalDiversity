@@ -1,5 +1,5 @@
-#' @include alleleDiversity.R
-#' @include gammaAccum.R
+#' @include diversity-allele.R
+#' @include gammaAccum-table.R
 # for collation
 NULL
 
