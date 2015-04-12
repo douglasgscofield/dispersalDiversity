@@ -4,15 +4,15 @@
 #' package.  An example of its use is in Figure 4A-C of Scofield et al.
 #' (2012).
 #'
-#' @param pairwise.mat Pairwise divergence or overlap matrix as found at,
+#' @param x    Pairwise divergence or overlap matrix as found at,
 #' e.g., \code{diversity()$q$diversity.mat}.  Currently, prior to plotting
 #' this matrix has its diagonal and upper triangle zeroed, and is then
 #' rotated prior to passing to \code{\link{lattice::levelplot}}
 #'
-#' @param statistic \code{"divergence"} or \code{"overlap"}, for which
+#' @param statistic    \code{"divergence"} or \code{"overlap"}, for which
 #' statistic is being presented
 #'
-#' @param pairwise.mean Mean pairwise divergence or overlap as found at,
+#' @param pairwise.mean    Mean pairwise divergence or overlap as found at,
 #' e.g., \code{diversity()$q$divergence}.  If provided, this is added to
 #' the plot in the upper triangle, rounded to three digits, with 
 #' positions specified by \code{mean.pos}.  The value is plotted 
@@ -20,15 +20,15 @@
 #' \code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is 
 #' \code{"overlap"}.
 #'
-#' @param mean.pos If \code{pairwise.mean} is given, the relative
+#' @param mean.pos    If \code{pairwise.mean} is given, the relative
 #' X and Y positions within the panel at which the value is plotted, in 
 #' a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
 #' value.
 #'
-#' @param axis.label Label used for the X and Y axes, the X and Y axis
+#' @param axis.label    Label used for the X and Y axes, the X and Y axis
 #' labels can be changed with \code{xlab} and \code{ylab}
 #'
-#' @param bty,aspect,col.regions,colorkey,at,scales,xlab,ylab Additional
+#' @param bty,aspect,col.regions,colorkey,at,scales,xlab,ylab    Additional
 #' plot options passed to \code{\link{lattice::levelplot}}
 #'
 #' @return The lattice plot object is returned invisibly
@@ -45,7 +45,7 @@
 # TODO: get DATA into here, perhaps import pericarp data from readGenalex?
 #
 # dv <- diversity(tab)
-# plotPairwiseMatrix(pairwise.mat = dv$r$divergence.mat, 
+# plotPairwiseMatrix(x = dv$r$divergence.mat, 
 #                    pairwise.mean = dv$r$divergence, 
 #                    statistic = "divergence", 
 #                    axis.label = "Seed Pool")
@@ -62,7 +62,7 @@
 #'
 #' @export plotPairwiseMatrix
 #'
-plotPairwiseMatrix <- function(pairwise.mat, 
+plotPairwiseMatrix <- function(x, 
     statistic = c("divergence", "overlap"), 
     pairwise.mean = NULL, mean.position = c(0.45, 0.7),
     bty = "L", aspect = "iso", 
@@ -78,12 +78,12 @@ plotPairwiseMatrix <- function(pairwise.mat,
     # or ...$r$diversity.mat or ...$q.nielsen$diversity.mat
     statistic = match.arg(statistic)
     # should I be doing this zeroeing?
-    diag(pairwise.mat) <- 0
-    pairwise.mat[upper.tri(pairwise.mat)] <- 0
+    diag(x) <- 0
+    x[upper.tri(x)] <- 0
     rotateMatrix = function(mat) t(mat[nrow(mat):1, , drop=FALSE])
-    pairwise.mat = rotateMatrix(pairwise.mat)
+    x = rotateMatrix(x)
     opa <- par(mar = c(0, 0, 0, 5), ps = 10, xpd = NA)
-    lp <- lattice::levelplot(pairwise.mat, bty = bty, aspect = aspect, 
+    lp <- lattice::levelplot(x, bty = bty, aspect = aspect, 
         regions = TRUE, col.regions = col.regions, colorkey = colorkey,
         at = at, scales = scales, xlab = xlab, ylab = ylab, ...)
     lattice::plot(lp, ...)
