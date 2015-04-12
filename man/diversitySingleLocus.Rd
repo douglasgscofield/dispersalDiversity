@@ -7,13 +7,18 @@
 diversitySingleLocus(tab, method = c("r", "q.nielsen", "q"))
 }
 \arguments{
-\item{tab}{Table of site x allele counts, with row names being the site
+\item{tab}{Table of site-by-allele counts, with row names being the site
 names and column names being the names given to the individual alleles}
+
+\item{method}{Method to use when calculating diversity within the locus.
+See \code{\link{diversity}}.}
 }
 \value{
-List of diversity estimates for the locus
+List containing diversity estimates for the locus
 }
 \description{
-Calculate allelic diversity for a single locus
+The single argument is, for a single locus, a table of site-by-allele
+counts, with row names being the site names, and column names being the
+names given to the individual alleles.
 }
 

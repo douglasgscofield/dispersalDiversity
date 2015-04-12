@@ -9,9 +9,13 @@
   collapse.alleles = TRUE, exclude = c(NA, "0"), quiet = FALSE)
 }
 \description{
-S3 method to convert an object of class \code{'genalex'} to a list of
-allele count tables.  This is a generic so that other methods might be
-written to convert other genetic formats.
+S3 method to convert an object of class \code{'genalex'} to an object of
+class \code{'allele_tables'}, a list of
+allele count tables.  Each entry of the list is, for each locus, a
+table of site-by-allele counts, with row names being the site names and
+column names being the names given to the individual alleles.  This is a
+generic so that other methods might be written to convert other genetic
+formats.
 }
 \examples{
 # The workflow to calculate basic allelic diversity statistics:

@@ -9,7 +9,10 @@
   "q.nielsen", "q"))
 }
 \description{
-Calculate diversity across a set of allele tables
+Calculate diversity for a set of loci encoded in an object of class
+\code{'allele_tables'} as created with \code{\link{createAlleleTables}},
+and diversity for each locus is calculated separately
+using \code{\link{diversitySingleLocus}}.
 }
 \examples{
 # The workflow to calculate basic allelic diversity statistics:
