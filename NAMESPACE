@@ -3,6 +3,8 @@
 S3method(alphaContrastTest,allele_tables)
 S3method(alphaDiversityTest,allele_tables)
 S3method(createAlleleTables,genalex)
+S3method(diversity,default)
+S3method(diversity,table)
 S3method(diversityMultilocus,allele_tables)
 S3method(gammaAccum,allele_tables)
 S3method(gammaAccum,default)

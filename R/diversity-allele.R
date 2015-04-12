@@ -23,33 +23,16 @@ NULL
 #   alpha.contrast <- allele.alphaContrastTest(gt1, gt2)
 #   gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
 #
-#
-# FUNCTIONS
-#
-# allele.diversity() : 
-#    The function calculating diversity for a set of loci.  The single argument
-#    is a list produced by createAlleleTables(), and it uses the function
-#    allele.diversitySingleLocus().
-#
-# createAlleleTables() :
-#   Take a data.frame of genotypes read by readGenalex(), produce a list of
-#   allele count tables used by the other functions.  Each entry of the list is,
-#   for each locus, a table of site x allele counts, with row names being the
-#   site names, and column names being the names given to the individual
-#   alleles.
-#
-# allele.diversitySingleLocus() : 
-#    The single argument is, for a single locus, a table of site x allele
-#    counts, with row names being the site names, and column names being the
-#    names given to the individual alleles.
-
-
 
 #' Convert class \code{'genalex'} object to a list of allele count tables
 #'
-#' S3 method to convert an object of class \code{'genalex'} to a list of 
-#' allele count tables.  This is a generic so that other methods might be
-#' written to convert other genetic formats.
+#' S3 method to convert an object of class \code{'genalex'} to an object of
+#' class \code{'allele_tables'}, a list of 
+#' allele count tables.  Each entry of the list is, for each locus, a
+#' table of site-by-allele counts, with row names being the site names and
+#' column names being the names given to the individual alleles.  This is a
+#' generic so that other methods might be written to convert other genetic
+#' formats.
 #'
 #' @examples
 #'
@@ -68,8 +51,6 @@ createAlleleTables <- function(x, ...) UseMethod("createAlleleTables")
 
 
 
-# TODO: NOTE THAT p AND v are now the name of the dimensions
-#
 # as.allele_table.genalex?  as.table_list.genalex?  S3 method
 #
 # remove new.ploidy argument, see orig code below
@@ -97,14 +78,14 @@ createAlleleTables.genalex <- function(dat, new.ploidy = 2,
         dat <- reducePloidy(dat, new.ploidy)
     lc <- attr(dat, "locus.columns")
     ln <- attr(dat, "locus.names")
-    pop <- attr(dat, "pop.title")
+    population <- attr(dat, "pop.title")
     ans <- list()
     ex <- list()
     for (il in 1:length(lc)) {
-        v <- as.vector(unlist(dat[, lc[il]:(lc[il] + new.ploidy - 1)]))
-        ex[[ ln[il] ]] <- sum(v %in% exclude)
-        p <- rep(dat[[pop]], new.ploidy)
-        ans[[ ln[il] ]] <- t(as.matrix(table(v, p, exclude = exclude)))
+        alleles <- as.vector(unlist(dat[, lc[il]:(lc[il] + new.ploidy - 1)]))
+        ex[[ ln[il] ]] <- sum(alleles %in% exclude)
+        pop <- rep(dat[[population]], new.ploidy)
+        ans[[ ln[il] ]] <- t(as.matrix(table(alleles, pop, exclude = exclude)))
     }
     if (sum(unlist(ex)) && !quiet)
         cat(sprintf("Excluding %d entries based on 'exclude = c(%s)'\n", 
@@ -116,6 +97,11 @@ createAlleleTables.genalex <- function(dat, new.ploidy = 2,
 
 
 #' Calculate diversity across a set of allele tables
+#'
+#' Calculate diversity for a set of loci encoded in an object of class
+#' \code{'allele_tables'} as created with \code{\link{createAlleleTables}},
+#' and diversity for each locus is calculated separately
+#' using \code{\link{diversitySingleLocus}}.
 #'
 #' @examples
 #'
@@ -233,12 +219,19 @@ diversityMultilocus.allele_tables <- function(lst, ploidy = 2,
 
 #' Calculate allelic diversity for a single locus
 #'
-#' @param  tab Table of site x allele counts, with row names being the site
+#' The single argument is, for a single locus, a table of site-by-allele
+#' counts, with row names being the site names, and column names being the
+#' names given to the individual alleles.
+#'
+#' @param tab    Table of site-by-allele counts, with row names being the site
 #' names and column names being the names given to the individual alleles
 #'
-#' @return List of diversity estimates for the locus
+#' @param method   Method to use when calculating diversity within the locus.
+#' See \code{\link{diversity}}.
 #'
-#' @export diversitySingleLocus
+#' @return List containing diversity estimates for the locus
+#'
+#' @export
 #'
 diversitySingleLocus <- function(tab, method = c("r", "q.nielsen", "q"))
 {

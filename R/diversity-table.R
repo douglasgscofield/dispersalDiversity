@@ -1,3 +1,7 @@
+#' @include nielsenTransform.R
+# for collation
+NULL
+
 #' Calculate a collection of diversity statistics from a site x source matrix
 #'
 #' Given a site x source matrix, calculate a collection of diversity
@@ -6,9 +10,11 @@
 #' as well as alpha, beta, gamma and delta/omega from classical ecology and
 #' applied to a dispersal context by Scofield \emph{et al}. (2012).
 #'
-#' @param tab Table of counts in sites (rows) X sources (columns) format.
-#' If the argument is not a matrix, it is converted to one.  Rows are
-#' not reordered.
+#' @param tab   Table of counts in sites (rows) X sources (columns) format.
+#' If the argument is not class \code{'table'}, it is converted to one with
+#' \code{\link{as.table}}.  Rows are not reordered.
+#'
+#' @param \dots   Additional arguments, currently ignored
 #'
 #' @return A list is returned which contains three forms of diversity
 #' statistics, each' returned as lists under separate named elements:
@@ -93,12 +99,46 @@
 #' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#
-# @examples
-#
-#' @export diversity
 #'
-diversity <- function(tab)
+#' @examples
+#'
+#' ## create table of random membership data
+#' n.sites <- 5
+#' n.sources <- 10
+#' n.samples <- 160
+#' ## data frame of site-source pairs
+#' set.seed(75333)
+#' t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+#'                 source = round(runif(n.samples) * n.sources + 0.5))
+#' div <- diversity(table(t))
+#' div$q
+#' 
+#' @export
+#'
+#' @name diversity
+#'
+NULL
+
+diversity <- function(tab, ...) UseMethod("diversity")
+
+
+
+#' @rdname diversity
+#'
+#' @export
+#'
+diversity.default <- function(tab, ...)
+{
+    diversity.table(as.table(tab), ...)
+}
+
+
+
+#' @rdname diversity
+#'
+#' @export
+#'
+diversity.table <- function(tab, ...)
 {
     tab <- as.matrix(tab)
     G <- dim(tab)[1]
@@ -238,28 +278,4 @@ diversity <- function(tab)
          q.nielsen = q.nielsen
     )
 }
-
-
-
-#' Transform vector of squared frequencies using the method of Nielsen et al. (2003)
-#'
-#' @param q.gg Vector of squared frequencies
-#'
-#' @param n.g Vector with group size for each element of \code{q.gg}
-#'
-#' @return \code{q.gg} vector with the Nielsen et al. transform applied
-#'
-#' @references
-#'
-#' Nielsen, R., Tarpy, D. R. and Reeve, H. K. (2003) Estimating effective
-#' paternity number in social insects and the effective number of alleles in
-#' a population.  \emph{Molecular Ecology} 12:3157-3164.
-#'
-#' @export nielsenTransform
-#'
-nielsenTransform <- function(q.gg, n.g)
-{  
-    (((q.gg * (n.g+1) * (n.g - 2)) + (3 - n.g)) / ((n.g - 1)^2))
-}
-
 

@@ -2,14 +2,20 @@
 % Please edit documentation in R/diversity-table.R
 \name{diversity}
 \alias{diversity}
+\alias{diversity.default}
+\alias{diversity.table}
 \title{Calculate a collection of diversity statistics from a site x source matrix}
 \usage{
-diversity(tab)
+\method{diversity}{default}(tab, ...)
+
+\method{diversity}{table}(tab, ...)
 }
 \arguments{
 \item{tab}{Table of counts in sites (rows) X sources (columns) format.
-If the argument is not a matrix, it is converted to one.  Rows are
-not reordered.}
+If the argument is not class \code{'table'}, it is converted to one with
+\code{\link{as.table}}.  Rows are not reordered.}
+
+\item{\dots}{Additional arguments, currently ignored}
 }
 \value{
 A list is returned which contains three forms of diversity
@@ -72,6 +78,18 @@ statistics.  Statistics include PMI (probability of maternal inheritance)
 from Grivet \emph{et al}. (2005) and Scofield \emph{et al}. (2010, 2011)
 as well as alpha, beta, gamma and delta/omega from classical ecology and
 applied to a dispersal context by Scofield \emph{et al}. (2012).
+}
+\examples{
+## create table of random membership data
+n.sites <- 5
+n.sources <- 10
+n.samples <- 160
+## data frame of site-source pairs
+set.seed(75333)
+t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+                source = round(runif(n.samples) * n.sources + 0.5))
+div <- diversity(table(t))
+div$q
 }
 \references{
 Simpson, E. D. (1949) Measurement of diversity. \emph{Nature} 163:688.

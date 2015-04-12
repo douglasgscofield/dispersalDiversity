@@ -26,6 +26,7 @@ Suggests:
 Collate:
     'dispersalDiversity-data.R'
     'dispersalDiversity-package.R'
+    'nielsenTransform.R'
     'diversity-table.R'
     'diversity-allele.R'
     'diversityTests-table.R'

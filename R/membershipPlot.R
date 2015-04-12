@@ -9,16 +9,16 @@
 #' combination.  An example if its use is in Figure 2A-C of
 #' Scofield et al. (2012).
 #'
-#' @param tab Matrix of counts or proportions for observations of 
-#' group membership (columns) within sites (rows).  The table is 
-#' standardized by site so it doesn't matter whether the
-#' table values are counts or proportions.
+#' @param tab   Table of counts of sites (rows) by group membership
+#' (columns), or any similar object (e.g., class \code{'matrix'}) that
+#' can be converted with \code{\link{as.table}}.  The table is 
+#' standardized by site so table values may be counts or proportions.
 #'
-#' @param method \code{"bar"} (the default) or \code{"pie"}, for the form of
-#' plot produced.  Bar plots have received considerably more attention than 
-#' pie plots.
+#' @param method   \code{"bar"} (the default) or \code{"pie"}, for the form
+#' of plot produced.  Bar plots have received considerably more attention
+#' than pie plots.
 #'
-#' @param fill.method \code{"color"} (the default, with synonym 
+#' @param fill.method   \code{"color"} (the default, with synonym 
 #' \code{"colour"}, or \code{"bw"}, for the method of colouring different 
 #' groups within the plots.  For \code{"color"}, no more than eight separate
 #' colours are chosen; if there are more than eight groups, the
@@ -33,26 +33,26 @@
 #' membership plots.  If \code{\link{RColorBrewer}} is not available, colours
 #' are chosen using \code{\link{rainbow}}.
 #'
-#' @param fill.palette For \code{fill.method = "color"}, if the 
+#' @param fill.palette   For \code{fill.method = "color"}, if the 
 #' package \code{\link{RColorBrewer}} is available, use this palette to
 #' choose the base colours to use
 #'
-#' @param distinguish.multiton For \code{fill.method = "color"}, whether 
+#' @param distinguish.multiton   For \code{fill.method = "color"}, whether 
 #' to distinguish multiton groups (see Description) with grey rather than 
 #' the default white colour.
 #'
-#' @param pdf.file,postscript.file Filename for output of PDF file, using
+#' @param pdf.file,postscript.file   Filename for output of PDF file, using
 #' \code{\link{pdf}}, or PostScript file, using \code{\link{postscript}}.
-#' file.  Only one can be set.  Both are produced using the options
+#' file.  Only one can be set.  Either file is produced using the options
 #' \code{onefile = FALSE, paper = "special"}.
 #'
-#' @param file.dim Dimensions of the plot, in inches
+#' @param file.dim   Dimensions of the plot, in inches
 #'
-#' @param xlab,ylab,las,cex Plot parameters (see \code{\link{par}}
+#' @param xlab,ylab,las,cex   Plot parameters (see \code{\link{par}}
 #'
 #' @param x.mar.width  Width of the X-margin, in a bar plot
 #'
-#' @param l1,l2 First and second lines of annotation to appear above
+#' @param l1,l2   First and second lines of annotation to appear above
 #' bars in a bar plot
 #'
 #' @param header.cex Character expansion factor for plot header
@@ -73,12 +73,13 @@
 #' ## create table of random membership data
 #' n.sites <- 5
 #' n.sources <- 10
-#' n.samples <- 1000
+#' n.samples <- 160
 #' ## data frame of site-source pairs
+#' set.seed(75333)
 #' t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
 #'                 source = round(runif(n.samples) * n.sources + 0.5))
 #' ## create site-by-source table
-#' tab <- with(t, table(site, source))
+#' tab <- table(t)
 #' membershipPlot(tab, distinguish.multiton = TRUE)
 #'
 #' @export
@@ -89,15 +90,17 @@ NULL
 
 membershipPlot <- function(tab, ...) UseMethod("membershipPlot")
 
+
+
 #' @rdname membershipPlot
 #'
 #' @export
 #'
 membershipPlot.default <- function(tab, ...)
 {
-    tab <- as.table(tab)
-    membershipPlot.table(tab, ...)
+    membershipPlot.table(as.table(tab), ...)
 }
+
 
 
 #' @rdname membershipPlot

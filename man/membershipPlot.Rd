@@ -16,14 +16,14 @@
   cex.names = 0.85, l1 = NULL, l2 = NULL, ...)
 }
 \arguments{
-\item{tab}{Matrix of counts or proportions for observations of
-group membership (columns) within sites (rows).  The table is
-standardized by site so it doesn't matter whether the
-table values are counts or proportions.}
+\item{tab}{Table of counts of sites (rows) by group membership
+(columns), or any similar object (e.g., class \code{'matrix'}) that
+can be converted with \code{\link{as.table}}.  The table is
+standardized by site so table values may be counts or proportions.}
 
-\item{method}{\code{"bar"} (the default) or \code{"pie"}, for the form of
-plot produced.  Bar plots have received considerably more attention than
-pie plots.}
+\item{method}{\code{"bar"} (the default) or \code{"pie"}, for the form
+of plot produced.  Bar plots have received considerably more attention
+than pie plots.}
 
 \item{fill.method}{\code{"color"} (the default, with synonym
 \code{"colour"}, or \code{"bw"}, for the method of colouring different
@@ -50,7 +50,7 @@ the default white colour.}
 
 \item{pdf.file,postscript.file}{Filename for output of PDF file, using
 \code{\link{pdf}}, or PostScript file, using \code{\link{postscript}}.
-file.  Only one can be set.  Both are produced using the options
+file.  Only one can be set.  Either file is produced using the options
 \code{onefile = FALSE, paper = "special"}.}
 
 \item{file.dim}{Dimensions of the plot, in inches}
@@ -84,12 +84,13 @@ Scofield et al. (2012).
 ## create table of random membership data
 n.sites <- 5
 n.sources <- 10
-n.samples <- 1000
+n.samples <- 160
 ## data frame of site-source pairs
+set.seed(75333)
 t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
                 source = round(runif(n.samples) * n.sources + 0.5))
 ## create site-by-source table
-tab <- with(t, table(site, source))
+tab <- table(t)
 membershipPlot(tab, distinguish.multiton = TRUE)
 }
 \references{
