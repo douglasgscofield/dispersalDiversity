@@ -70,11 +70,41 @@
 #'
 #' @examples
 #'
+#' ## create table of random membership data
+#' n.sites <- 5
+#' n.sources <- 10
+#' n.samples <- 1000
+#' ## data frame of site-source pairs
+#' t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+#'                 source = round(runif(n.samples) * n.sources + 0.5))
+#' ## create site-by-source table
+#' tab <- with(t, table(site, source))
 #' membershipPlot(tab, distinguish.multiton = TRUE)
 #'
-#' @export membershipPlot
+#' @export
 #'
-membershipPlot <- function(tab, method = c("bar", "pie"), 
+#' @name membershipPlot
+#'
+NULL
+
+membershipPlot <- function(tab, ...) UseMethod("membershipPlot")
+
+#' @rdname membershipPlot
+#'
+#' @export
+#'
+membershipPlot.default <- function(tab, ...)
+{
+    tab <- as.table(tab)
+    membershipPlot.table(tab, ...)
+}
+
+
+#' @rdname membershipPlot
+#'
+#' @export
+#'
+membershipPlot.table <- function(tab, method = c("bar", "pie"), 
     fill.method = c("color", "bw", "colour"), fill.palette = "Dark2",
     distinguish.multiton = FALSE, 
     pdf.file = NULL, postscript.file = NULL, file.dim = c(5.25, 2), 

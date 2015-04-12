@@ -2,14 +2,18 @@
 % Please edit documentation in R/membershipPlot.R
 \name{membershipPlot}
 \alias{membershipPlot}
+\alias{membershipPlot.default}
+\alias{membershipPlot.table}
 \title{Plot a series of bars or pies indicating membership in groups}
 \usage{
-membershipPlot(tab, method = c("bar", "pie"), fill.method = c("color", "bw",
-  "colour"), fill.palette = "Dark2", distinguish.multiton = FALSE,
-  pdf.file = NULL, postscript.file = NULL, file.dim = c(5.25, 2),
-  xlab = "Site", ylab = "Membership", las = 1, x.mar.width = ifelse(las
-  >= 2, 4, 3), cex = 0.7, header.cex = 0.9, cex.names = 0.85, l1 = NULL,
-  l2 = NULL, ...)
+\method{membershipPlot}{default}(tab, ...)
+
+\method{membershipPlot}{table}(tab, method = c("bar", "pie"),
+  fill.method = c("color", "bw", "colour"), fill.palette = "Dark2",
+  distinguish.multiton = FALSE, pdf.file = NULL, postscript.file = NULL,
+  file.dim = c(5.25, 2), xlab = "Site", ylab = "Membership", las = 1,
+  x.mar.width = ifelse(las >= 2, 4, 3), cex = 0.7, header.cex = 0.9,
+  cex.names = 0.85, l1 = NULL, l2 = NULL, ...)
 }
 \arguments{
 \item{tab}{Matrix of counts or proportions for observations of
@@ -77,6 +81,15 @@ combination.  An example if its use is in Figure 2A-C of
 Scofield et al. (2012).
 }
 \examples{
+## create table of random membership data
+n.sites <- 5
+n.sources <- 10
+n.samples <- 1000
+## data frame of site-source pairs
+t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+                source = round(runif(n.samples) * n.sources + 0.5))
+## create site-by-source table
+tab <- with(t, table(site, source))
 membershipPlot(tab, distinguish.multiton = TRUE)
 }
 \references{
