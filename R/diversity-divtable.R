@@ -16,8 +16,9 @@ NULL
 #'
 #' @param \dots   Additional arguments, currently ignored
 #'
-#' @return A list is returned which contains three forms of diversity
-#' statistics, each' returned as lists under separate named elements:
+#' @return A list of class \code{'diversity'} containing three forms of
+#' diversity statistics, each' returned as lists under separate named
+#' elements:
 #' \itemize{
 #'     \item \code{q}, based on squared frequencies, known to be biased at 
 #'           smaller sample sizes
@@ -129,7 +130,9 @@ diversity <- function(tab, ...) UseMethod("diversity")
 #'
 diversity.default <- function(tab, ...)
 {
-    diversity.table(as.table(tab), ...)
+    tab <- as.table(tab)
+    tab <- structure(tab, class = c('divtable', class(tab)))
+    diversity.divtable(tab, ...)
 }
 
 
@@ -138,7 +141,7 @@ diversity.default <- function(tab, ...)
 #'
 #' @export
 #'
-diversity.table <- function(tab, ...)
+diversity.divtable <- function(tab, ...)
 {
     tab <- as.matrix(tab)
     G <- dim(tab)[1]
@@ -255,27 +258,27 @@ diversity.table <- function(tab, ...)
     r$divergence <- 1 - r$overlap
 
     # return value
-    list(table       = tab, # table passed in, as a matrix
-         num.groups  = G,   # number of rows (sites)
-         num.sources = K,   # number of columns (sources)
-         num.samples = N, 
-         num.samples.group  = n.g,
-         num.sources.group  = apply(tab, 1, function(x) sum(x > 0)),
-         num.samples.source = n.k,
-         num.groups.source  = apply(tab, 2, function(x) sum(x > 0)),
+    ans <- list(table       = tab, # table passed in, as a matrix
+                num.groups  = G,   # number of rows (sites)
+                num.sources = K,   # number of columns (sources)
+                num.samples = N, 
+                num.samples.group  = n.g,
+                num.sources.group  = apply(tab, 1, function(x) sum(x > 0)),
+                num.samples.source = n.k,
+                num.groups.source  = apply(tab, 2, function(x) sum(x > 0)),
 
-         # Pooled PMI (Scofield et al 2010 J Ecol)
-         y.gh        = y.gh,
-         prop.y.0.gh = prop.y.0.gh,
-         q.0.gh      = q.0.gh,
+                # Pooled PMI (Scofield et al 2010 J Ecol)
+                y.gh        = y.gh,
+                prop.y.0.gh = prop.y.0.gh,
+                q.0.gh      = q.0.gh,
 
-         # Q matrix, used to reconstruct C matrix in (at least) allele code
-         Q.mat     = Q.mat,
+                # Q matrix, used to reconstruct C matrix in (at least) allele code
+                Q.mat     = Q.mat,
 
-         # diversity calculations
-         q         = q,
-         r         = r, 
-         q.nielsen = q.nielsen
-    )
+                # diversity calculations
+                q         = q,
+                r         = r, 
+                q.nielsen = q.nielsen)
+    structure(ans, class = c('diversity', 'list'))
 }
 

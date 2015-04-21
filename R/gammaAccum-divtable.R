@@ -1,4 +1,4 @@
-#' @include diversity-table.R
+#' @include diversity-divtable.R
 # for collation order
 NULL
 
@@ -140,7 +140,7 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
 #'
 #' @export
 #'
-gammaAccum.default <- function(tab, 
+gammaAccum.divtable <- function(tab, 
     accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"),
     gamma.method = c("r", "q.nielsen", "q"),
@@ -158,8 +158,7 @@ gammaAccum.default <- function(tab,
     ans$simple.results <- runGammaAccumSimple(tab,
         accum.method = accum.method, resample.method = resample.method,
         gamma.method = gamma.method, distance.file = distance.file, ...)
-    class(ans) <- c('gamma_accum', 'list')
-    return(ans)
+    structure(ans, class = c('gamma_accum', 'list'))
 }
 
 
@@ -185,16 +184,12 @@ gammaAccum.default <- function(tab,
 
 
 
-#---------------------------------------------
 
-
-gammaAccumSimple.default <- function(tab, ...)
+gammaAccumSimple.divtable <- function(tab, ...)
 {
     return(gammaAccumStats(gammaAccumWorker(tab, ...)))
 }
 
-
-#---------------------------------------------
 
 
 gammaAccumStats <- function(ga)
@@ -214,14 +209,11 @@ gammaAccumStats <- function(ga)
 }
 
 
-#---------------------------------------------
 
-# dispatch method defined in alleleGammaAccum.R
-
-gammaAccumWorker.default <- function(tab, n.sites=dim(tab)[1],
+gammaAccumWorker.divtable <- function(tab, n.sites=dim(tab)[1],
     n.resample=1000, accum.method=c("random", "proximity"),
     resample.method=c("permute", "bootstrap"), distance.file=NULL,
-    gamma.method=c("r", "q.nielsen", "q"))
+    gamma.method=c("r", "q.nielsen", "q"), ...)
 {
     # If used, the distance.file has three columns, with names: pool, X, Y
     # It is either a filename to read, or a data.frame

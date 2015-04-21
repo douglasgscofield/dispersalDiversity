@@ -1,8 +1,6 @@
-#' @include diversity-table.R
+#' @include diversity-divtable.R
 # for collation
 NULL
-
-# diversityTests-table.R
 
 # Provide functions for performing dispersal diversity tests (Scofield et al
 # 2012 American Naturalist 180(6) 719-732,
@@ -44,7 +42,7 @@ NULL
 
 #' Test for differences in alpha diversity among sites within a single data set
 #'
-#' @param tab Site x soure table
+#' @param tab Site x source table
 #'
 #' @param zero.var.adjust Logical, whether to adjust zero-variance groups
 #' with minimum value, see \code{\link{BLAHBLAH}}
@@ -69,11 +67,22 @@ NULL
 #'
 # @examples
 #
-#' @export alphaDiversityTest
+#' @export
 #'
-alphaDiversityTest <- function(tab, zero.var.adjust = TRUE,
+#' @name alphaDiversityTest
+#'
+NULL
+
+alphaDiversityTest <- function(tab, ...) UseMethod("alphaDiversityTest")
+
+#' @rdname alphaDiversityTest
+#'
+#' @export
+#'
+alphaDiversityTest.divtable <- function(tab, zero.var.adjust = TRUE,
     n.resample = 10000, method = c("bootstrap", "permute"),
-    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
+    ...)
 {
     method <- match.arg(method)
     ans <- list()
@@ -84,39 +93,44 @@ alphaDiversityTest <- function(tab, zero.var.adjust = TRUE,
     G <- length(n.g)
     ans$N.samples <- N
     ans$N.groups <- G
-
     terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
-    PVAL = pchisq(terms$ln.LR, df = terms$DF, TRUE)
-                #lower.tail = ifelse(.diversityTest.ReverseTerms, FALSE, TRUE))
-    cat("Bartlett's Test for Heteroscedasticity in Intra-group Variances\n\n")
-    cat("Comparing against X-2 distribution directly:\n")
-    cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  df=(G-1) = %d  P = %g\n",
-        N, G, terms$ln.LR, terms$DF, PVAL))
     ans$observed.ln.LR <- terms$ln.LR
+    # Analytic distribution
     ans$df.X2 <- terms$DF
-    ans$P.analytic <- PVAL
-    nulldist <- .diversityTest.NullDist(obs = terms$ln.LR,
-                                        n.g = n.g, 
-                                        g.vardist = g.vardist,
-                                        zero.var.adjust = zero.var.adjust,
-                                        method = method, 
-                                        n.resample=n.resample)
-    PVAL <- sum(terms$ln.LR <= nulldist)/n.resample
-    cat("\nComparing against bootstrap X-2 distribution:\n")
-    q2 <- quantile(nulldist, test.quantiles)
-    cat(sprintf("N samples = %d  groups = %d  observed.ln.LR = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
-        N, G, terms$ln.LR, n.resample, 
-        paste(collapse=" ", test.quantiles),
-        paste(collapse=" ", q2),
-        PVAL))
+    ans$P.analytic <- pchisq(terms$ln.LR, df = terms$DF, TRUE)
+    # Empirical distribution
+    nulldist <- .diversityTest.NullDist(obs = terms$ln.LR, n.g = n.g, 
+        g.vardist = g.vardist, zero.var.adjust = zero.var.adjust,
+        method = method, n.resample=n.resample)
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quantiles <- q2
-    ans$P.empirical <- PVAL
+    ans$quantiles <- quantile(nulldist, test.quantiles)
+    ans$P.empirical <- sum(terms$ln.LR <= nulldist) / n.resample
     ans$empdist <- nulldist
-    ####
-    class(ans) <- c(class(ans), "diversityTest")
-    invisible(ans)
+    structure(ans, class = c('alpha_test', 'list'))
+}
+
+
+
+#TODO: make the test be a string part of the class
+#  class 'diversity_test' and dynamically determine N.a, N.b, N.c
+#
+#' Print the result of \code{alphaContrastTest}
+#'
+#' @export
+#'
+print.alpha_test <- function(result, ...)
+{
+    cat("alphaDiversityTest: Heteroscedasticity in Intra-Group Alpha Variances\n\n")
+    cat("Samples N = ", result$N.samples, "   groups = ", result$N.groups, "\n")
+    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
+        result$df.X2, "   P = ", result$P.analytic, "\n")
+    cat("Test against bootstrap X-2 distribution (much better test):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
+        result$n.resample, "   P = ", result$P.empirical, "\n")
+    cat("Quantiles of the bootstrap distribution:\n")
+    print(result$quantiles)
 }
 
 
@@ -149,13 +163,26 @@ alphaDiversityTest <- function(tab, zero.var.adjust = TRUE,
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
 # @examples
-#
-#' @export alphaContrastTest
 #'
-alphaContrastTest <- function(tab.a, tab.b, zero.var.adjust = TRUE,
+#' @export
+#'
+#' @name alphaContrastTest
+#'
+NULL
+
+alphaContrastTest <- function(tab.a, tab.b, ...) UseMethod("alphaContrastTest")
+
+
+
+#' @rdname alphaContrastTest
+#'
+#' @export
+#"
+alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     n.resample = 10000, method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
+    stopifnot(inherits(tab.b, 'divtable'))
     method <- match.arg(method)
     #.RT = .diversityTest.ReverseTerms
     #.diversityTest.ReverseTerms = FALSE
@@ -194,37 +221,47 @@ alphaContrastTest <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     DF <- G -1
     ans$N.samples <- N
     ans$N.groups <- G
-    PVAL <- pchisq(observed.ln.LR.a.b, df = DF, lower.tail = TRUE)
-    cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Alpha Variances\n\n")
-    cat("Comparing against X-2 distribution directly:\n")
-    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  df=(G-1) = %d  P = %g\n",
-        N.a, N.b, G, observed.ln.LR.a.b, DF, PVAL))
     ans$observed.ln.LR <- observed.ln.LR.a.b
+    # Analytic distribution
     ans$df.X2 <- G - 1
-    ans$P.analytic <- PVAL
+    ans$P.analytic <- pchisq(observed.ln.LR.a.b, df = DF, lower.tail = TRUE)
+    # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs=observed.ln.LR.a.b,
                                         n.g = n.a.b,
                                         g.vardist = a.b.vardist,
                                         zero.var.adjust, method, 
                                         n.resample)
-    PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
-    cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
-    q2 <- quantile(nulldist, test.quantiles)
-    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
-                N.a, N.b, G, observed.ln.LR.a.b, n.resample, 
-                paste(collapse = " ", test.quantiles), 
-                paste(collapse = " ", q2), 
-                PVAL))
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quantiles <- q2
-    ans$P.empirical <- PVAL
+    ans$quantiles <- quantile(nulldist, test.quantiles)
+    ans$P.empirical <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.vardist = a.b.vardist
-    #.diversityTest.ReverseTerms = .RT
-    ####
-    class(ans) <- c(class(ans), "diversityTest.AlphaContrast")
-    invisible(ans)
+    structure(ans, class = c('alpha_contrast_test', 'list'))
+}
+
+
+
+#TODO: make the test be a string part of the class
+#  class 'diversity_test' and dynamically determine N.a, N.b, N.c
+#
+#' Print the result of \code{alphaContrastTest}
+#'
+#' @export
+#'
+print.alpha_contrast_test <- function(result, ...)
+{
+    cat("alphaContrastTest: Heteroscedasticity in Alpha Variances\n\n")
+    cat("Samples N.a = ", result$N.a, "   N.b = ", result$N.b,
+        "   groups = ", result$N.groups, "\n")
+    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
+        result$df.X2, "   P = ", result$P.analytic, "\n")
+    cat("Test against bootstrap X-2 distribution (much better test):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
+        result$n.resample, "   P = ", result$P.empirical, "\n")
+    cat("Quantiles of the bootstrap distribution:\n")
+    print(result$quantiles)
 }
 
 
@@ -260,12 +297,29 @@ alphaContrastTest <- function(tab.a, tab.b, zero.var.adjust = TRUE,
 #'
 # @examples
 #
-#' @export alphaContrastTest
+#' @export
 #'
-alphaContrastTest.3 <- function(tab.a, tab.b, tab.c, zero.var.adjust = TRUE,
-    n.resample = 10000, method = c("bootstrap", "permute"),
-    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+#' @name alphaContrastTest3
+#'
+NULL
+
+alphaContrastTest3 <- function(tab.a, tab.b, tab.c, ...)
+    UseMethod("alphaContrastTest3")
+
+
+
+#' @rdname alphaContrastTest3
+#'
+#' @export
+#'
+alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
+    zero.var.adjust = TRUE, n.resample = 10000,
+    method = c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
+    ...)
 {
+    stopifnot(inherits(tab.b, 'divtable'))
+    stopifnot(inherits(tab.c, 'divtable'))
     method <- match.arg(method)
     #.RT <- .diversityTest.ReverseTerms
     #.diversityTest.ReverseTerms <- FALSE
@@ -322,53 +376,118 @@ alphaContrastTest.3 <- function(tab.a, tab.b, tab.c, zero.var.adjust = TRUE,
     DF <- G -1
     ans$N.samples <- N
     ans$N.groups <- G
-    PVAL <- pchisq(observed.ln.LR.a.b.c, df = DF, lower.tail = TRUE)
-    cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Alpha Variances\n\n")
-    cat("Comparing against X-2 distribution directly:\n")
-    cat(sprintf("Samples N.a = %d, N.b = %d, N.c 0 %d  groups = %d  observed.ln.LR.a.b.c = %f  df=(G-1) = %d  P = %g\n",
-        N.a, N.b, N.c, G, observed.ln.LR.a.b.c, DF, PVAL))
     ans$observed.ln.LR <- observed.ln.LR.a.b.c
+    # Analytic distribution
     ans$df.X2 <- G - 1
-    ans$P.analytic <- PVAL
+    ans$P.analytic <- pchisq(observed.ln.LR.a.b.c, df = DF, lower.tail = TRUE)
+    # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b.c,
                                         n.g = n.a.b.c,
                                         g.vardist = a.b.c.vardist,
                                         zero.var.adjust, method, 
                                         n.resample)
-    PVAL <- sum(observed.ln.LR.a.b.c <= nulldist)/n.resample
-    cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
-    q1 <- c(0.5, 0.01, 0.001)
-    q2 <- quantile(nulldist, q1)
-    cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b.c = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
-        N.a, N.b, N.c, G, observed.ln.LR.a.b.c, n.resample, 
-        paste(collapse = " ", test.quantiles), 
-        paste(collapse = " ", q2), 
-        PVAL))
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quantiles <- q2
-    ans$P.empirical <- PVAL
+    ans$quantiles <- quantile(nulldist, test.quantiles)
+    ans$P.empirical <- sum(observed.ln.LR.a.b.c <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
-    #.diversityTest.ReverseTerms <- .RT
-    ####
-    class(ans) <- c(class(ans), "diversityTest.AlphaContrast.3")
-    invisible(ans)
+    structure(ans, class = c('alpha_contrast_test3', 'list'))
 }
 
 
-#---------------------------------------------
 
-
-plotAlphaTest <- function(result, add.analytic=FALSE, 
-    compress.x=TRUE, do.postscript=FALSE, ...)
+#TODO: make the test be a string part of the class
+#  class 'diversity_test'
+#
+#' Print the result of \code{alphaContrastTest3}
+#'
+#' @export
+#'
+print.alpha_contrast_test3 <- function(result, ...)
 {
-    if (! (inherits(result, "diversityTest") ||
-           inherits(result, "diversityTest.AlphaContrast")))
-        stop(deparse(substitute(result)), 
-             "not a result of alphaDiversityTest() or alphaContrastTest()")
-    if (do.postscript)
-        eps("pBDT.eps", width = 8, height = 3)
+    cat("alphaContrastTest3: Heteroscedasticity in Alpha Variances\n\n")
+    cat("Samples N.a = ", result$N.a, "   N.b = ", result$N.b,
+        "   N.a = ", result$N.c, "   groups = ", result$N.groups, "\n")
+    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
+        result$df.X2, "   P = ", result$P.analytic, "\n")
+    cat("Test against bootstrap X-2 distribution (much better test):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
+        result$n.resample, "   P = ", result$P.empirical, "\n")
+    cat("Quantiles of the bootstrap distribution:\n")
+    print(result$quantiles)
+}
+
+
+
+#' Plot result of \code{alphaContrastTest3}
+#'
+#' @export
+#'
+plot.alpha_contrast_test3 <- function(result, add.analytic = FALSE, 
+    compress.x = TRUE, ...)
+{
+    plot.alpha_test(result, add.analytic = add.analytic, 
+                    compress.x = compress.x, ...)
+}
+
+
+
+#' Plot result of \code{alphaContrastTest}
+#'
+#' @export
+#'
+plot.alpha_contrast_test <- function(result, add.analytic = FALSE, 
+    compress.x = TRUE, ...)
+{
+    plot.alpha_test(result, add.analytic = add.analytic, 
+                    compress.x = compress.x, ...)
+}
+
+
+
+#' Plot result of \code{gammaContrastTest3}
+#'
+#' @export
+#'
+plot.gamma_contrast_test3 <- function(result, add.analytic = FALSE, 
+    compress.x = TRUE, ...)
+{
+    plot.alpha_test(result, add.analytic = add.analytic, 
+                    compress.x = compress.x, ...)
+}
+
+
+
+#' Plot result of \code{gammaContrastTest}
+#'
+#' @export
+#'
+plot.gamma_contrast_test <- function(result, add.analytic = FALSE, 
+    compress.x = TRUE, ...)
+{
+    plot.alpha_test(result, add.analytic = add.analytic, 
+                    compress.x = compress.x, ...)
+}
+
+
+
+# make this be plot.diversity_test or something, and key off
+# of available variables and a test name string that is printed
+# on the plot and used in the print() output
+#
+#' Plot result of \code{alphaDiversityTest}
+#'
+#' @export
+#'
+plot.alpha_test <- function(result, add.analytic=FALSE, 
+    compress.x=TRUE, ...)
+{
+    #if (! (inherits(result, "diversityTest") ||
+    #       inherits(result, "diversityTest.AlphaContrast")))
+    #    stop(deparse(substitute(result)), 
+    #         "not a result of alphaDiversityTest() or alphaContrastTest()")
     par(mar = c(3.5, 3.5, 1.5, 1), mgp = c(2, 0.5, 0))
     plotted.observed.ln.LR <- result$observed.ln.LR
     empdist.range <- diff(range(result$empdist[-result$n.resample]))
@@ -405,16 +524,31 @@ plotAlphaTest <- function(result, add.analytic=FALSE,
            legend=substitute("Observed ln(LR)" == OX2,
                              list(OX2 = sprintf("%.3f", 
                                                 round(result$observed.ln.LR, 3)))))
-    if (do.postscript)
-        dev.off()
 }
 
 
 
-pairwiseMeanTest <- function(tab, n.iter = 10000,
+#' Test for structure in pairwise divergence between sites
+#'
+#' @export
+#'
+#' @name pairwiseMeanTest
+#'
+NULL
+
+pairwiseMeanTest <- function(tab, ...) UseMethod("pairwiseMeanTest")
+
+
+
+#' @rdname pairwiseMeanTest
+#'
+#' @export
+#'
+pairwiseMeanTest.divtable <- function(tab, n.iter = 10000,
     method = c("r", "q", "q.nielsen"), 
     statistic = c("divergence", "overlap"),
-    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
+    ...)
 {
     method <- match.arg(method)
     statistic <- match.arg(statistic)
@@ -452,16 +586,18 @@ pairwiseMeanTest <- function(tab, n.iter = 10000,
                 obs = obs, n.iter = n.iter, nulldist = nulldist,
                 P.lower = P.lower, P.upper = P.upper,
                 quantiles = q1, method = method, statistic = statistic)
-    class(ans) <- c(class(ans), "class.PairwiseMeanTest")
-    ####
-    return(ans)
+    structure(ans, class = c('pairwise_mean_test', 'list'))
 }
 
 
 
-plotPairwiseMeanTest <- function(result, ...)
+#' Plot the result of \code{'pairwiseMeanTest'}
+#'
+#' @export
+#'
+plot.pairwise_mean_test <- function(result, ...)
 {
-    if (! inherits(result, "class.PairwiseMeanTest"))
+    if (! inherits(result, 'pairwise_mean_test'))
         stop(deparse(substitute(result)), "not a result of pairwiseMeanTest()")
     par(mar = c(2.8, 2.8, 0.5, 0), mgp = c(1.6, 0.4, 0), tcl = -0.25, cex = 0.9)
     xlim <- range(c(0, 1, result$nulldist))
@@ -495,10 +631,28 @@ plotPairwiseMeanTest <- function(result, ...)
 
 
 
-gammaContrastTest = function(tab.a, tab.b, zero.var.adjust=TRUE,
+#' Test for difference in gamma diversity between data sets
+#'
+#' @export
+#'
+#' @name gammaContrastTest
+#'
+NULL
+
+gammaContrastTest <- function(tab.a, tab.b, ...) UseMethod("gammaContrastTest")
+
+
+
+#' @rdname gammaContrastTest
+#'
+#' @export
+#"
+gammaContrastTest.divtable = function(tab.a, tab.b, zero.var.adjust=TRUE,
     n.resample=10000, method=c("bootstrap", "permute"),
-    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
+    ...)
 {
+    stopifnot(inherits(tab.b, 'divtable'))
     ans <- list()
     X.a.k <- apply(tab.a, 2, sum)
     X.b.k <- apply(tab.b, 2, sum)
@@ -519,7 +673,7 @@ gammaContrastTest = function(tab.a, tab.b, zero.var.adjust=TRUE,
     ans$N.a <- N.a
     ans$G.a <- G.a
     terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
-    cat(sprintf("terms.a$V.p = %f  V.a.tot = %f\n", terms.a$V.p, V.a.tot))
+    #cat(sprintf("terms.a$V.p = %f  V.a.tot = %f\n", terms.a$V.p, V.a.tot))
 
     b.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.b.k))))
     n.b <- unlist(lapply(b.vardist, length))
@@ -528,7 +682,7 @@ gammaContrastTest = function(tab.a, tab.b, zero.var.adjust=TRUE,
     ans$N.b <- N.b
     ans$G.b <- G.b
     terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
-    cat(sprintf("terms.b$V.p = %f  V.b.tot = %f\n", terms.b$V.p, V.b.tot))
+    #cat(sprintf("terms.b$V.p = %f  V.b.tot = %f\n", terms.b$V.p, V.b.tot))
 
     # Combine A and B into stratta for comparison
     n.a.b <- c(a = N.a, b = N.b)
@@ -539,34 +693,42 @@ gammaContrastTest = function(tab.a, tab.b, zero.var.adjust=TRUE,
     DF <- G - 1
     ans$N.samples <- N
     ans$N.groups <- G
-    PVAL <- pchisq(observed.ln.LR.a.b, df = DF, lower.tail = TRUE)
-    cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Gamma Variances\n\n")
-    cat("Comparing against X-2 distribution directly:\n")
-    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  df=(G-1) = %d  P = %g\n",
-        N.a, N.b, G, observed.ln.LR.a.b, DF, PVAL))
     ans$observed.ln.LR <- observed.ln.LR.a.b
+    # Analytic distribution
     ans$df.X2 <- DF
-    ans$P.analytic <- PVAL
+    ans$P.analytic <- pchisq(observed.ln.LR.a.b, df = DF, lower.tail = TRUE)
+    # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b,
                                         n.g = n.a.b, g.vardist = a.b.vardist,
                                         zero.var.adjust, method, n.resample)
-    PVAL <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
-    cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
-    q2 <- quantile(nulldist, test.quantiles)
-    cat(sprintf("Samples N.a = %d, N.b = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
-        N.a, N.b, G, observed.ln.LR.a.b, n.resample, 
-        paste(collapse=" ", test.quantiles),
-        paste(collapse=" ", q2),
-        PVAL))
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quantiles <- q2
-    ans$P.empirical <- PVAL
+    ans$quantiles <- quantile(nulldist, test.quantiles)
+    ans$P.empirical <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.vardist = a.b.vardist
-    ####
-    class(ans) <- c(class(ans), "diversityTest.GammaContrast")
-    invisible(ans)
+    str(ans, class = c('gamma_contrast_test', 'list'))
+}
+
+
+
+#' Print the result of \code{gammaContrastTest}
+#'
+#' @export
+#'
+print.gamma_contrast_test <- function(result, ...)
+{
+    cat("gammaContrastTest: Heteroscedasticity in Gamma Variances\n\n")
+    cat("Samples N.a = ", result$N.a, "   N.b = ", result$N.b,
+        "   groups = ", result$N.groups, "\n")
+    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
+        result$df.X2, "   P = ", result$P.analytic, "\n")
+    cat("Test against bootstrap X-2 distribution (much better test):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
+        result$n.resample, "   P = ", result$P.empirical, "\n")
+    cat("Quantiles of the bootstrap distribution:\n")
+    print(result$quantiles)
 }
 
 
@@ -602,12 +764,29 @@ gammaContrastTest = function(tab.a, tab.b, zero.var.adjust=TRUE,
 #'
 # @examples
 #
-#' @export gammaContrastTest.3
+#' @export
 #'
-gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
+#' @name gammaContrastTest3
+#'
+NULL
+
+gammaContrastTest3 <- function(tab.a, tab.b, ...) 
+    UseMethod("gammaContrastTest3")
+
+
+
+#' @rdname gammaContrastTest3
+#'
+#' @export
+#"
+gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     zero.var.adjust = TRUE, n.resample = 10000,
-    method = c("bootstrap", "permute"))
+    method = c("bootstrap", "permute"),
+    test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
+    ...)
 {
+    stopifnot(inherits(tab.b, 'divtable'))
+    stopifnot(inherits(tab.c, 'divtable'))
     method <- match.arg(method)
     ans <- list()
     X.a.k <- apply(tab.a, 2, sum)
@@ -673,34 +852,50 @@ gammaContrastTest.3 <- function(tab.a, tab.b, tab.c,
     DF <- G -1
     ans$N.samples <- N
     ans$N.groups <- G
-    PVAL <- pchisq(observed.ln.LR.a.b.c, df = DF, lower.tail = TRUE)
-    cat("Bartlett's Test for Heteroscedasticity in **Inter-group** Gamma Variances\n\n")
-    cat("Comparing against X-2 distribution directly:\n")
-    cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b.c = %f  df=(G-1) = %d  P = %g\n",
-        N.a, N.b, N.c, G, observed.ln.LR.a.b.c, DF, PVAL))
     ans$observed.ln.LR <- observed.ln.LR.a.b.c
+    # Analytic distribution
     ans$df.X2 <- DF
-    ans$P.analytic <- PVAL
+    ans$P.analytic <- pchisq(observed.ln.LR.a.b.c, df = DF, lower.tail = TRUE)
+    # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b.c,
                                         n.g = n.a.b.c,
                                         g.vardist = a.b.c.vardist,
                                         zero.var.adjust, method, n.resample)
-    PVAL <- sum(observed.ln.LR.a.b.c <= nulldist)/n.resample
-    cat("\nContrasting groups, compare against bootstrap X-2 distribution:\n")
-    q1 <- c(0.5, 0.01, 0.001)
-    q2 <- quantile(nulldist, q1)
-    cat(sprintf("Samples N.a = %d, N.b = %d, N.c = %d  groups = %d  observed.ln.LR.a.b = %f  resamples = %d  boot.X2[%s] = [%s]  P = %g\n",
-        N.a, N.b, N.c, G, observed.ln.LR.a.b.c, n.resample,
-        paste(collapse = " ", q1), q2[1], q2[2], q2[3], PVAL))
     ans$n.resample <- n.resample
     ans$resample.method <- method
-    ans$quantiles <- q2
-    ans$P.empirical <- PVAL
+    ans$quantiles <- quantile(nulldist, test.quantiles)
+    ans$P.empirical <- sum(observed.ln.LR.a.b.c <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
-    class(ans) <- c(class(ans), "diversityTest.GammaContrast.3")
-    invisible(ans)
+    structure(ans, class = c('gamma_contrast_test3', 'list'))
 }
+
+
+
+#TODO: make the test be a string part of the class
+#  class 'diversity_test'
+# contrasting groups
+#
+#' Print the result of \code{gammaContrastTest3}
+#'
+#' @export
+#'
+print.gamma_contrast_test3 <- function(result, ...)
+{
+    cat("gammaContrastTest3: Heteroscedasticity in Inter-Group Gamma Variances\n\n")
+    cat("Samples N.a = ", result$N.a, "   N.b = ", result$N.b,
+        "   N.c = ", result$N.c, "   groups = ", result$N.groups, "\n")
+    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
+        result$df.X2, "   P = ", result$P.analytic, "\n")
+    cat("Test against bootstrap X-2 distribution (much better test):\n")
+    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
+        result$n.resample, "   P = ", result$P.empirical, "\n")
+    cat("Quantiles of the bootstrap distribution:\n")
+    print(result$quantiles)
+}
+
+
 
 
 

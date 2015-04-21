@@ -1,6 +1,8 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Define `print` and `plot` methods for `allele_tables`
+* Do we want `table` methods, or define a new class that is the same as a table but is specifically a diversity table?
 * Class returned by functions that is plottable by plotAlphaTest... or is this plottable by `htest_boot`
 * make `createAlleleTables` return matrices?  or perhaps I have settled on a table as the input class?
 * finish pooled PMI description in `diversity`

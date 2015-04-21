@@ -1,4 +1,4 @@
-#' @include diversity-table.R
+#' @include diversity-divtable.R
 # for collation
 NULL
 
@@ -90,7 +90,7 @@ createAlleleTables.genalex <- function(dat, new.ploidy = 2,
     if (sum(unlist(ex)) && !quiet)
         cat(sprintf("Excluding %d entries based on 'exclude = c(%s)'\n", 
                     sum(unlist(ex)), paste(collapse = ", ", exclude)))
-    class(ans) <- c('allele_tables', 'list')
+    class(ans) <- c('allele_divtables', 'list')
     return(ans)
 }
 
@@ -127,8 +127,8 @@ diversityMultilocus <- function(x, ...) UseMethod("diversityMultilocus")
 #'
 #' @export
 #'
-diversityMultilocus.allele_tables <- function(lst, ploidy = 2, 
-    method = c("r", "q.nielsen", "q"))
+diversityMultilocus.allele_divtables <- function(lst, ploidy = 2, 
+    method = c("r", "q.nielsen", "q"), ...)
 {
     # calculates diversity statistics for a collection of loci, the argument
     # is produced by createAlleleTables()
@@ -192,28 +192,28 @@ diversityMultilocus.allele_tables <- function(lst, ploidy = 2,
     gamma.scaled <- ((gamma - 1) / gamma) * (gamma.max / (gamma.max - 1))
     beta.scaled <- ((beta - 1) / beta) * (beta.max / (beta.max - 1))
     # return value
-    list(q.gg               = q.gg,
-         alpha.gk           = alpha.gk,
-         q.k                = q.k,
-         alpha.k            = alpha.k,
-         q.bar.weighted.a   = q.bar.weighted.a,
-         Q.0.a              = Q.0.a,
-         q.bar.weighted     = q.bar.weighted,
-         alpha.bar.weighted = alpha.bar.weighted,
-         gamma              = gamma,
-         beta               = beta,
-         G                  = G,
-         N                  = N,
-         K                  = K,
-         alpha.scaled       = alpha.scaled,
-         gamma.scaled       = gamma.scaled,
-         beta.scaled        = beta.scaled,
-         q.gh               = q.gh,
-         overlap            = overlap,
-         divergence         = divergence,
-         overlap.mean       = overlap.mean,
-         divergence.mean    = divergence.mean
-         )
+    ans <- list(q.gg               = q.gg,
+                alpha.gk           = alpha.gk,
+                q.k                = q.k,
+                alpha.k            = alpha.k,
+                q.bar.weighted.a   = q.bar.weighted.a,
+                Q.0.a              = Q.0.a,
+                q.bar.weighted     = q.bar.weighted,
+                alpha.bar.weighted = alpha.bar.weighted,
+                gamma              = gamma,
+                beta               = beta,
+                G                  = G,
+                N                  = N,
+                K                  = K,
+                alpha.scaled       = alpha.scaled,
+                gamma.scaled       = gamma.scaled,
+                beta.scaled        = beta.scaled,
+                q.gh               = q.gh,
+                overlap            = overlap,
+                divergence         = divergence,
+                overlap.mean       = overlap.mean,
+                divergence.mean    = divergence.mean)
+    structure(ans, class = c('multilocus_diversity', 'list'))
 }
 
 
@@ -233,7 +233,20 @@ diversityMultilocus.allele_tables <- function(lst, ploidy = 2,
 #'
 #' @export
 #'
-diversitySingleLocus <- function(tab, method = c("r", "q.nielsen", "q"))
+#' @name diversitySingleLocus
+#'
+NULL
+
+diversitySingleLocus <- function(x, ...) UseMethod("diversitySingleLocus")
+
+
+
+#' @rdname diversitySingleLocus
+#'
+#' @export
+#'
+diversitySingleLocus.divtable <- function(tab, 
+    method = c("r", "q.nielsen", "q"), ...)
 {
     method <- match.arg(method)
 
@@ -301,26 +314,26 @@ diversitySingleLocus <- function(tab, method = c("r", "q.nielsen", "q"))
              allele.gamma              = allele.func.scale.gamma(allele.gamma, 2),
              allele.beta               = allele.func.scale.beta(allele.beta, 2))
 
-    list(allele.table              = tab,
-         allele.N                  = allele.N,
-         allele.G                  = allele.G,
-         allele.q.gg               = allele.q.gg,
-         allele.n.g                = allele.n.g,
-         allele.n.k                = allele.n.k,
-         allele.alpha.g            = allele.alpha.g,
-         allele.q.bar.weighted     = allele.q.bar.weighted,
-         allele.alpha.bar.weighted = allele.alpha.bar.weighted,
-         allele.Q.0                = allele.Q.0,
-         allele.q.gh               = allele.q.gh,
-         allele.overlap            = allele.overlap,
-         allele.divergence         = allele.divergence,
-         allele.gamma              = allele.gamma,
-         allele.beta               = allele.beta,
-         allele.func.scale.alpha   = allele.func.scale.alpha,
-         allele.func.scale.gamma   = allele.func.scale.gamma,
-         allele.func.scale.beta    = allele.func.scale.beta,
-         allele.scaled.ploidy1     = allele.scaled.ploidy1,
-         allele.scaled.ploidy2     = allele.scaled.ploidy2
-         )
+    ans <- list(allele.table              = tab,
+                allele.N                  = allele.N,
+                allele.G                  = allele.G,
+                allele.q.gg               = allele.q.gg,
+                allele.n.g                = allele.n.g,
+                allele.n.k                = allele.n.k,
+                allele.alpha.g            = allele.alpha.g,
+                allele.q.bar.weighted     = allele.q.bar.weighted,
+                allele.alpha.bar.weighted = allele.alpha.bar.weighted,
+                allele.Q.0                = allele.Q.0,
+                allele.q.gh               = allele.q.gh,
+                allele.overlap            = allele.overlap,
+                allele.divergence         = allele.divergence,
+                allele.gamma              = allele.gamma,
+                allele.beta               = allele.beta,
+                allele.func.scale.alpha   = allele.func.scale.alpha,
+                allele.func.scale.gamma   = allele.func.scale.gamma,
+                allele.func.scale.beta    = allele.func.scale.beta,
+                allele.scaled.ploidy1     = allele.scaled.ploidy1,
+                allele.scaled.ploidy2     = allele.scaled.ploidy2)
+    structure(ans, class = c('singlelocus_diversity', 'list'))
 }
 

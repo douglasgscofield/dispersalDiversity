@@ -1,5 +1,5 @@
 #' @include diversity-allele.R
-#' @include gammaAccum-table.R
+#' @include gammaAccum-divtable.R
 # for collation
 NULL
 
@@ -66,7 +66,7 @@ gammaAccum <- function(x, ...) UseMethod("gammaAccum")
 #'
 #' @export
 #'
-gammaAccum.allele_tables <- function(lst, 
+gammaAccum.allele_divtables <- function(lst, 
     accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
     gamma.method = c("r", "q.nielsen", "q"), distance.file=NULL, ...)
@@ -86,8 +86,7 @@ gammaAccum.allele_tables <- function(lst,
                          gamma.method = gamma.method,
                          distance.file = distance.file,
                          ...)
-    class(ans) <- c('gamma_accum', 'list')
-    return(ans)
+    structure(ans, class = c('gamma_accum', 'list'))
 }
 
 
@@ -96,7 +95,7 @@ gammaAccumSimple <- function(x, ...) UseMethod("gammaAccumSimple")
 
 # Wrapper that runs and then return stats from allele.gammaAccum()
 #
-gammaAccumSimple.allele_tables <- function(lst, ...)
+gammaAccumSimple.allele_divtables <- function(lst, ...)
 {
     return(gammaAccumStats(gammaAccumWorker(lst, ...)))
 }
@@ -106,7 +105,7 @@ gammaAccumWorker <- function(x, ...) UseMethod("gammaAccumWorker")
 
 # Actually perform the gamma accumulation
 #
-gammaAccumWorker.allele_tables <- function(lst, n.sites = dim(lst[[1]])[1],
+gammaAccumWorker.allele_divtables <- function(lst, n.sites = dim(lst[[1]])[1],
     accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
     distance.file = NULL, gamma.method = c("r", "q.nielsen", "q"))
