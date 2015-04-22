@@ -1,4 +1,4 @@
-#' @include diversity-allele.R
+#' @include diversity-allele_divtables.R
 #' @include diversityTests-divtable.R
 # For collation, load after the above
 NULL

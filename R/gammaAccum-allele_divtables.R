@@ -1,4 +1,4 @@
-#' @include diversity-allele.R
+#' @include diversity-allele_divtables.R
 #' @include gammaAccum-divtable.R
 # for collation
 NULL

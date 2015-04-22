@@ -9,10 +9,11 @@
 #' combination.  An example if its use is in Figure 2A-C of
 #' Scofield et al. (2012).
 #'
-#' @param tab   Table of counts of sites (rows) by group membership
-#' (columns), or any similar object (e.g., class \code{'matrix'}) that
-#' can be converted with \code{\link{as.table}}.  The table is 
-#' standardized by site so table values may be counts or proportions.
+#' @param tab   Object of class \code{\link{divtable}} of counts of sites
+#' (rows) by group membership (columns), or any similar object
+#' (\code{table}, \code{matrix}, \code{data.frame}, \code{xtabs}) that
+#' can be converted with \code{\link{as.divtable}}.  This argument is
+#' standardized by site so values may be counts or proportions.
 #'
 #' @param method   \code{"bar"} (the default) or \code{"pie"}, for the form
 #' of plot produced.  Bar plots have received considerably more attention
@@ -79,7 +80,7 @@
 #' t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
 #'                 source = round(runif(n.samples) * n.sources + 0.5))
 #' ## create site-by-source table
-#' tab <- table(t)
+#' tab <- as.divtable(table(t))
 #' membershipPlot(tab, distinguish.multiton = TRUE)
 #'
 #' @export
@@ -98,7 +99,7 @@ membershipPlot <- function(tab, ...) UseMethod("membershipPlot")
 #'
 membershipPlot.default <- function(tab, ...)
 {
-    membershipPlot.table(as.table(tab), ...)
+    membershipPlot.table(as.divtable(tab), ...)
 }
 
 
@@ -107,7 +108,7 @@ membershipPlot.default <- function(tab, ...)
 #'
 #' @export
 #'
-membershipPlot.table <- function(tab, method = c("bar", "pie"), 
+membershipPlot.divtable <- function(tab, method = c("bar", "pie"), 
     fill.method = c("color", "bw", "colour"), fill.palette = "Dark2",
     distinguish.multiton = FALSE, 
     pdf.file = NULL, postscript.file = NULL, file.dim = c(5.25, 2), 
@@ -129,7 +130,7 @@ membershipPlot.table <- function(tab, method = c("bar", "pie"),
     stopifnot(is.null(pdf.file) || is.null(postscript.file))
     to.file <- !is.null(pdf.file) || !is.null(postscript.file)
     
-    # data comes in 'backwards' to what we expect, correct the order
+    # data comes in 'backwards' to what we expect when organising for the plot
     tab <- tab[rev(1:nrow(tab)), ]
     tab <- t(tab)
     

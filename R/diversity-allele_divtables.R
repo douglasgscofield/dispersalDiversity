@@ -24,11 +24,12 @@ NULL
 #   gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
 #
 
-#' Convert class \code{'genalex'} object to a list of allele count tables
+#' Calculate an \code{\link{allele_divtables}} object from a class \code{genalex} object
 #'
-#' S3 method to convert an object of class \code{'genalex'} to an object of
-#' class \code{'allele_tables'}, a list of 
-#' allele count tables.  Each entry of the list is, for each locus, a
+#' S3 method to convert an object of class \code{genalex} to an object of
+#' class \code{\link{allele_divtables}}, a list of \code{\link{divtable}}
+#' objects representing site-specific allele counts.
+#' Each entry of the list is, for each locus, a
 #' table of site-by-allele counts, with row names being the site names and
 #' column names being the names given to the individual alleles.  This is a
 #' generic so that other methods might be written to convert other genetic
@@ -121,13 +122,21 @@ diversityMultilocus <- function(x, ...) UseMethod("diversityMultilocus")
 
 
 
+diversityMultilocus.default <- function(x, ...)
+{
+    stop("intended to operate on an object of class 'allele_divtables', ",
+         "perhaps you need to use createAlleleTables() first?")
+}
+
+
+
 # TODO: now with method=, the returned values are not correctly named
 #
 #' @rdname diversityMultilocus
 #'
 #' @export
 #'
-diversityMultilocus.allele_divtables <- function(lst, ploidy = 2, 
+diversityMultilocus.allele_divtables <- function(x, ploidy = 2, 
     method = c("r", "q.nielsen", "q"), ...)
 {
     # calculates diversity statistics for a collection of loci, the argument
@@ -237,8 +246,13 @@ diversityMultilocus.allele_divtables <- function(lst, ploidy = 2,
 #'
 NULL
 
-diversitySingleLocus <- function(x, ...) UseMethod("diversitySingleLocus")
+diversitySingleLocus <- function(tab, ...) UseMethod("diversitySingleLocus")
 
+
+diversitySingleLocus.default <- function(tab, ...)
+{
+    stop("intended to operate on an allele divtable for a single locus")
+}
 
 
 #' @rdname diversitySingleLocus

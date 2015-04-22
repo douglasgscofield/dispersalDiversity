@@ -24,15 +24,16 @@ Suggests:
     RColorBrewer,
     testthat
 Collate:
+    'allele_divtables-class.R'
     'dispersalDiversity-data.R'
     'dispersalDiversity-package.R'
     'nielsenTransform.R'
     'diversity-divtable.R'
-    'diversity-allele.R'
+    'diversity-allele_divtables.R'
     'diversityTests-divtable.R'
-    'diversityTests-allele.R'
+    'diversityTests-allele_divtables.R'
     'divtable-class.R'
     'gammaAccum-divtable.R'
-    'gammaAccum-allele.R'
+    'gammaAccum-allele_divtables.R'
     'membershipPlot.R'
     'plotPairwiseMatrix.R'

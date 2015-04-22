@@ -3,12 +3,12 @@
 \name{membershipPlot}
 \alias{membershipPlot}
 \alias{membershipPlot.default}
-\alias{membershipPlot.table}
+\alias{membershipPlot.divtable}
 \title{Plot a series of bars or pies indicating membership in groups}
 \usage{
 \method{membershipPlot}{default}(tab, ...)
 
-\method{membershipPlot}{table}(tab, method = c("bar", "pie"),
+\method{membershipPlot}{divtable}(tab, method = c("bar", "pie"),
   fill.method = c("color", "bw", "colour"), fill.palette = "Dark2",
   distinguish.multiton = FALSE, pdf.file = NULL, postscript.file = NULL,
   file.dim = c(5.25, 2), xlab = "Site", ylab = "Membership", las = 1,
@@ -16,10 +16,11 @@
   cex.names = 0.85, l1 = NULL, l2 = NULL, ...)
 }
 \arguments{
-\item{tab}{Table of counts of sites (rows) by group membership
-(columns), or any similar object (e.g., class \code{'matrix'}) that
-can be converted with \code{\link{as.table}}.  The table is
-standardized by site so table values may be counts or proportions.}
+\item{tab}{Object of class \code{\link{divtable}} of counts of sites
+(rows) by group membership (columns), or any similar object
+(\code{table}, \code{matrix}, \code{data.frame}, \code{xtabs}) that
+can be converted with \code{\link{as.divtable}}.  This argument is
+standardized by site so values may be counts or proportions.}
 
 \item{method}{\code{"bar"} (the default) or \code{"pie"}, for the form
 of plot produced.  Bar plots have received considerably more attention
@@ -90,7 +91,7 @@ set.seed(75333)
 t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
                 source = round(runif(n.samples) * n.sources + 0.5))
 ## create site-by-source table
-tab <- table(t)
+tab <- as.divtable(table(t))
 membershipPlot(tab, distinguish.multiton = TRUE)
 }
 \references{

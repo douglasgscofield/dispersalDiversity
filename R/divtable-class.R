@@ -42,4 +42,77 @@
 #'
 NULL
 
-# Now add plot.divtable which uses membershipPlot. Do we need print.divtable?
+
+
+#' Plot \code{divtable} object using \code{membershipPlot}
+#'
+#' Plot object of class \code{\link{divtable}} using 
+#' \code{\link{membershipPlot}}.  This function specifies
+#' \code{method = "bar"} and sets \code{l2} to be the site (row) sums of
+#' \code{x}.  If you desire other values for these parameters, simply use
+#' \code{\link{membershipPlot}} directly.  
+#'
+#' @param x     Object of class \code{\link{divtable}}
+#'
+#' @param \dots Additional arguments passed to \code{\link{membershipPlot}}.
+#'
+#' @export
+#'
+plot.divtable <- function(x, ...) {
+    membershipPlot(x, l2 = rowSums(x), ...)
+}
+
+
+#' Convert to class \code{'divtable'}
+#'
+#' @name as.divtable
+#' @export
+NULL
+
+as.divtable <- function(x, ...) UseMethod("as.divtable")
+
+
+#' @rdname as.divtable
+#'
+#' @export
+#'
+as.divtable.table <- function(x, ...)
+{
+    structure(x, class = c('divtable', 'table'))
+}
+
+
+
+#' @rdname as.divtable
+#'
+#' @export
+#'
+as.divtable.matrix <- function(x, ...)
+{
+    structure(as.table(x), class = c('divtable', 'table'))
+}
+
+
+
+#' @rdname as.divtable
+#'
+#' @export
+#'
+as.divtable.data.frame <- function(x, ...)
+{
+    structure(as.table(x), class = c('divtable', 'table'))
+}
+
+
+
+#' @rdname as.divtable
+#'
+#' @export
+#'
+as.divtable.xtabs <- function(x, ...)
+{
+    structure(as.table(x), class = c('divtable', 'table'))
+}
+
+
+
