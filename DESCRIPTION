@@ -31,6 +31,7 @@ Collate:
     'diversity-allele.R'
     'diversityTests-divtable.R'
     'diversityTests-allele.R'
+    'divtable-class.R'
     'gammaAccum-divtable.R'
     'gammaAccum-allele.R'
     'membershipPlot.R'
