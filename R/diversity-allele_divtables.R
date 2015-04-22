@@ -24,75 +24,26 @@ NULL
 #   gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
 #
 
-#' Calculate an \code{\link{allele_divtables}} object from a class \code{genalex} object
+
+
+#' Calculate diversity for \code{allele_divtables} object using \code{diversityMultilocus}
 #'
-#' S3 method to convert an object of class \code{genalex} to an object of
-#' class \code{\link{allele_divtables}}, a list of \code{\link{divtable}}
-#' objects representing site-specific allele counts.
-#' Each entry of the list is, for each locus, a
-#' table of site-by-allele counts, with row names being the site names and
-#' column names being the names given to the individual alleles.  This is a
-#' generic so that other methods might be written to convert other genetic
-#' formats.
+#' @param x Object of class \code{\link{allele_divtables}}
 #'
-#' @examples
+#' @param \dots Additional arguments passed to
+#' \code{\link{diversityMultilocus}}
 #'
-#' # The workflow to calculate basic allelic diversity statistics:
-#' #
-#' # dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
-#' # gt <- createAlleleTables(dat)
+#' @return The value from \code{\link{diversityMultilocus}}
+#'
+#' @seealso \code{\link{diversityMultilocus}}
+#'
+#' @rdname diversity
 #'
 #' @export
 #'
-#' @name createAlleleTables
-#'
-NULL
-
-createAlleleTables <- function(x, ...) UseMethod("createAlleleTables")
-
-
-
-# as.allele_table.genalex?  as.table_list.genalex?  S3 method
-#
-# remove new.ploidy argument, see orig code below
-#
-#createAlleleTables.genalex <- function(dat, new.ploidy,
-#                                   collapse.alleles = TRUE,
-#                                   exclude = c(NA, "0"), quiet = FALSE) {
-#    if (! is.genalex(dat))
-#        stop("input must be class 'genalex'")
-#    if (new.ploidy >= 2 && ! collapse.alleles)
-#        stop("Must collapse ploidy when new.ploidy >= 2")
-#    if (attr(dat, "ploidy") > new.ploidy)
-#        dat <- reduceGenalexPloidy(dat, new.ploidy)
-
-#' @rdname createAlleleTables
-#'
-#' @export
-#'
-createAlleleTables.genalex <- function(dat, new.ploidy = 2,
-    collapse.alleles = TRUE, exclude = c(NA, "0"), quiet = FALSE)
+diversity.allele_divtables <- function(x, ...)
 {
-    if (new.ploidy >= 2 && ! collapse.alleles)
-        stop("Must collapse ploidy when new.ploidy >= 2")
-    if (attr(dat, "ploidy") > new.ploidy)
-        dat <- reducePloidy(dat, new.ploidy)
-    lc <- attr(dat, "locus.columns")
-    ln <- attr(dat, "locus.names")
-    population <- attr(dat, "pop.title")
-    ans <- list()
-    ex <- list()
-    for (il in 1:length(lc)) {
-        alleles <- as.vector(unlist(dat[, lc[il]:(lc[il] + new.ploidy - 1)]))
-        ex[[ ln[il] ]] <- sum(alleles %in% exclude)
-        pop <- rep(dat[[population]], new.ploidy)
-        ans[[ ln[il] ]] <- t(as.matrix(table(alleles, pop, exclude = exclude)))
-    }
-    if (sum(unlist(ex)) && !quiet)
-        cat(sprintf("Excluding %d entries based on 'exclude = c(%s)'\n", 
-                    sum(unlist(ex)), paste(collapse = ", ", exclude)))
-    class(ans) <- c('allele_divtables', 'list')
-    return(ans)
+    diversityMultilocus.allele_divtables(x, ...)
 }
 
 

@@ -16,8 +16,8 @@ NULL
 #'
 #' @param \dots   Additional arguments, currently ignored
 #'
-#' @return A list of class \code{'diversity'} containing three forms of
-#' diversity statistics, each' returned as lists under separate named
+#' @return A list of class \code{diversity} containing three forms of
+#' diversity statistics, each returned as lists under separate named
 #' elements:
 #' \itemize{
 #'     \item \code{q}, based on squared frequencies, known to be biased at 
@@ -130,9 +130,7 @@ diversity <- function(tab, ...) UseMethod("diversity")
 #'
 diversity.default <- function(tab, ...)
 {
-    tab <- as.table(tab)
-    tab <- structure(tab, class = c('divtable', class(tab)))
-    diversity.divtable(tab, ...)
+    diversity.divtable(as.divtable(tab), ...)
 }
 
 
