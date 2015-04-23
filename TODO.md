@@ -1,8 +1,10 @@
 TODO for dispersalDiversity
 ---------------------------
 
-* Define `print` and `plot` methods for `allele_tables`
-* Do we want `table` methods, or define a new class that is the same as a table but is specifically a diversity table?
+* Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
+* Define `print` and `plot` methods for `allele_divtables`
+* Am I happy with `print.divtable` and `plot.divtable` methods?
+* Separate doc for `diversity` class
 * Class returned by functions that is plottable by plotAlphaTest... or is this plottable by `htest_boot`
 * make `createAlleleTables` return matrices?  or perhaps I have settled on a table as the input class?
 * finish pooled PMI description in `diversity`
@@ -20,8 +22,10 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* Settled on new class `divtable`, which is shared with `table`
+* For allelic data, new class `allele_divtables`, which is shared with `list` and is a list of `divtable` objects for each locus
 * Quantiles checked are now richer and symmetric
-* Renamed `allele.createTableList` to S3 generic and method `createAlleleTables` and `createAlleleTables.genalex`
+* Renamed `allele.createTableList` to S3 generic and method `createAlleleTables` and `createAlleleTables.genalex`.  Added the synonym generic `as.allele_divtables`.
 * Started streamlining with S3 classes.
 * Incorporated random distance matrix creation in to README.
 * Changes function name of `pmiDiversity` to `diversity`

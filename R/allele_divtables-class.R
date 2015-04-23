@@ -24,9 +24,6 @@
 NULL
 
 
-# TODO: what might be a good way to print and plot allele_divtables?
-
-
 
 #' Generate an \code{\link{allele_divtables}} object from a class \code{genalex} object
 #'
@@ -117,15 +114,15 @@ createAlleleTables.genalex <- function(x, exclude = c(NA, "0"),
 }
 
 
+#----------------------------------
+#
+# synonyms, documented and exported in createAlleleTables above
 
 as.allele_divtables <- function(x, ...) UseMethod("as.allele_divtables")
-
-
 
 as.allele_divtables.default <- function(x, ...)
     createAlleleTables.default(x, ...)
 
-
-
 as.allele_divtables.genalex <- function(x, ...)
     createAlleleTables.genalex(x, ...)
+
