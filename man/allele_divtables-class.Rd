@@ -7,19 +7,19 @@
 \description{
 An object of class \code{allele_divtables} is a list of
 \code{\link{divtable}} objects, each representing allele count
-data for a single genetic locus across sites/groups.  This is the basic
-genetic data object of the \code{\link{dispersalDiversity}} package,
-and is accepted by the function \code{\link{diversity}}, which generates
-descriptive statistics, and the functions \code{\link{alphaDiversityTest}},
+data for a single genetic locus across sites/groups.  Row names are
+the site/group names, while column names are the individual alleles.
+This is the basic genetic data object of the
+\code{\link{dispersalDiversity}} package, and is accepted by the
+function \code{\link{diversity}}, which generates descriptive statistics,
+and the functions \code{\link{alphaDiversityTest}},
 \code{\link{gammaContrastTest}} and many others that test for differences
 in the structure of genetic diversity.
 }
 \details{
 Assembling an \code{allele_divtables} by hand is labourious.  More
-typically, genotype data will be present in a \code{\link{genalex}}
-object and then converted to \code{allele_divtables} using
-\code{\link{createAlleleTables}}.  Other genotype formats may be handled
-if a facility for first converting them to class \code{\link{genalex}}
-is provided by the \code{\link{readGenalex}} package or another tool.
+typically, genotype data will be in a class \code{\link{genalex}} object
+and then converted to \code{allele_divtables} using
+\code{\link{createAlleleTables}}.
 }
 

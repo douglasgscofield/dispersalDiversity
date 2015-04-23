@@ -29,6 +29,8 @@ t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
 m1 <- as.divtable(t)
 d1 <- diversity(m1)
 
+context("Testing diversity.table()")
+
 test_that("results with various table formats are identical", {
     expect_equal(d1, diversity(table(t)))
     mat <- do.call(rbind, lapply(split(t, t$site), function(x) table(x$source)))
@@ -37,9 +39,51 @@ test_that("results with various table formats are identical", {
     expect_equal(d1, diversity(xt))
 })
 
+# Many more tests of specific values
 
-# create "identity matrix", one species per site
-# create patchy matrix
 
-context("Testing diversity.table()")
-context("Testing diversity.allele_tables()")
+context("Testing allele_divtables-class and createAlleleTables()")
+
+x1.adt <- createAlleleTables(x1)
+
+test_that("each member of allele_divtables is a divtable and table", {
+    expect_true(all(sapply(x1.adt, class)[1, ] == "divtable"))
+    expect_true(all(sapply(x1.adt, class)[2, ] == "table"))
+    expect_true(all(sapply(x1.adt, ncol) == 6))
+    expect_true(all(sapply(x1.adt, nrow) == 1))
+})
+
+test_that("allele names and values correct in an allele_divtables", {
+    expect_output(x1.adt, "$a", fixed = TRUE)
+    expect_output(x1.adt, "$b", fixed = TRUE)
+    expect_output(x1.adt, " +alleles")
+    expect_output(x1.adt, "pop +11 +12 +13 +14 +15 +16")
+    expect_output(x1.adt, "snurf +1 +1 +1 +1 +1 +1")
+    expect_output(x1.adt, "pop +101 +102 +103 +104 +105 +106")
+})
+
+test_that("missing data reported correctly with quiet = FALSE", {
+    expect_match(aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE), "Excluding 92 entries based on")
+})
+
+context("Testing as.allele_divtables() as createAlleleTables() synonym")
+
+xx1.adt <- as.allele_divtables(x1)
+
+test_that("object format same with as.allele_divtables()", {
+    expect_true(all(sapply(xx1.adt, class)[1, ] == "divtable"))
+    expect_true(all(sapply(xx1.adt, class)[2, ] == "table"))
+    expect_true(all(sapply(xx1.adt, ncol) == 6))
+    expect_true(all(sapply(xx1.adt, nrow) == 1))
+})
+
+test_that("allele names and values correct in an allele_divtables", {
+    expect_output(xx1.adt, "$a", fixed = TRUE)
+    expect_output(xx1.adt, "$b", fixed = TRUE)
+    expect_output(xx1.adt, " +alleles")
+    expect_output(xx1.adt, "pop +11 +12 +13 +14 +15 +16")
+    expect_output(xx1.adt, "snurf +1 +1 +1 +1 +1 +1")
+    expect_output(xx1.adt, "pop +101 +102 +103 +104 +105 +106")
+})
+
+
