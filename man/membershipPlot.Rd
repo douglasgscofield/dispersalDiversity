@@ -10,10 +10,10 @@
 
 \method{membershipPlot}{divtable}(tab, method = c("bar", "pie"),
   fill.method = c("color", "bw", "colour"), fill.palette = "Dark2",
-  distinguish.multiton = FALSE, pdf.file = NULL, postscript.file = NULL,
-  file.dim = c(5.25, 2), xlab = "Site", ylab = "Membership", las = 1,
-  x.mar.width = ifelse(las >= 2, 4, 3), cex = 0.7, header.cex = 0.9,
-  cex.names = 0.85, l1 = NULL, l2 = NULL, ...)
+  distinguish.multiton = FALSE, xlab = "Site", ylab = "Membership",
+  las = 1, x.mar.width = ifelse(las >= 2, 4, 3), cex = 0.7,
+  header.cex = 0.9, cex.names = 0.85, l1 = NULL, l2 = NULL,
+  pdf.file = NULL, postscript.file = NULL, file.dim = c(5.25, 2), ...)
 }
 \arguments{
 \item{tab}{Object of class \code{\link{divtable}} of counts of sites
@@ -49,13 +49,6 @@ choose the base colours to use}
 to distinguish multiton groups (see Description) with grey rather than
 the default white colour.}
 
-\item{pdf.file,postscript.file}{Filename for output of PDF file, using
-\code{\link{pdf}}, or PostScript file, using \code{\link{postscript}}.
-file.  Only one can be set.  Either file is produced using the options
-\code{onefile = FALSE, paper = "special"}.}
-
-\item{file.dim}{Dimensions of the plot, in inches}
-
 \item{xlab,ylab,las,cex}{Plot parameters (see \code{\link{par}}}
 
 \item{x.mar.width}{Width of the X-margin, in a bar plot}
@@ -67,6 +60,13 @@ the bars in a bar plot}
 
 \item{l1,l2}{First and second lines of annotation to appear above
 bars in a bar plot}
+
+\item{pdf.file,postscript.file}{Filename for output of PDF file, using
+\code{\link{pdf}}, or PostScript file, using \code{\link{postscript}}.
+file.  Only one can be set.  Either file is produced using the options
+\code{onefile = FALSE, paper = "special"}.}
+
+\item{file.dim}{Dimensions of the plot, in inches}
 }
 \value{
 No value is returned

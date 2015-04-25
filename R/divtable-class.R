@@ -54,13 +54,17 @@ NULL
 #'
 #' @param x     Object of class \code{\link{divtable}}
 #'
-#' @param \dots Additional arguments passed to \code{\link{membershipPlot}}.
+#' @param l2    \code{l2} argument given to \code{\link{membershipPlot}}
+#' for column headings
+#'
+#' @param \dots Additional arguments passed to \code{\link{membershipPlot}}
 #'
 #' @export
 #'
-plot.divtable <- function(x, ...) {
-    membershipPlot(x, l2 = rowSums(x), ...)
+plot.divtable <- function(x, l2 = paste("N =", rowSums(x)), ...) {
+    membershipPlot(x, l2 = l2, ...)
 }
+
 
 
 #' Convert to class \code{'divtable'}
@@ -70,6 +74,7 @@ plot.divtable <- function(x, ...) {
 NULL
 
 as.divtable <- function(x, ...) UseMethod("as.divtable")
+
 
 
 #' @rdname as.divtable
@@ -113,6 +118,4 @@ as.divtable.xtabs <- function(x, ...)
 {
     structure(as.table(x), class = c('divtable', 'table'))
 }
-
-
 

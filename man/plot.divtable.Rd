@@ -4,12 +4,15 @@
 \alias{plot.divtable}
 \title{Plot \code{divtable} object using \code{membershipPlot}}
 \usage{
-\method{plot}{divtable}(x, ...)
+\method{plot}{divtable}(x, l2 = paste("N =", rowSums(x)), ...)
 }
 \arguments{
 \item{x}{Object of class \code{\link{divtable}}}
 
-\item{\dots}{Additional arguments passed to \code{\link{membershipPlot}}.}
+\item{l2}{\code{l2} argument given to \code{\link{membershipPlot}}
+for column headings}
+
+\item{\dots}{Additional arguments passed to \code{\link{membershipPlot}}}
 }
 \description{
 Plot object of class \code{\link{divtable}} using
