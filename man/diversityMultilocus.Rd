@@ -15,10 +15,10 @@ and diversity for each locus is calculated separately
 using \code{\link{diversitySingleLocus}}.
 }
 \examples{
-# The workflow to calculate basic allelic diversity statistics:
-#
-# dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
-# gt <- createAlleleTables(dat)
-# div <- diversityMultilocus(gt)
+## Workflow to calculate basic allelic diversity statistics:
+library(readGenalex)
+data(Qagr_pericarp_genotypes)
+gt <- createAlleleTables(Qagr_pericarp_genotypes)
+div <- diversityMultilocus(gt)
 }
 

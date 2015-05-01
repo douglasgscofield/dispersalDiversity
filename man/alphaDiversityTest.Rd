@@ -17,9 +17,9 @@
   ...)
 }
 \arguments{
-\item{lst}{Object of class \code{'allele_divtables'}, as produced by the
-function \code{\link{createAlleleTables}}.  A list, one entry per locus,
-of site x allele counts.  Each table must have the same format.}
+\item{lst}{Object of class \code{\link{allele_divtables}}, as produced
+by the function \code{\link{createAlleleTables}}.  A list, one entry
+per locus, of site-by-allele counts.  Each table must have the same format.}
 
 \item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
 with minimum value, see \code{\link{BLAHBLAH}}}
@@ -30,7 +30,7 @@ with minimum value, see \code{\link{BLAHBLAH}}}
 distribution iterations with (\code{"bootstrap"}) or without
 (\code{"permute"}) replacement}
 
-\item{tab}{Site x source table}
+\item{tab}{Site-by-source table of class \code{\link{divtable}}}
 
 \item{\dots}{Additional parameters}
 }
@@ -49,10 +49,10 @@ Test for differences in alpha diversity among sites within a single data set
 }
 \examples{
 ## For comparing allele diversity between sites in the same sample
-#
-# dat <- readGenalex("file-of-genotypes-sample-1.txt")
-# gt <- createAlleleTables(dat)
-# alpha.test <- alphaDiversityTest(gt)
+library(readGenalex)
+data(Qagr_pericarp_genotypes)
+gt <- createAlleleTables(Qagr_pericarp_genotypes)
+alpha.test <- alphaDiversityTest(gt)
 }
 \author{
 Douglas G. Scofield

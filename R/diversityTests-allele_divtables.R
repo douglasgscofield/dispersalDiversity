@@ -10,9 +10,9 @@ NULL
 #' From Sork et al., extensions of those from Scofield et al. 2012 American
 #' Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
 #'
-#' @param lst  Object of class \code{'allele_divtables'}, as produced by the
-#' function \code{\link{createAlleleTables}}.  A list, one entry per locus,
-#' of site x allele counts.  Each table must have the same format.
+#' @param lst  Object of class \code{\link{allele_divtables}}, as produced
+#' by the function \code{\link{createAlleleTables}}.  A list, one entry
+#' per locus, of site-by-allele counts.  Each table must have the same format.
 #'
 #' @param \dots  Additional parameters
 #'
@@ -36,10 +36,10 @@ NULL
 #' @examples
 #'
 #' ## For comparing allele diversity between sites in the same sample
-#' #
-#' # dat <- readGenalex("file-of-genotypes-sample-1.txt")
-#' # gt <- createAlleleTables(dat)
-#' # alpha.test <- alphaDiversityTest(gt)
+#' library(readGenalex)
+#' data(Qagr_pericarp_genotypes)
+#' gt <- createAlleleTables(Qagr_pericarp_genotypes)
+#' alpha.test <- alphaDiversityTest(gt)
 #'
 #' @export
 #'

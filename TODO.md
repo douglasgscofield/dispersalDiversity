@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Make sites/groups/species terminology consistent
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
 * Define `print` and `plot` methods for `allele_divtables`
 * Am I happy with `print.divtable` and `plot.divtable` methods?

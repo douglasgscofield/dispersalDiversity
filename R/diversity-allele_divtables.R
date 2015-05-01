@@ -2,18 +2,6 @@
 # for collation
 NULL
 
-# Using PMI statistics (Grivet et al. 2005, Scofield et al.  2010, 2011) as
-# well as alpha, beta, gamma diversity (Scofield et al 2012) calculate allele
-# diversity following Sork et al.
-#
-# @examples
-#
-# # The workflow to calculate basic allelic diversity statistics:
-#
-#   dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
-#   gt <- createAlleleTables(dat)
-#   div <- diversityMultilocus(gt)
-#
 # # For comparing allele diversity between two different samples:
 #
 #   dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
@@ -57,11 +45,11 @@ diversity.allele_divtables <- function(x, ...)
 #'
 #' @examples
 #'
-#' # The workflow to calculate basic allelic diversity statistics:
-#' #
-#' # dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
-#' # gt <- createAlleleTables(dat)
-#' # div <- diversityMultilocus(gt)
+#' ## Workflow to calculate basic allelic diversity statistics:
+#' library(readGenalex)
+#' data(Qagr_pericarp_genotypes)
+#' gt <- createAlleleTables(Qagr_pericarp_genotypes)
+#' div <- diversityMultilocus(gt)
 #'
 #' @export
 #'

@@ -16,9 +16,9 @@
 \arguments{
 \item{x}{Object of class \code{\link{allele_divtables}}}
 
-\item{tab}{Table of counts in sites (rows) X sources (columns) format.
-If the argument is not class \code{'table'}, it is converted to one with
-\code{\link{as.table}}.  Rows are not reordered.}
+\item{tab}{\code{\link{divtable}} of sites-by-sources counts.  An
+attempt is make to convert it to class \code{\link{divtable}} if it is not
+already.  Rows are not reordered.}
 
 \item{\dots}{Additional arguments passed to
 \code{\link{diversityMultilocus}}}
@@ -34,35 +34,45 @@ elements:
 \itemize{
     \item \code{q}, based on squared frequencies, known to be biased at
           smaller sample sizes
-    \item \code{r}, unbiased versions of \code{q} (Simpson, 1949)
+    \item \code{r}, unbiased versions of \code{q} (Simpson, 1949), but
+          singletons are dropped and values are nonsensical if a site
+          contains only singletons
     \item \code{q.nielsen}, a better unbiased transformation of \code{q}
-          following Nielsen \emph{et al}. (2003)
+          following Nielsen \emph{et al}. (2003) that does not have the
+          singleton properties of \code{r}
 }
 Each such list \code{q}, \code{r} and \code{q.nielsen} contains several
 elements representing different diversity statistics.  Several
-quantities are used below:
+quantities are included:
 \itemize{
-    \item \code{q.gg}, vector LENGTH of squared frequencies of groups in each
-          site
+    \item \code{q.gg}, vector of length number of sites, containing
+          squared frequencies of groups in each site.  In form \code{q},
+          these are untransformed, while in form \code{r} and
+          \code{q.nielsen}, these are transformed accordingly
     \item \code{q.bar.0}, scalar, weighted mean of \code{q.gg}
     \item \code{q.unweighted.mean}, mean of \code{q.gg}
-    \item \code{alpha.g}, vector LENGTH of reciprocals of \code{q.gg}
-    \item \code{alpha.unweighted.mean}, mean of \code{alpha.g}
-    \item \code{d.alpha}, reciprocal of \code{q.unweighted.mean}
-    \item \code{d.gamma}, reciprocal of sum of grand squared frequencies
-    \item \code{d.beta}, \code{d.gamma / d.alpha}
-    \item \code{diversity.mat} DIMS, Chao pairwise off-diagonal,
-          \code{alpha.g} on-diagonal
-    \item \code{divergence.mat} DIMS, \code{diversity.mat} with \code{0}
-          on-diagonal
-    \item \code{overlap.mat}, \code{1 - divergence.mat}
-    \item \code{overlap}, mean overlap, \eqn{\sum{C} / ((G - 1) \sum{q_{gg}})}
-    \item \code{divergence}, mean divergence, \code{1 - overlap}
+    \item \code{alpha.g}, vector of length number of sites, containing
+          reciprocals of \code{q.gg}
+    \item \code{alpha.unweighted.mean}, scalar, mean of \code{alpha.g}
+    \item \code{d.alpha}, scalar, reciprocal of \code{q.unweighted.mean}
+    \item \code{d.gamma}, scalar, reciprocal of sum of grand squared
+          frequencies
+    \item \code{d.beta}, scalar, \code{d.gamma / d.alpha}
+    \item \code{diversity.mat}, sites-by-sites matrix containing Chao
+          pairwise divergences off-diagonal, \code{alpha.g} on-diagonal
+    \item \code{divergence.mat}, sites-by-sites matrix matching
+          \code{diversity.mat} but with with \code{0} on-diagonal
+    \item \code{overlap.mat}, sites-by-sites matrix containing
+          \code{1 - divergence.mat}
+    \item \code{overlap}, scalar, mean overlap,
+          \eqn{\sum{C} / ((G - 1) \sum{q_{gg}})}
+    \item \code{divergence}, scalar, mean divergence, \code{1 - overlap}
 }
-The list also contains the original table passed to \code{diversity},
-together with several summary quantities:
+The list also contains the original \code{\link{divtable}} passed to
+\code{diversity}, together with several descriptive quantities:
 \itemize{
-    \item \code{table}, the table passed in as \code{tab}
+    \item \code{table}, the class \code{\link{divtable}} object passed in
+          as \code{tab}
     \item \code{num.groups}, the number of rows in \code{tab}
     \item \code{num.sources}, the number of columns in \code{tab}
     \item \code{num.samples}, the sum of all elements in \code{tab}
@@ -86,21 +96,21 @@ Finally, some additional statistics representing pooled PMI measures
 \description{
 Calculate diversity for \code{allele_divtables} object using \code{diversityMultilocus}
 
-Given a site x source matrix, calculate a collection of diversity
+Given a site-by-source matrix, calculate a collection of diversity
 statistics.  Statistics include PMI (probability of maternal inheritance)
 from Grivet \emph{et al}. (2005) and Scofield \emph{et al}. (2010, 2011)
 as well as alpha, beta, gamma and delta/omega from classical ecology and
 applied to a dispersal context by Scofield \emph{et al}. (2012).
 }
 \examples{
-## create table of random membership data
+## create table of random memberships from data frame of site-source pairs
 n.sites <- 5
 n.sources <- 10
 n.samples <- 160
-## data frame of site-source pairs
 set.seed(75333)
 t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
                 source = round(runif(n.samples) * n.sources + 0.5))
+## diversity accepts table via default method, which applies as.divtable
 div <- diversity(table(t))
 div$q
 }

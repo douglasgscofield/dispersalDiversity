@@ -42,7 +42,7 @@ NULL
 
 #' Test for differences in alpha diversity among sites within a single data set
 #'
-#' @param tab Site x source table
+#' @param tab    Site-by-source table of class \code{\link{divtable}}
 #'
 #' @param zero.var.adjust Logical, whether to adjust zero-variance groups
 #' with minimum value, see \code{\link{BLAHBLAH}}
@@ -119,18 +119,24 @@ alphaDiversityTest.divtable <- function(tab, zero.var.adjust = TRUE,
 #'
 #' @export
 #'
-print.alpha_test <- function(result, ...)
+print.alpha_test <- function(x, digits = getOption("digits"), ...)
 {
     cat("alphaDiversityTest: Heteroscedasticity in Intra-Group Alpha Variances\n\n")
-    cat("Samples N = ", result$N.samples, "   groups = ", result$N.groups, "\n")
+    cat("Samples N = ", x$N.samples, ", groups = ", x$N.groups, "\n")
+
     cat("Test against analytic X-2 distribution (usually not appropriate):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
-        result$df.X2, "   P = ", result$P.analytic, "\n")
+    cat("Observed.ln.LR = ", format(signif(x$observed.ln.lR, max(1L, digits - 2L))),
+        ", df = (G-1) = ", x$df.X2,
+        ", P = ", format.pval(x$P.analytic, digits = max(1L, digits - 3L)),
+        "\n")
     cat("Test against bootstrap X-2 distribution (much better test):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
-        result$n.resample, "   P = ", result$P.empirical, "\n")
+    cat("Observed.ln.LR = ", format(signif(x$observed.ln.lR, max(1L, digits - 2L))),
+        ", iterations = ", x$n.resample,
+        ", P = ", format.pval(x$P.empirical, digits = max(1L, digits - 3L)),
+        "\n")
     cat("Quantiles of the bootstrap distribution:\n")
-    print(result$quantiles)
+    print(x$quantiles, digits = digits, ...)
+    invisible(x)
 }
 
 
@@ -249,19 +255,38 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
 #'
 #' @export
 #'
-print.alpha_contrast_test <- function(result, ...)
+print.alpha_contrast_test <- function(x, digits = getOption("digits"), ...)
 {
     cat("alphaContrastTest: Heteroscedasticity in Alpha Variances\n\n")
-    cat("Samples N.a = ", result$N.a, "   N.b = ", result$N.b,
-        "   groups = ", result$N.groups, "\n")
+
+    # Samples
+    out <- c()
+    .o.x.var <- function(o, v) {
+        if (! is.null(x[[v]])) o <- c(o, paste(v, "=", x[[v]])) else o
+    }
+    out <- .o.x.var(out, "N")
+    out <- .o.x.var(out, "N.a")
+    out <- .o.x.var(out, "N.b")
+    out <- .o.x.var(out, "N.c")
+    out <- .o.x.var(out, "N.groups")
+    cat("Samples", paste(out, collapse = ", "), "\n")
+
+    #cat("Samples N.a = ", x$N.a, ", N.b = ", x$N.b,
+    #    ", groups = ", x$N.groups, "\n")
+
     cat("Test against analytic X-2 distribution (usually not appropriate):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
-        result$df.X2, "   P = ", result$P.analytic, "\n")
+    cat("Observed.ln.LR = ", format(signif(x$observed.ln.lR, max(1L, digits - 2L))),
+        ", df = (G-1) = ", x$df.X2,
+        ", P = ", format.pval(x$P.analytic, digits = max(1L, digits - 3L)),
+        "\n")
     cat("Test against bootstrap X-2 distribution (much better test):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
-        result$n.resample, "   P = ", result$P.empirical, "\n")
+    cat("Observed.ln.LR = ", format(signif(x$observed.ln.lR, max(1L, digits - 2L))),
+        ", iterations = ", x$n.resample,
+        ", P = ", format.pval(x$P.empirical, digits = max(1L, digits - 3L)),
+        "\n")
     cat("Quantiles of the bootstrap distribution:\n")
-    print(result$quantiles)
+    print(x$quantiles, digits = digits, ...)
+    invisible(x)
 }
 
 

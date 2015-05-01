@@ -4,7 +4,7 @@
 \alias{print.alpha_contrast_test}
 \title{Print the result of \code{alphaContrastTest}}
 \usage{
-\method{print}{alpha_contrast_test}(result, ...)
+\method{print}{alpha_contrast_test}(x, digits = getOption("digits"), ...)
 }
 \description{
 Print the result of \code{alphaContrastTest}
