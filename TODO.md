@@ -1,13 +1,12 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Clean up pairwise diversity tests, return values and print and plot methods
 * Make sites/groups/species terminology consistent
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
 * Define `print` and `plot` methods for `allele_divtables`
 * Am I happy with `print.divtable` and `plot.divtable` methods?
 * Separate doc for `diversity` class
-* Class returned by functions that is plottable by plotAlphaTest... or is this plottable by `htest_boot`
-* make `createAlleleTables` return matrices?  or perhaps I have settled on a table as the input class?
 * finish pooled PMI description in `diversity`
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
@@ -17,12 +16,12 @@ TODO for dispersalDiversity
 * make allele diversity function returns match `pmiDiversity` function returns
 * expand documentation for `nielsenTransform`
 * Get data permission from VLS
-* Do I need to do a types x sites data structure, or is that a 2d table? Perhaps provide functions to convert tables and xtabs to this?
 * Tests
 
 Completed
 ---------
 
+* For alpha and gamma diversity tests, all return class `'diversity_test'` object which is handled by common `print.diversity_test` and `plot.diversity_test` methods
 * Settled on new class `divtable`, which is shared with `table`
 * For allelic data, new class `allele_divtables`, which is shared with `list` and is a list of `divtable` objects for each locus
 * Quantiles checked are now richer and symmetric

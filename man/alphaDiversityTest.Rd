@@ -37,9 +37,7 @@ distribution iterations with (\code{"bootstrap"}) or without
 \value{
 Fill this in
 
-An \code{'htest_boot'} object with the result of the test. The
-test also prints the result, so perhaps I should modify it to only
-return the htest_boot object?  Or should it return a different object?
+An \code{diversity_test} object with the result of the test
 }
 \description{
 From Sork et al., extensions of those from Scofield et al. 2012 American
@@ -74,6 +72,6 @@ dispersal by animals.  \emph{American Naturalist} 180:719-732.
 \seealso{
 \code{\link{alphaDiversityTest}}, \code{\link{diversity}}
 
-\code{\link{alphaContrastTest}}
+\code{\link{alphaContrastTest}}, \code{\link{alphaContrastTest3}}, \code{\link{print.diversity_test}}
 }
 

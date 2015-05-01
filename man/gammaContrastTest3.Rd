@@ -11,11 +11,11 @@
   0.999), ...)
 }
 \arguments{
-\item{tab.a}{First site x source table}
+\item{tab.a}{First site-by-source table}
 
-\item{tab.b}{Second site x source table}
+\item{tab.b}{Second site-by-source table}
 
-\item{tab.c}{Third site x source table}
+\item{tab.c}{Third site-by-source table}
 
 \item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
 with minimum value, see \code{\link{BLAHBLAH}}}
@@ -27,9 +27,7 @@ distribution iterations with (\code{"bootstrap"}) or without
 (\code{"permute"}) replacement}
 }
 \value{
-An \code{'htest_boot'} object with the result of the test. The
-test also prints the result, so perhaps I should modify it to only
-return the htest_boot object?  Or should it return a different object?
+Class \code{diversity_test} object with the result of the test
 }
 \description{
 Test for difference in gamma diversity among three datasets
@@ -40,6 +38,6 @@ Use of alpha, beta and gamma diversity measures to characterize seed
 dispersal by animals.  \emph{American Naturalist} 180:719-732.
 }
 \seealso{
-\code{\link{cammaContrastTest}}, \code{\link{alphaContrastTest.3}}
+\code{\link{gammaContrastTest}}, \code{\link{alphaContrastTest3}}
 }
 

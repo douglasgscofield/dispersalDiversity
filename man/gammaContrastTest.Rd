@@ -23,16 +23,31 @@
 \item{lst.b}{Allele diveristy dataset, a list, one entry per locus, of
               site x allele counts. Each table must have the same format.}
 
+\item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
+with minimum value, see \code{\link{BLAHBLAH}}}
+
+\item{n.resample}{Number of iterations for creation of the null distribution}
+
+\item{method}{\code{"bootstrap"} or \code{"permute"}, whether to create null
+distribution iterations with (\code{"bootstrap"}) or without
+(\code{"permute"}) replacement}
+
+\item{tab.a}{First site-by-source table}
+
+\item{tab.b}{Second site-by-source table}
+
 \item{\dots}{Additional parameters}
 }
 \value{
 Fill this in
+
+Class \code{diversity_test} object with the result of the test
 }
 \description{
 From Sork et al., extensions of those from Scofield et al. 2012 American
 Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
 
-Test for difference in gamma diversity between data sets
+Test for difference in gamma diversity between two datasets
 }
 \examples{
 # For comparing allele diversity between two different samples:
@@ -42,5 +57,13 @@ Test for difference in gamma diversity between data sets
 # gt1 <- createAlleleTables(dat1)
 # gt2 <- createAlleleTables(dat2)
 # gamma.contrast <- gammaContrastTest(gt1, gt2)
+}
+\references{
+Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+Use of alpha, beta and gamma diversity measures to characterize seed
+dispersal by animals.  \emph{American Naturalist} 180:719-732.
+}
+\seealso{
+\code{\link{gammaContrastTest3}}, \code{\link{alphaContrastTest}}
 }
 

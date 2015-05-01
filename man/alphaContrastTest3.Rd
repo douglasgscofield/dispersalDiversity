@@ -11,11 +11,11 @@
   0.999), ...)
 }
 \arguments{
-\item{tab.a}{First ite x soure table}
+\item{tab.a}{First site-by-source table}
 
-\item{tab.b}{Second site x soure table}
+\item{tab.b}{Second site-by-source table}
 
-\item{tab.c}{Third site x soure table}
+\item{tab.c}{Third site-by-source table}
 
 \item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
 with minimum value, see \code{\link{BLAHBLAH}}}
@@ -40,6 +40,6 @@ Use of alpha, beta and gamma diversity measures to characterize seed
 dispersal by animals.  \emph{American Naturalist} 180:719-732.
 }
 \seealso{
-\code{\link{alphaContrastTest}}
+\code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}
 }
 

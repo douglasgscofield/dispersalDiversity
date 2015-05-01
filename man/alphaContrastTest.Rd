@@ -70,6 +70,6 @@ dispersal by animals.  \emph{American Naturalist} 180:719-732.
 \seealso{
 \code{\link{}}
 
-\code{\link{alphaContrastTest.3}}
+\code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest3}}
 }
 

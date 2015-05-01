@@ -2,62 +2,149 @@
 # for collation
 NULL
 
-# Provide functions for performing dispersal diversity tests (Scofield et al
-# 2012 American Naturalist 180(6) 719-732,
-# http://www.jstor.org/stable/10.1086/668202).  Tests require as input one or
-# more tables of counts in sites (rows) X sources (columns) format.
 
-# FUNCTIONS PROVIDED
-#
-#
-# See Scofield et al. in review for methodological details
-#
-# plotAlphaTest(result)   : Plot the list returned from alphaDiversityTest()
-#                           or alphaContrastTest() for evaluation
-#
-# pairwiseMeanTest(tab)   : Test whether mean pairwise divergence/overlap among
-#                           sites is different from the null espectation
-#
-# plotPairwiseMeanTest()  : Plot the list returned from the above test for
-#                           evaluation
-#
-# gammaContrastTest(tab.a, tab.b)
-#                         : Test whether there is a difference in the gamma
-#                           diversity between two datasets
-#
-# gammaContrastTest.3(tab.a, tab.b, tab.c)
-#                         : Test whether there is a difference in the gamma
-#                           diversity among three datasets
-#
-#
-#
-# CHANGELOG
-#
-# 0.3.1: Modify plotAlphaTest to take n.resample into account
-# 0.3: Versioning and collaborators/funding statement.
-# 0.2: Add q.nielsen to pairwiseMeanTest.
-# 0.1: First release
+
+#' Print the result of a diversity test (alpha or gamma)
+#'
+#' Print an object of class \code{diversity_test}, the result of
+#' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
+#' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
+#' \code{\link{gammaContrastTest3}}.
+#'
+#' @param x       Object of class \code{diversity_test}, returned by
+#' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
+#' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
+#' \code{\link{gammaContrastTest3}}
+#' @param digits  Number of significant digits to use when printing
+#' numeric values
+#'
+#' @return \code{x}, returned invisibly
+#'
+#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}, \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}}, \code{\link{gammaContrastTest3}}
+#'
+#' @export
+#'
+print.diversity_test <- function(x, digits = getOption("digits"), ...)
+{
+    cat(x$method, "\n\n", sep = "")
+    cat("data:  ", x$data.name, "\n", sep = "")
+    # Sample sizes: those included depend on what is present in the object
+    out <- c()
+    .o.x.var <- function(o, v) {
+        if (! is.null(x[[v]])) o <- c(o, paste(v, "=", x[[v]])) else o
+    }
+    out <- .o.x.var(out, "N")
+    out <- .o.x.var(out, "N.a")
+    out <- .o.x.var(out, "N.b")
+    out <- .o.x.var(out, "N.c")
+    out <- .o.x.var(out, "N.groups")
+    cat("Samples", paste(out, collapse = ", "), "\n")
+    #cat("Samples N.a = ", x$N.a, ", N.b = ", x$N.b,
+    #    ", groups = ", x$N.groups, "\n")
+    cat("Observed log-likelihood ratio = ",
+        format(signif(x$observed.ln.lR, max(1L, digits - 2L))), "\n\n",
+        sep = "")
+    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
+    cat("Degrees of freedom = (N.groups - 1) = ", x$df.X2,
+        ", P = ", format.pval(x$P.analytic, digits = max(1L, digits - 3L)),
+        "\n", sep = "")
+    cat("Test against empirical X-2 distribution (much better test):\n")
+    cat("Iterations = ", x$n.resample,
+        ", P = ", format.pval(x$P.empirical, digits = max(1L, digits - 3L)),
+        "\n", sep = "")
+    cat("Quantiles of the empirical distribution:\n")
+    print(x$quantiles, digits = digits, ...)
+    invisible(x)
+}
+
+
+
+#' Plot the result of a diversity test (alpha or gamma)
+#'
+#' Plot an object of class \code{diversity_test}, the result of
+#' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
+#' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
+#' \code{\link{gammaContrastTest3}}.
+#'
+#' @note The method used to compress the x-axis when observed values greatly
+#' exceed the empirical distribution has not been well thought through.
+#'
+#' @param x  Object of class \code{diversity_test}, returned by
+#' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
+#' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
+#' \code{\link{gammaContrastTest3}}
+#' @param add.analytic  Logical, if \code{TRUE} a curve of the \eqn{\Chi^2}
+#' distribution with the appropriate degrees of freedom is added to the plot
+#' @param breaks  Number of breaks to use when plotting the histogram of
+#' the empirical distribution, passed to \code{\link{hist(..., plot = FALSE)}}
+#' @param compress.x  Logical, if \code{TRUE} and the observed value is more
+#' than \code{compress.ratio} times the maximum value of the empirical
+#' distribution, the x-axis is compressed to include the observed value
+#' @param compress.ration See \code{compress.x}
+#' @param xlab,ylab,main  Labels added to the plot
+#' @param legend.text Text to use when printing legend containing the
+#' observed value in the upper right of the plot. Set to \code{NULL} to
+#' suppress printing the legend.
+#' @param digits  Number of significant digits to use when printing numeric
+#' values
+#'
+#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}, \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}}, \code{\link{gammaContrastTest3}}
+#'
+#' @export
+#'
+plot.diversity_test <- function(x, add.analytic = FALSE, 
+    breaks = 50, compress.x = TRUE, compress.ratio = 1.2,
+    xlab = "ln(LR) value", ylab = "Frequency", main = x$method, 
+    legend.text = "Observed ln(LR) = ", digits = getOption("digits"), ...)
+{
+    par(mar = c(3.5, 3.5, 1.5, 1), mgp = c(2, 0.5, 0))
+    plotted.observed.ln.LR <- x$observed.ln.LR
+    empdist.range <- diff(range(x$empdist[-x$n.resample]))
+    full.range <- diff(range(x$empdist))
+    if (compress.x && full.range > empdist.range * compress.ratio) {
+        xlim <- range(x$empdist[-x$n.resample])
+        h <- hist(x$empdist[-x$n.resample],
+                  breaks = seq(xlim[1], xlim[2], length.out = breaks),
+                  plot = FALSE)
+        xlim <- xlim * c(1, compress.ratio)
+        plotted.observed.ln.LR <- xlim[2]
+    } else {
+        h <- hist(x$empdist[-x$n.resample], breaks = breaks, plot = FALSE)
+        xlim <- range(c(h$breaks, x$empdist[x$n.resample]))
+    }
+    if (add.analytic) {
+        analytic.x <- seq(xlim[1], xlim[2], length.out = 200)
+        analytic.X2 <- dchisq(x = analytic.x, df = x$df.ln.LR)
+        ylim <- range(c(0, h$count, analytic.X2))
+    } else {
+        ylim <- range(c(0, h$count))
+    }
+    plot(h, xlim = xlim, ylim = ylim, freq = TRUE, 
+         xlab = ylab, ylab = ylab, main = main, ...)
+    lines(rep(plotted.observed.ln.LR, 2), c(ylim[1], ylim[2]*0.5),
+          col = "darkgray", lty = 1, lwd = 2)
+    if (add.analytic)
+        lines(analytic.x, analytic.X2, lty=3, lwd=1)
+    if (! is.null(legend.text))
+        legend("topright", bty = "n", legend = paste0(legend.text,
+               format(signif(x$observed.ln.LR, max(1L, digits - 2L)))))
+}
 
 
 
 #' Test for differences in alpha diversity among sites within a single data set
 #'
 #' @param tab    Site-by-source table of class \code{\link{divtable}}
-#'
 #' @param zero.var.adjust Logical, whether to adjust zero-variance groups
 #' with minimum value, see \code{\link{BLAHBLAH}}
-#'
 #' @param n.resample Number of iterations for creation of the null distribution
-#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
 #'
-#' @return An \code{'htest_boot'} object with the result of the test. The
-#' test also prints the result, so perhaps I should modify it to only
-#' return the htest_boot object?  Or should it return a different object?
+#' @return An \code{diversity_test} object with the result of the test
 #
-#' @seealso \code{\link{alphaContrastTest}}
+#' @seealso \code{\link{alphaContrastTest}}, \code{\link{alphaContrastTest3}}, \code{\link{print.diversity_test}}
 #'
 #' @references
 #'
@@ -75,6 +162,8 @@ NULL
 
 alphaDiversityTest <- function(tab, ...) UseMethod("alphaDiversityTest")
 
+
+
 #' @rdname alphaDiversityTest
 #'
 #' @export
@@ -85,7 +174,8 @@ alphaDiversityTest.divtable <- function(tab, zero.var.adjust = TRUE,
     ...)
 {
     method <- match.arg(method)
-    ans <- list()
+    ans <- list(method = "Alpha diversity test, contrast among sites in single data set")
+    ans$data.name <- deparse(substitute(tab))
     g.distmat <- .diversityTest.distmat(tab)
     g.vardist <- lapply(g.distmat, function(x) diag(.diversityTest.gower(x)))
     n.g <- unlist(lapply(g.vardist, length))
@@ -107,36 +197,7 @@ alphaDiversityTest.divtable <- function(tab, zero.var.adjust = TRUE,
     ans$quantiles <- quantile(nulldist, test.quantiles)
     ans$P.empirical <- sum(terms$ln.LR <= nulldist) / n.resample
     ans$empdist <- nulldist
-    structure(ans, class = c('alpha_test', 'list'))
-}
-
-
-
-#TODO: make the test be a string part of the class
-#  class 'diversity_test' and dynamically determine N.a, N.b, N.c
-#
-#' Print the result of \code{alphaContrastTest}
-#'
-#' @export
-#'
-print.alpha_test <- function(x, digits = getOption("digits"), ...)
-{
-    cat("alphaDiversityTest: Heteroscedasticity in Intra-Group Alpha Variances\n\n")
-    cat("Samples N = ", x$N.samples, ", groups = ", x$N.groups, "\n")
-
-    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
-    cat("Observed.ln.LR = ", format(signif(x$observed.ln.lR, max(1L, digits - 2L))),
-        ", df = (G-1) = ", x$df.X2,
-        ", P = ", format.pval(x$P.analytic, digits = max(1L, digits - 3L)),
-        "\n")
-    cat("Test against bootstrap X-2 distribution (much better test):\n")
-    cat("Observed.ln.LR = ", format(signif(x$observed.ln.lR, max(1L, digits - 2L))),
-        ", iterations = ", x$n.resample,
-        ", P = ", format.pval(x$P.empirical, digits = max(1L, digits - 3L)),
-        "\n")
-    cat("Quantiles of the bootstrap distribution:\n")
-    print(x$quantiles, digits = digits, ...)
-    invisible(x)
+    structure(ans, class = c('diversity_test', 'list'))
 }
 
 
@@ -144,14 +205,10 @@ print.alpha_test <- function(x, digits = getOption("digits"), ...)
 #' Test for differences in alpha diversity between two data sets
 #'
 #' @param tab.a First ite x soure table
-#'
 #' @param tab.b Second site x soure table
-#'
 #' @param zero.var.adjust Logical, whether to adjust zero-variance groups
 #' with minimum value, see \code{\link{BLAHBLAH}}
-#'
 #' @param n.resample Number of iterations for creation of the null distribution
-#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
@@ -160,7 +217,7 @@ print.alpha_test <- function(x, digits = getOption("digits"), ...)
 #' test also prints the result, so perhaps I should modify it to only
 #' return the htest_boot object?  Or should it return a different object?
 #'
-#' @seealso \code{\link{alphaContrastTest.3}}
+#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest3}}
 #'
 #' @references
 #'
@@ -192,7 +249,9 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     method <- match.arg(method)
     #.RT = .diversityTest.ReverseTerms
     #.diversityTest.ReverseTerms = FALSE
-    ans <- list()
+    ans <- list(method = "Alpha diversity test, contrast between 2 datasets")
+    ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
+        deparse(substitute(tab.b)))
     a.distmat <- .diversityTest.distmat(tab.a)
     a.vardist <- lapply(a.distmat, function(x) diag(.diversityTest.gower(x)))
     n.a <- sapply(a.vardist, length)
@@ -243,67 +302,19 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     ans$P.empirical <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.vardist = a.b.vardist
-    structure(ans, class = c('alpha_contrast_test', 'list'))
-}
-
-
-
-#TODO: make the test be a string part of the class
-#  class 'diversity_test' and dynamically determine N.a, N.b, N.c
-#
-#' Print the result of \code{alphaContrastTest}
-#'
-#' @export
-#'
-print.alpha_contrast_test <- function(x, digits = getOption("digits"), ...)
-{
-    cat("alphaContrastTest: Heteroscedasticity in Alpha Variances\n\n")
-
-    # Samples
-    out <- c()
-    .o.x.var <- function(o, v) {
-        if (! is.null(x[[v]])) o <- c(o, paste(v, "=", x[[v]])) else o
-    }
-    out <- .o.x.var(out, "N")
-    out <- .o.x.var(out, "N.a")
-    out <- .o.x.var(out, "N.b")
-    out <- .o.x.var(out, "N.c")
-    out <- .o.x.var(out, "N.groups")
-    cat("Samples", paste(out, collapse = ", "), "\n")
-
-    #cat("Samples N.a = ", x$N.a, ", N.b = ", x$N.b,
-    #    ", groups = ", x$N.groups, "\n")
-
-    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
-    cat("Observed.ln.LR = ", format(signif(x$observed.ln.lR, max(1L, digits - 2L))),
-        ", df = (G-1) = ", x$df.X2,
-        ", P = ", format.pval(x$P.analytic, digits = max(1L, digits - 3L)),
-        "\n")
-    cat("Test against bootstrap X-2 distribution (much better test):\n")
-    cat("Observed.ln.LR = ", format(signif(x$observed.ln.lR, max(1L, digits - 2L))),
-        ", iterations = ", x$n.resample,
-        ", P = ", format.pval(x$P.empirical, digits = max(1L, digits - 3L)),
-        "\n")
-    cat("Quantiles of the bootstrap distribution:\n")
-    print(x$quantiles, digits = digits, ...)
-    invisible(x)
+    structure(ans, class = c('diversity_test', 'list'))
 }
 
 
 
 #' Test for differences in alpha diversity between three data sets
 #'
-#' @param tab.a First ite x soure table
-#'
-#' @param tab.b Second site x soure table
-#'
-#' @param tab.c Third site x soure table
-#'
+#' @param tab.a First site-by-source table
+#' @param tab.b Second site-by-source table
+#' @param tab.c Third site-by-source table
 #' @param zero.var.adjust Logical, whether to adjust zero-variance groups
 #' with minimum value, see \code{\link{BLAHBLAH}}
-#'
 #' @param n.resample Number of iterations for creation of the null distribution
-#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
@@ -312,7 +323,7 @@ print.alpha_contrast_test <- function(x, digits = getOption("digits"), ...)
 #' test also prints the result, so perhaps I should modify it to only
 #' return the htest_boot object?  Or should it return a different object?
 #'
-#' @seealso \code{\link{alphaContrastTest}}
+#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}
 #'
 #' @references
 #'
@@ -348,8 +359,9 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     method <- match.arg(method)
     #.RT <- .diversityTest.ReverseTerms
     #.diversityTest.ReverseTerms <- FALSE
-    ans <- list()
-
+    ans <- list(method = "Alpha diversity test, contrast between 3 datasets")
+    ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
+        deparse(substitute(tab.b)), deparse(substitute(tab.b)))
     a.distmat <- .diversityTest.distmat(tab.a)
     a.vardist <- lapply(a.distmat, function(x) diag(.diversityTest.gower(x)))
     n.a <- sapply(a.vardist, length)
@@ -398,7 +410,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
                           c = unlist(c.vardist, use.names = FALSE))
     N <- sum(n.a.b.c)
     G <- length(n.a.b.c)
-    DF <- G -1
+    DF <- G - 1
     ans$N.samples <- N
     ans$N.groups <- G
     ans$observed.ln.LR <- observed.ln.LR.a.b.c
@@ -417,139 +429,9 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     ans$P.empirical <- sum(observed.ln.LR.a.b.c <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
-    structure(ans, class = c('alpha_contrast_test3', 'list'))
+    structure(ans, class = c('diversity_test', 'list'))
 }
 
-
-
-#TODO: make the test be a string part of the class
-#  class 'diversity_test'
-#
-#' Print the result of \code{alphaContrastTest3}
-#'
-#' @export
-#'
-print.alpha_contrast_test3 <- function(result, ...)
-{
-    cat("alphaContrastTest3: Heteroscedasticity in Alpha Variances\n\n")
-    cat("Samples N.a = ", result$N.a, "   N.b = ", result$N.b,
-        "   N.a = ", result$N.c, "   groups = ", result$N.groups, "\n")
-    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
-        result$df.X2, "   P = ", result$P.analytic, "\n")
-    cat("Test against bootstrap X-2 distribution (much better test):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
-        result$n.resample, "   P = ", result$P.empirical, "\n")
-    cat("Quantiles of the bootstrap distribution:\n")
-    print(result$quantiles)
-}
-
-
-
-#' Plot result of \code{alphaContrastTest3}
-#'
-#' @export
-#'
-plot.alpha_contrast_test3 <- function(result, add.analytic = FALSE, 
-    compress.x = TRUE, ...)
-{
-    plot.alpha_test(result, add.analytic = add.analytic, 
-                    compress.x = compress.x, ...)
-}
-
-
-
-#' Plot result of \code{alphaContrastTest}
-#'
-#' @export
-#'
-plot.alpha_contrast_test <- function(result, add.analytic = FALSE, 
-    compress.x = TRUE, ...)
-{
-    plot.alpha_test(result, add.analytic = add.analytic, 
-                    compress.x = compress.x, ...)
-}
-
-
-
-#' Plot result of \code{gammaContrastTest3}
-#'
-#' @export
-#'
-plot.gamma_contrast_test3 <- function(result, add.analytic = FALSE, 
-    compress.x = TRUE, ...)
-{
-    plot.alpha_test(result, add.analytic = add.analytic, 
-                    compress.x = compress.x, ...)
-}
-
-
-
-#' Plot result of \code{gammaContrastTest}
-#'
-#' @export
-#'
-plot.gamma_contrast_test <- function(result, add.analytic = FALSE, 
-    compress.x = TRUE, ...)
-{
-    plot.alpha_test(result, add.analytic = add.analytic, 
-                    compress.x = compress.x, ...)
-}
-
-
-
-# make this be plot.diversity_test or something, and key off
-# of available variables and a test name string that is printed
-# on the plot and used in the print() output
-#
-#' Plot result of \code{alphaDiversityTest}
-#'
-#' @export
-#'
-plot.alpha_test <- function(result, add.analytic=FALSE, 
-    compress.x=TRUE, ...)
-{
-    #if (! (inherits(result, "diversityTest") ||
-    #       inherits(result, "diversityTest.AlphaContrast")))
-    #    stop(deparse(substitute(result)), 
-    #         "not a result of alphaDiversityTest() or alphaContrastTest()")
-    par(mar = c(3.5, 3.5, 1.5, 1), mgp = c(2, 0.5, 0))
-    plotted.observed.ln.LR <- result$observed.ln.LR
-    empdist.range <- diff(range(result$empdist[-result$n.resample]))
-    full.range <- diff(range(result$empdist))
-    breaks <- 50
-    compressed.ratio <- 1.2
-    if (compress.x && full.range > empdist.range * compressed.ratio) {
-        xlim <- range(result$empdist[-result$n.resample])
-        h <- hist(result$empdist[-result$n.resample],
-                  breaks = seq(xlim[1], xlim[2], length.out = breaks),
-                  plot = FALSE)
-        xlim <- xlim * c(1, compressed.ratio)
-        plotted.observed.ln.LR <- xlim[2]
-    } else {
-        h <- hist(result$empdist[-result$n.resample], breaks = 50, plot = FALSE)
-        xlim <- range(c(h$breaks, result$empdist[result$n.resample]))
-    }
-    if (add.analytic) {
-        analytic.x <- seq(xlim[1], xlim[2], length.out = 200)
-        analytic.X2 <- dchisq(x = analytic.x, df = result$df.ln.LR)
-        ylim <- range(c(0, h$count, analytic.X2))
-    } else {
-        ylim <- range(c(0, h$count))
-    }
-    plot(h, xlim = xlim, ylim = ylim, freq = TRUE, 
-         xlab = expression("ln(LR) value"), ylab = "Frequency",
-         main = "", ...)
-    lines(rep(plotted.observed.ln.LR, 2), c(ylim[1], ylim[2]*0.5),
-          col = "darkgray", lty = 1, lwd = 2)
-    if (add.analytic) {
-        lines(analytic.x, analytic.X2, lty=3, lwd=1)
-    }
-    legend("topright", bty = "n",
-           legend=substitute("Observed ln(LR)" == OX2,
-                             list(OX2 = sprintf("%.3f", 
-                                                round(result$observed.ln.LR, 3)))))
-}
 
 
 
@@ -570,8 +452,7 @@ pairwiseMeanTest <- function(tab, ...) UseMethod("pairwiseMeanTest")
 #' @export
 #'
 pairwiseMeanTest.divtable <- function(tab, n.iter = 10000,
-    method = c("r", "q", "q.nielsen"), 
-    statistic = c("divergence", "overlap"),
+    method = c("r", "q", "q.nielsen"), statistic = c("divergence", "overlap"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
 {
@@ -656,8 +537,29 @@ plot.pairwise_mean_test <- function(result, ...)
 
 
 
-#' Test for difference in gamma diversity between data sets
+#' Test for difference in gamma diversity between two datasets
 #'
+#' @param tab.a First site-by-source table
+#' @param tab.b Second site-by-source table
+#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
+#' with minimum value, see \code{\link{BLAHBLAH}}
+#' @param n.resample Number of iterations for creation of the null distribution
+#' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
+#' distribution iterations with (\code{"bootstrap"}) or without
+#' (\code{"permute"}) replacement
+#'
+#' @return  Class \code{diversity_test} object with the result of the test
+#'
+#' @seealso \code{\link{gammaContrastTest3}}, \code{\link{alphaContrastTest}}
+#'
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+# @examples
+#
 #' @export
 #'
 #' @name gammaContrastTest
@@ -672,13 +574,15 @@ gammaContrastTest <- function(tab.a, tab.b, ...) UseMethod("gammaContrastTest")
 #'
 #' @export
 #"
-gammaContrastTest.divtable = function(tab.a, tab.b, zero.var.adjust=TRUE,
-    n.resample=10000, method=c("bootstrap", "permute"),
+gammaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
+    n.resample = 10000, method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
 {
     stopifnot(inherits(tab.b, 'divtable'))
-    ans <- list()
+    ans <- list(method = "Gamma diversity test, contrast between two data sets")
+    ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
+        deparse(substitute(tab.b)))
     X.a.k <- apply(tab.a, 2, sum)
     X.b.k <- apply(tab.b, 2, sum)
     N.a <- sum(X.a.k)
@@ -732,54 +636,26 @@ gammaContrastTest.divtable = function(tab.a, tab.b, zero.var.adjust=TRUE,
     ans$P.empirical <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.vardist = a.b.vardist
-    str(ans, class = c('gamma_contrast_test', 'list'))
-}
-
-
-
-#' Print the result of \code{gammaContrastTest}
-#'
-#' @export
-#'
-print.gamma_contrast_test <- function(result, ...)
-{
-    cat("gammaContrastTest: Heteroscedasticity in Gamma Variances\n\n")
-    cat("Samples N.a = ", result$N.a, "   N.b = ", result$N.b,
-        "   groups = ", result$N.groups, "\n")
-    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
-        result$df.X2, "   P = ", result$P.analytic, "\n")
-    cat("Test against bootstrap X-2 distribution (much better test):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
-        result$n.resample, "   P = ", result$P.empirical, "\n")
-    cat("Quantiles of the bootstrap distribution:\n")
-    print(result$quantiles)
+    structure(ans, class = c('diversity_test', 'list'))
 }
 
 
 
 #' Test for difference in gamma diversity among three datasets
 #'
-#' @param tab.a First site x source table
-#'
-#' @param tab.b Second site x source table
-#'
-#' @param tab.c Third site x source table
-#'
+#' @param tab.a First site-by-source table
+#' @param tab.b Second site-by-source table
+#' @param tab.c Third site-by-source table
 #' @param zero.var.adjust Logical, whether to adjust zero-variance groups
 #' with minimum value, see \code{\link{BLAHBLAH}}
-#'
 #' @param n.resample Number of iterations for creation of the null distribution
-#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
 #'
-#' @return An \code{'htest_boot'} object with the result of the test. The
-#' test also prints the result, so perhaps I should modify it to only
-#' return the htest_boot object?  Or should it return a different object?
+#' @return  Class \code{diversity_test} object with the result of the test
 #'
-#' @seealso \code{\link{cammaContrastTest}}, \code{\link{alphaContrastTest.3}}
+#' @seealso \code{\link{gammaContrastTest}}, \code{\link{alphaContrastTest3}}
 #'
 #' @references
 #'
@@ -813,7 +689,9 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     stopifnot(inherits(tab.b, 'divtable'))
     stopifnot(inherits(tab.c, 'divtable'))
     method <- match.arg(method)
-    ans <- list()
+    ans <- list(method = "Gamma diversity test, contrast between three data sets")
+    ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
+        deparse(substitute(tab.b)), deparse(substitute(tab.c)))
     X.a.k <- apply(tab.a, 2, sum)
     X.b.k <- apply(tab.b, 2, sum)
     X.c.k <- apply(tab.c, 2, sum)
@@ -892,39 +770,12 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     ans$P.empirical <- sum(observed.ln.LR.a.b.c <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
-    structure(ans, class = c('gamma_contrast_test3', 'list'))
+    structure(ans, class = c('diversity_test', 'list'))
 }
 
 
 
-#TODO: make the test be a string part of the class
-#  class 'diversity_test'
-# contrasting groups
-#
-#' Print the result of \code{gammaContrastTest3}
-#'
-#' @export
-#'
-print.gamma_contrast_test3 <- function(result, ...)
-{
-    cat("gammaContrastTest3: Heteroscedasticity in Inter-Group Gamma Variances\n\n")
-    cat("Samples N.a = ", result$N.a, "   N.b = ", result$N.b,
-        "   N.c = ", result$N.c, "   groups = ", result$N.groups, "\n")
-    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   df = (G-1) = ",
-        result$df.X2, "   P = ", result$P.analytic, "\n")
-    cat("Test against bootstrap X-2 distribution (much better test):\n")
-    cat("Observed.ln.LR = ", result$observed.ln.LR, "   iterations = ",
-        result$n.resample, "   P = ", result$P.empirical, "\n")
-    cat("Quantiles of the bootstrap distribution:\n")
-    print(result$quantiles)
-}
-
-
-
-
-
-# Internal functions and constants
+# ------- Internal functions and constants
 
 
 
@@ -967,7 +818,9 @@ print.gamma_contrast_test3 <- function(result, ...)
         }
         D[[as.character(g)]] <- Dmat
     }
-    return(if (length(D) == 1 && drop) D[[1]] else D)
+    if (length(D) == 1 && drop)
+        D[[1]]
+    else D
 }
 
 
@@ -994,7 +847,7 @@ print.gamma_contrast_test3 <- function(result, ...)
         stop("abs(rowSums(gower.mat)) > .diversityTest.epsilon")
     if (! all(abs(colSums(gower.mat)) <= .diversityTest.epsilon))
         stop("abs(colSums(gower.mat)) > .diversityTest.epsilon")
-    return(gower.mat)
+    gower.mat
 }
 
 
@@ -1011,7 +864,7 @@ print.gamma_contrast_test3 <- function(result, ...)
     nn <- names(ss.g[ss.g == 0]) # names of ss.g==0 elements
     if (length(nn)) # index by names
         ss.g[nn] <- 1 / (4 * n.g[nn] * n.g[nn] * (n.g[nn] - 1))
-    return(ss.g)
+    ss.g
 }
 
 
@@ -1035,7 +888,7 @@ print.gamma_contrast_test3 <- function(result, ...)
     else
         (term.V.g - term.V.p) / term.denom
     DF <- G - 1
-    return(list(V.g = V.g, V.p = V.p, ln.LR = ln.LR, DF = DF))
+    list(V.g = V.g, V.p = V.p, ln.LR = ln.LR, DF = DF)
 }
 
 
@@ -1063,6 +916,6 @@ print.gamma_contrast_test3 <- function(result, ...)
         terms <- .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
         nulldist <- c(nulldist, terms$ln.LR)
     }
-    return(sort(nulldist))
+    sort(nulldist)
 }
 
