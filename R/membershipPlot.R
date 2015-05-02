@@ -99,7 +99,7 @@ membershipPlot <- function(tab, ...) UseMethod("membershipPlot")
 #'
 membershipPlot.default <- function(tab, ...)
 {
-    membershipPlot.table(as.divtable(tab), ...)
+    membershipPlot.divtable(as.divtable(tab), ...)
 }
 
 

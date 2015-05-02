@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* continue generalising allele diversity tests
 * running diversity(granaries_2002_Qlob) produces NaN for L0049-2002, probably because row sum is 1; handle this better
 * Clean up pairwise diversity tests, return values and print and plot methods
 * Make sites/groups/species terminology consistent

@@ -41,16 +41,6 @@ NULL
 #' gt <- createAlleleTables(Qagr_pericarp_genotypes)
 #' alpha.test <- alphaDiversityTest(gt)
 #'
-#' @export
-#'
-#' @name alphaDiversityTest
-#'
-NULL
-
-alphaDiversityTest <- function(x, ...) UseMethod("alphaDiversityTest")
-
-
-
 #' @rdname alphaDiversityTest
 #'
 #' @export
@@ -152,24 +142,23 @@ alphaDiversityTest.allele_divtables <- function(lst, zero.var.adjust = TRUE,
 
 
 
-#' Test for difference in alpha diversity between two allele diversity datasets
+#' Test for differences in alpha diversity between two allele diversity datasets
 #'
-#' From Sork et al., extensions of those from Scofield et al. 2012 American
-#' Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
+#' From Sork et al. (2015), extending methods developed in Scofield et al.
+#' (2012).
 #'
-#' @param lst.a  Allele diveristy dataset, a list, one entry per locus, of 
-#'               site x allele counts. Each table must have the same format.
+#' @seealso \code{\link{alphaContrastTest}}
 #'
-#' @param lst.b  Allele diveristy dataset, a list, one entry per locus, of 
-#'               site x allele counts. Each table must have the same format.
+#' @references
 #'
-#' @param \dots  Additional parameters
+#' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (Submitted)
+#' Impact of asymmetric male and female gamete dispersal on allelic 
+#' diversity and spatial genetic structure in valley oak 
+#' (\emph{Quercus lobata} N\'{e}e).
 #'
-#' @return Fill this in
-#'
-#' @author Douglas G. Scofield
-#'
-#' @seealso \code{\link{}}
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
 #' @examples
 #'
@@ -181,15 +170,6 @@ alphaDiversityTest.allele_divtables <- function(lst, zero.var.adjust = TRUE,
 #' # gt2 <- createAlleleTables(dat2)
 #' # alpha.contrast <- alphaContrastTest(gt1, gt2)
 #'
-#' @export
-#'
-#' @name alphaContrastTest
-NULL
-
-alphaContrastTest <- function(x, ...) UseMethod("alphaContrastTest")
-
-
-
 #' @rdname alphaContrastTest
 #'
 #' @export
@@ -355,16 +335,6 @@ alphaContrastTest.allele_divtables <- function(lst.a, lst.b,
 #' # gt2 <- createAlleleTables(dat2)
 #' # gamma.contrast <- gammaContrastTest(gt1, gt2)
 #'
-#' @export
-#'
-#' @name gammaContrastTest
-#'
-NULL
-
-gammaContrastTest <- function(x, ...) UseMethod("gammaContrastTest")
-
-
-
 #' @rdname gammaContrastTest
 #'
 #' @export
