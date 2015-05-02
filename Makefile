@@ -74,7 +74,7 @@ NEWS: NEWS.md
 data: data/granaries_2002_Qlob.RData data/granaries_2004_Qlob.RData
 
 data/%.RData: inst/extdata/%.txt
-	R --quiet -e "$* <- as.matrix(read.delim('$^')); x <- dimnames($*); names(x) <- c('Granary_Year', 'Source'); dimnames($*) <- x; save($*, file = '$@')"
+	R --quiet -e "devtools::install('.', TRUE); library(dispersalDiversity); $* <- as.divtable(read.delim('$^')); x <- dimnames($*); names(x) <- c('Granary_Year', 'Source'); dimnames($*) <- x; save($*, file = '$@')"
 
 doc:
 	R --quiet -e 'devtools::document()'

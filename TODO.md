@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* running diversity(granaries_2002_Qlob) produces NaN for L0049-2002, probably because row sum is 1; handle this better
 * Clean up pairwise diversity tests, return values and print and plot methods
 * Make sites/groups/species terminology consistent
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
@@ -22,6 +23,7 @@ Completed
 ---------
 
 * For alpha and gamma diversity tests, all return class `'diversity_test'` object which is handled by common `print.diversity_test` and `plot.diversity_test` methods
+* New `as.divtable` generic, with methods `as.divtable.table`, `as.divtable.xtabs`, `as.divtable.matrix` and `as.divtable.data.frame`, the latter of which first converts to `matrix`, then to `divtable`
 * Settled on new class `divtable`, which is shared with `table`
 * For allelic data, new class `allele_divtables`, which is shared with `list` and is a list of `divtable` objects for each locus
 * Quantiles checked are now richer and symmetric

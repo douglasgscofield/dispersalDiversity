@@ -53,10 +53,8 @@ NULL
 #' \code{\link{membershipPlot}} directly.  
 #'
 #' @param x     Object of class \code{\link{divtable}}
-#'
 #' @param l2    \code{l2} argument given to \code{\link{membershipPlot}}
 #' for column headings
-#'
 #' @param \dots Additional arguments passed to \code{\link{membershipPlot}}
 #'
 #' @export
@@ -105,7 +103,7 @@ as.divtable.matrix <- function(x, ...)
 #'
 as.divtable.data.frame <- function(x, ...)
 {
-    structure(as.table(x), class = c('divtable', 'table'))
+    structure(as.table(as.matrix(x)), class = c('divtable', 'table'))
 }
 
 
