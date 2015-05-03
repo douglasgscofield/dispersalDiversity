@@ -10,7 +10,8 @@ plotPairwiseMatrix(x, statistic = c("divergence", "overlap"),
   length.out = (x - 2)), 0)), colorkey = list(labels = list(cex = 1)),
   at = c(0, 0.01, seq(0.2, 0.8, 0.2), 0.99, 1), scales = list(draw = FALSE,
   tck = 0, cex = 0.7, x = list(rot = 90)), axis.label = "Species Pool",
-  xlab = list(axis.label, cex = 1), ylab = list(axis.label, cex = 1), ...)
+  xlab = list(axis.label, cex = 1), ylab = list(axis.label, cex = 1),
+  digits = getOption("digits"), ...)
 }
 \arguments{
 \item{x}{Pairwise divergence or overlap matrix as found at,
@@ -18,8 +19,8 @@ e.g., \code{diversity()$q$diversity.mat}.  Currently, prior to plotting
 this matrix has its diagonal and upper triangle zeroed, and is then
 rotated prior to passing to \code{\link{lattice::levelplot}}}
 
-\item{statistic}{\code{"divergence"} or \code{"overlap"}, for which
-statistic is being presented}
+\item{statistic}{\code{"divergence"} or \code{"overlap"}, indicating
+the statistic being supplied for plotting}
 
 \item{pairwise.mean}{Mean pairwise divergence or overlap as found at,
 e.g., \code{diversity()$q$divergence}.  If provided, this is added to
@@ -35,6 +36,9 @@ plot options passed to \code{\link{lattice::levelplot}}}
 \item{axis.label}{Label used for the X and Y axes, the X and Y axis
 labels can be changed with \code{xlab} and \code{ylab}}
 
+\item{digits}{Number of digits to use when printing mean value,
+taken from the \code{"digits"} option if not supplied}
+
 \item{mean.pos}{If \code{pairwise.mean} is given, the relative
 X and Y positions within the panel at which the value is plotted, in
 a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
@@ -47,6 +51,14 @@ The lattice plot object is returned invisibly
 Plot pairwise values using \code{levelplot} from the \code{lattice}
 package.  An example of its use is in Figure 4A-C of Scofield et al.
 (2012).
+}
+\examples{
+data(granaries_2002_Qlob)
+dv <- diversity(granaries_2002_Qlob)
+plotPairwiseMatrix(x = dv$r$divergence.mat,
+                   pairwise.mean = dv$r$divergence,
+                   statistic = "divergence",
+                   axis.label = "Granary")
 }
 \references{
 Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)

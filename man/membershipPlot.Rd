@@ -9,7 +9,7 @@
 \method{membershipPlot}{default}(tab, ...)
 
 \method{membershipPlot}{divtable}(tab, method = c("bar", "pie"),
-  fill.method = c("color", "bw", "colour"), fill.palette = "Dark2",
+  fill.method = c("colour", "bw", "color"), fill.palette = "Dark2",
   distinguish.multiton = FALSE, xlab = "Site", ylab = "Membership",
   las = 1, x.mar.width = ifelse(las >= 2, 4, 3), cex = 0.7,
   header.cex = 0.9, cex.names = 0.85, l1 = NULL, l2 = NULL,
@@ -26,26 +26,25 @@ standardized by site so values may be counts or proportions.}
 of plot produced.  Bar plots have received considerably more attention
 than pie plots.}
 
-\item{fill.method}{\code{"color"} (the default, with synonym
-\code{"colour"}, or \code{"bw"}, for the method of colouring different
-groups within the plots.  For \code{"color"}, no more than eight separate
+\item{fill.method}{\code{"colour"} (the default, with synonym
+\code{"color"}, or \code{"bw"}, for the method of colouring different
+groups within the plots.  For \code{"colour"}, no more than eight separate
 colours are chosen; if there are more than eight groups, the
 colours for lower-frequency groups are modified by hatching lines of
 varying angles and densities.  For \code{"bw"}, fewer grades of grey are
 used, together with black-and-white patterns and hatching.
-
-For \code{"color"}, if the package \code{\link{RColorBrewer}} is
+For \code{"colour"}, if the package \code{\link{RColorBrewer}} is
 available, colours will be chosen from its \code{"Dark2"} palette.
 This may be modified with the \code{fill.pallete} option.  The aesthetics
-of color choice are important for distinguishing among groups in
+of colour choice are important for distinguishing among groups in
 membership plots.  If \code{\link{RColorBrewer}} is not available, colours
 are chosen using \code{\link{rainbow}}.}
 
-\item{fill.palette}{For \code{fill.method = "color"}, if the
+\item{fill.palette}{For \code{fill.method = "colour"}, if the
 package \code{\link{RColorBrewer}} is available, use this palette to
 choose the base colours to use}
 
-\item{distinguish.multiton}{For \code{fill.method = "color"}, whether
+\item{distinguish.multiton}{For \code{fill.method = "colour"}, whether
 to distinguish multiton groups (see Description) with grey rather than
 the default white colour.}
 
@@ -75,7 +74,7 @@ No value is returned
 Singleton groups, those with just one member, appear as white regions
 within their respective sites.  Multiton groups, with more than one
 member but all members appearing within a single site, also appear as
-white regions unless \code{fill.method = "color"} with
+white regions unless \code{fill.method = "colour"} with
 \code{distinguish.multiton = TRUE}, then they are grey.  Groups with
 members in more than one site are given a unique colour/hatching
 combination.  An example if its use is in Figure 2A-C of

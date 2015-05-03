@@ -3,8 +3,7 @@
 \docType{data}
 \name{granaries_2004_Qlob}
 \alias{granaries_2004_Qlob}
-\title{Assignments of acorns harvested from acorn woodpecker granaries in 2004,
-to seed source trees}
+\title{Source tree assignments for acorns harvested from acorn woodpecker granaries in 2004}
 \format{Matrix with 16 rows and 34 variables.}
 \source{
 Dataset originates from the lab of Victoria L. Sork
