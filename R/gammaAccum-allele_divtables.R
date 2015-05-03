@@ -16,20 +16,11 @@ NULL
 #' @param lst List of site-by-source tables for loci, as produced by 
 #' \code{allele.createTableList}
 #'
-#' @param accum.method \code{"random"} (default) or \code{"proximity"}.  If 
-#' \code{"proximity"} is used, then \code{distance.file} must be supplied
-#' (see below).
-#'
 #' @param resample.method \code{"permute"} (default) or \code{"bootstrap"}, 
 #' whether to resample sites without (\code{"permute"}) or with 
 #' (\code{"bootstrap"}) replacement
 #'
 #' @param n.resample Number of resamples for accumulation curve
-#'
-#' @param distance.file A file or data frame containing three columns of data,
-#' with the header/column names being \code{pool}, \code{X}, and \code{Y},
-#' containing the spatial locations of the seed pools named in the row names 
-#' of tab.  Only used if the \code{accum.method == "proximity"}.
 #'
 #' @param gamma.method Calculate gamma using the \code{"r"} (default), 
 #' \code{"q"} or \code{"q.nielsen"} method, see Scofield et al. (2012).
@@ -67,9 +58,8 @@ gammaAccum <- function(x, ...) UseMethod("gammaAccum")
 #' @export
 #'
 gammaAccum.allele_divtables <- function(lst, 
-    accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
-    gamma.method = c("r", "q.nielsen", "q"), distance.file=NULL, ...)
+    gamma.method = c("r", "q.nielsen", "q"), ...)
 {
     accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)
@@ -80,11 +70,10 @@ gammaAccum.allele_divtables <- function(lst,
     ans$obs.omega.mean <- d$overlap
     ans$obs.delta.mean <- d$divergence
     ans$simple.results <- 
-        gammaAccumSimple(lst, accum.method = accum.method,
+        gammaAccumSimple(lst,
                          resample.method = resample.method,
                          n.resample = n.resample,
                          gamma.method = gamma.method,
-                         distance.file = distance.file,
                          ...)
     structure(ans, class = c('gamma_accum', 'list'))
 }
@@ -97,7 +86,7 @@ gammaAccumSimple <- function(x, ...) UseMethod("gammaAccumSimple")
 #
 gammaAccumSimple.allele_divtables <- function(lst, ...)
 {
-    return(gammaAccumStats(gammaAccumWorker(lst, ...)))
+    gammaAccumStats(gammaAccumWorker.allele_divtables(lst, ...))
 }
 
 
@@ -106,9 +95,8 @@ gammaAccumWorker <- function(x, ...) UseMethod("gammaAccumWorker")
 # Actually perform the gamma accumulation
 #
 gammaAccumWorker.allele_divtables <- function(lst, n.sites = dim(lst[[1]])[1],
-    accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
-    distance.file = NULL, gamma.method = c("r", "q.nielsen", "q"))
+    gamma.method = c("r", "q.nielsen", "q"), ...)
 {
     # If used, the distance.file has three columns, with names: pool, X, Y
     # It is either a filename to read, or a data.frame
@@ -118,20 +106,12 @@ gammaAccumWorker.allele_divtables <- function(lst, n.sites = dim(lst[[1]])[1],
     pool.names <- dimnames(lst[[1]])[[1]]
     L <- names(lst)
     G <- dim(lst[[1]])[1]
-    if (accum.method == "proximity") {
-        if (! is.null(distance.file))
-            gxy = .loadDistanceFile(distance.file, pool.names)
-        else stop("with accum.method = 'proximity', distance.file must be provided")
-    }
-
     ans <- lapply(1:n.sites, function(x) numeric(0))
     for (i in 1:n.resample) {
         row.order <- sample(1:G,
                             size = n.sites,
                             replace = ifelse(resample.method == "bootstrap", 
                                              TRUE, FALSE))
-        if (accum.method == "proximity")
-            row.order <- .reorderByProximity(row.order, gxy, pool.names)
         for (g in 1:n.sites) {
             gamma.all.loci <- sapply(lst, function(x) {
                 .calculateGammaAccum(apply(x[row.order[1:g], , drop=FALSE], 
@@ -140,6 +120,6 @@ gammaAccumWorker.allele_divtables <- function(lst, n.sites = dim(lst[[1]])[1],
             ans[[g]] <- c(ans[[g]], mean(gamma.all.loci))
         }
     }
-    return(ans)
+    ans
 }
 

@@ -108,19 +108,9 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
 #'
 #' @param tab           Site-by-source table, as passed to diversity()
 #'
-#' @param accum.method  \code{"random"} (default) or \code{"proximity"}.  
-#' Method for accumulating sites.  If \code{"random"}, then the next site is
-#' chosen at random. If \code{"proximity"}, then the next site chosen is the
-#' next closest site, and \code{distance.file} must be supplied.
-#'
 #' @param resample.method  \code{"permute"} (default) or \code{"bootstrap"}.
 #' Whether to resample sites without replacement (\code{"permute"}) or with
 #' replacement (\code{"bootstrap"}).
-#'
-#' @param distance.file  A file or data.frame containing three columns of data,
-#' with the header/column names being \code{"pool"}, \code{"X"}, and \code{"Y"},
-#' containing the spatial locations of the seed pools named in the row names of
-#' tab.  Only used if the \code{accum.method=="proximity"}.
 #'
 #' @param gamma.method Calculate gamma using \code{"r"} (default),
 #' \code{"q"} or \code{"q.nielsen"} method (see paper).
@@ -141,12 +131,10 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
 #' @export
 #'
 gammaAccum.divtable <- function(tab, 
-    accum.method = c("random", "proximity"),
     resample.method = c("permute", "bootstrap"),
     gamma.method = c("r", "q.nielsen", "q"),
-    distance.file = NULL, ...)
+    ...)
 {
-    accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)
     gamma.method <- match.arg(gamma.method)
     pmiD <- diversity(tab)
@@ -155,39 +143,16 @@ gammaAccum.divtable <- function(tab,
     ans$obs.gamma <- pmiD[[paste(sep="", "d.gamma.", gamma.method)]]
     ans$obs.omega.mean <- pmiD[[paste(sep="", gamma.method, ".overlap")]]
     ans$obs.delta.mean <- pmiD[[paste(sep="", gamma.method, ".divergence")]]
-    ans$simple.results <- runGammaAccumSimple(tab,
-        accum.method = accum.method, resample.method = resample.method,
-        gamma.method = gamma.method, distance.file = distance.file, ...)
+    ans$simple.results <- runGammaAccumSimple.divtable(tab,
+        resample.method = resample.method, gamma.method = gamma.method, ...)
     structure(ans, class = c('gamma_accum', 'list'))
 }
 
 
 
-#
-# gammaAccum()            : workhorse function for gamma accumulation
-# gammaAccumStats()       : extracts stats from result of gammaAccum()
-# runGammaAccumSimple()   : wrapper that runs and then return stats from gammaAccum()
-#
-#
-#
-# CHANGELOG
-#
-# 0.1.3: Fix typo and simplify gammaAccum() by adding local functions
-# 0.1.2: Add calculation of gamma via Nielsen et al. transform of q_gg
-# 0.1.1: Minor bugfix for runGammaAccum arguments
-# 0.1: First release
-#
-#
-# TODO
-#
-# * Turn this into an actual R package
-
-
-
-
 gammaAccumSimple.divtable <- function(tab, ...)
 {
-    return(gammaAccumStats(gammaAccumWorker(tab, ...)))
+    return(gammaAccumStats(gammaAccumWorker.divtable(tab, ...)))
 }
 
 
@@ -211,39 +176,28 @@ gammaAccumStats <- function(ga)
 
 
 gammaAccumWorker.divtable <- function(tab, n.sites=dim(tab)[1],
-    n.resample=1000, accum.method=c("random", "proximity"),
-    resample.method=c("permute", "bootstrap"), distance.file=NULL,
+    n.resample=1000, resample.method=c("permute", "bootstrap"),
     gamma.method=c("r", "q.nielsen", "q"), ...)
 {
-    # If used, the distance.file has three columns, with names: pool, X, Y
-    # It is either a filename to read, or a data.frame
-    accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)
     gamma.method <- match.arg(gamma.method)
     pool.names <- dimnames(tab)[[1]]
     G <- dim(tab)[1]
     K <- dim(tab)[2]
     N <- sum(tab)
-    if (accum.method == "proximity") {
-        if (! is.null(distance.file))
-            gxy = .loadDistanceFile(distance.file, pool.names)
-        else stop("distance.file must be provided")
-    }
-
-    ans = lapply(1:n.sites, function(x) numeric(0))
+    ans <- lapply(1:n.sites, function(x) numeric(0))
     for (i in 1:n.resample) {
         row.order <- sample(1:G,
-                            size=n.sites,
-                            replace=ifelse(resample.method=="bootstrap", TRUE, FALSE))
-        if (accum.method == "proximity")
-            row.order = .reorderByProximity(row.order, gxy, pool.names)
+                            size = n.sites,
+                            replace = ifelse(resample.method == "bootstrap",
+                                             TRUE, FALSE))
         for (g in 1:n.sites) {
-            this.gamma = .calculateGammaAccum(apply(tab[row.order[1:g], , drop=FALSE], 2, sum),
+            this.gamma <- .calculateGammaAccum(apply(tab[row.order[1:g], , drop=FALSE], 2, sum),
                                               gamma.method)
-            ans[[g]] = c(ans[[g]], this.gamma)
+            ans[[g]] <- c(ans[[g]], this.gamma)
         }
     }
-    return(ans)
+    ans
 }
 
 
@@ -255,62 +209,10 @@ gammaAccumWorker.divtable <- function(tab, n.sites=dim(tab)[1],
     sum.accum <- sum(this.accum)
     this.prop <- this.accum / sum.accum
     sum.prop <- sum(this.prop * this.prop)
-    ans <- switch(gamma.method,
-                  q         = sum.prop,
-                  q.nielsen = nielsenTransform(sum.prop, sum.accum),
-                  r         = (((sum.accum * sum.prop) - 1) / (sum.accum - 1)))
-    return(ans)
+    switch(gamma.method,
+           q         = sum.prop,
+           q.nielsen = nielsenTransform(sum.prop, sum.accum),
+           r         = (((sum.accum * sum.prop) - 1) / (sum.accum - 1)))
 }
 
-
-.reorderByProximity = function(row.order, gxy, pool.names)
-{
-    new.row.order <- c()
-    pools <- gxy[pool.names[row.order], ]
-    dm <- .createSpatialDistmat(pools$X, pools$Y, names.1=pools$pool)
-    diag(dm) <- +Inf  # distance to same pool is always farthest
-    next.row.i <- 1
-    new.row.order <- c(new.row.order, row.order[next.row.i])
-    dm[, next.row.i] <- Inf  # distance to same pool is always farthest
-    for (r in 2:n.sites) {
-        next.row.i <- which(dm[next.row.i, ] == min(dm[next.row.i, ]))[1]
-        dm[, next.row.i] <- Inf
-        new.row.order <- c(new.row.order, row.order[next.row.i])
-    }
-    return(new.row.order)
-}
-
-
-.createSpatialDistmat <- function(x.1, y.1, x.2, y.2, names.1, names.2)
-{
-    if (! missing(names.1)) 
-        names(x.1) <- names.1
-    if (missing(x.2)) 
-        x.2 <- x.1
-    if (! missing(names.2)) 
-        names(x.2) <- names.2
-    if (missing(y.2)) 
-        y.2 <- y.1
-    xx <- outer(x.1, x.2, "-")
-    xx <- xx * xx
-    yy <- outer(y.1, y.2, "-")
-    yy <- yy * yy
-    ans <- sqrt(xx + yy)
-    dimnames(ans) <- list(names(x.1), names(x.2))
-    return(ans)
-}
-
-
-.loadDistanceFile = function(distance.file, pool.names)
-{
-    if (is.character(distance.file))
-        gxy <- read.delim(file=distance.file)
-    else if ("data.frame" %in% class(distance.file))
-        gxy <- distance.file
-    else
-        stop("unknown type of distance information in", 
-             deparse(substitute(distance.file)))
-    ans <- subset(gxy, pool %in% pool.names)
-    return(ans)
-}
 

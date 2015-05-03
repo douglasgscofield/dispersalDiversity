@@ -6,22 +6,16 @@
 \alias{gammaAccum.divtable}
 \title{Perform gamma diversity accumulation on allele counts}
 \usage{
-\method{gammaAccum}{allele_divtables}(lst, accum.method = c("random",
-  "proximity"), resample.method = c("permute", "bootstrap"),
-  n.resample = 1000, gamma.method = c("r", "q.nielsen", "q"),
-  distance.file = NULL, ...)
+\method{gammaAccum}{allele_divtables}(lst, resample.method = c("permute",
+  "bootstrap"), n.resample = 1000, gamma.method = c("r", "q.nielsen", "q"),
+  ...)
 
-\method{gammaAccum}{divtable}(tab, accum.method = c("random", "proximity"),
-  resample.method = c("permute", "bootstrap"), gamma.method = c("r",
-  "q.nielsen", "q"), distance.file = NULL, ...)
+\method{gammaAccum}{divtable}(tab, resample.method = c("permute",
+  "bootstrap"), gamma.method = c("r", "q.nielsen", "q"), ...)
 }
 \arguments{
 \item{lst}{List of site-by-source tables for loci, as produced by
 \code{allele.createTableList}}
-
-\item{accum.method}{\code{"random"} (default) or \code{"proximity"}.  If
-\code{"proximity"} is used, then \code{distance.file} must be supplied
-(see below).}
 
 \item{resample.method}{\code{"permute"} (default) or \code{"bootstrap"},
 whether to resample sites without (\code{"permute"}) or with
@@ -34,26 +28,11 @@ whether to resample sites without (\code{"permute"}) or with
 The allele.* functions are all based on \code{"r"} versions and undefined
 results may happen otherwise.}
 
-\item{distance.file}{A file or data frame containing three columns of data,
-with the header/column names being \code{pool}, \code{X}, and \code{Y},
-containing the spatial locations of the seed pools named in the row names
-of tab.  Only used if the \code{accum.method == "proximity"}.}
-
 \item{tab}{Site-by-source table, as passed to diversity()}
-
-\item{accum.method}{\code{"random"} (default) or \code{"proximity"}.
-Method for accumulating sites.  If \code{"random"}, then the next site is
-chosen at random. If \code{"proximity"}, then the next site chosen is the
-next closest site, and \code{distance.file} must be supplied.}
 
 \item{resample.method}{\code{"permute"} (default) or \code{"bootstrap"}.
 Whether to resample sites without replacement (\code{"permute"}) or with
 replacement (\code{"bootstrap"}).}
-
-\item{distance.file}{A file or data.frame containing three columns of data,
-with the header/column names being \code{"pool"}, \code{"X"}, and \code{"Y"},
-containing the spatial locations of the seed pools named in the row names of
-tab.  Only used if the \code{accum.method=="proximity"}.}
 
 \item{gamma.method}{Calculate gamma using \code{"r"} (default),
 \code{"q"} or \code{"q.nielsen"} method (see paper).}
