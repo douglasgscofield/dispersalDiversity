@@ -1,6 +1,15 @@
 0.9.9000 (development version, branch make_R_package)
 -----------------------------------------------------
 
+-   Diversity tests return class diversity_test, which has print and
+    plot methods
+-   Gamma accumulation functions return class gamma_accum, which has a
+    plot method
+-   diversity, alleleDiversityTest, alleleContrastTest, and
+    alleleContrastTest3 have methods for divtable and allele_divtables
+-   Lists of allele diversity tables have class allele_divtables
+-   Diversity site-by-source tables have class divtable, with methods to
+    convert from table, xtabs, matrix, and data.frame
 -   diversity returns separate lists for diversity values calculated
     using the standard diversity calculations (q), classical corrections
     (r), and Nielsen et al. (2003 Molecular Ecology) corrections
