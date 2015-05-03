@@ -1,5 +1,4 @@
-#' Assignments of acorns harvested from acorn woodpecker granaries in 2002,
-#' to seed source trees
+#' Source tree assignments for acorns harvested from acorn woodpecker granaries in 2002
 #'
 #' A dataset containing seed source tree assignments for acorns of
 #' valley oak (\emph{Quercus lobata}), harvested in 2002 from acorn 
@@ -45,8 +44,7 @@ NULL
 
 
 
-#' Assignments of acorns harvested from acorn woodpecker granaries in 2004,
-#' to seed source trees
+#' Source tree assignments for acorns harvested from acorn woodpecker granaries in 2004
 #'
 #' A dataset containing seed source tree assignments for acorns of
 #' valley oak (\emph{Quercus lobata}), harvested in 2004 from acorn 

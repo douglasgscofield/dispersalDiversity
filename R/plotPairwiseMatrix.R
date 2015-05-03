@@ -8,10 +8,8 @@
 #' e.g., \code{diversity()$q$diversity.mat}.  Currently, prior to plotting
 #' this matrix has its diagonal and upper triangle zeroed, and is then
 #' rotated prior to passing to \code{\link{lattice::levelplot}}
-#'
-#' @param statistic    \code{"divergence"} or \code{"overlap"}, for which
-#' statistic is being presented
-#'
+#' @param statistic    \code{"divergence"} or \code{"overlap"}, indicating
+#' the statistic being supplied for plotting
 #' @param pairwise.mean    Mean pairwise divergence or overlap as found at,
 #' e.g., \code{diversity()$q$divergence}.  If provided, this is added to
 #' the plot in the upper triangle, rounded to three digits, with 
@@ -19,17 +17,16 @@
 #' together with '\eqn{\bar{\delta} = }' if \code{statistic} is
 #' \code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is 
 #' \code{"overlap"}.
-#'
 #' @param mean.pos    If \code{pairwise.mean} is given, the relative
 #' X and Y positions within the panel at which the value is plotted, in 
 #' a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
 #' value.
-#'
 #' @param axis.label    Label used for the X and Y axes, the X and Y axis
 #' labels can be changed with \code{xlab} and \code{ylab}
-#'
 #' @param bty,aspect,col.regions,colorkey,at,scales,xlab,ylab    Additional
 #' plot options passed to \code{\link{lattice::levelplot}}
+#' @param digits        Number of digits to use when printing mean value,
+#' taken from the \code{"digits"} option if not supplied
 #'
 #' @return The lattice plot object is returned invisibly
 #'
@@ -39,31 +36,20 @@
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
-#
-# @examples
-#
-# TODO: get DATA into here, perhaps import pericarp data from readGenalex?
-#
-# dv <- diversity(tab)
-# plotPairwiseMatrix(x = dv$r$divergence.mat, 
-#                    pairwise.mean = dv$r$divergence, 
-#                    statistic = "divergence", 
-#                    axis.label = "Seed Pool")
-#
-#' @seealso \code{\link{diversity}}, \code{\link{lattice::levelplot}}
+#' @examples
 #'
-# @import lattice
-# @importFrom lattice levelplot current.panel.limits panel.text plot.trellis
-#
-# do i need this for the plot?  or is the above import enough?
-# @importMethodsFrom lattice plot.lattice
-# do I even need to do this now?
-#
+#' data(granaries_2002_Qlob)
+#' dv <- diversity(granaries_2002_Qlob)
+#' plotPairwiseMatrix(x = dv$r$divergence.mat, 
+#'                    pairwise.mean = dv$r$divergence, 
+#'                    statistic = "divergence", 
+#'                    axis.label = "Granary")
+#'
+#' @seealso \code{\link{diversity}}, \code{\link{lattice::levelplot}}
 #'
 #' @export plotPairwiseMatrix
 #'
-plotPairwiseMatrix <- function(x, 
-    statistic = c("divergence", "overlap"), 
+plotPairwiseMatrix <- function(x, statistic = c("divergence", "overlap"), 
     pairwise.mean = NULL, mean.position = c(0.45, 0.7),
     bty = "L", aspect = "iso", 
     col.regions = function(x) gray(c(1, seq(.9, .6, length.out=(x - 2)), 0)),
@@ -72,15 +58,15 @@ plotPairwiseMatrix <- function(x,
     scales = list(draw = FALSE, tck = 0, cex = 0.7, x = list(rot = 90)),
     axis.label = "Species Pool",
     xlab = list(axis.label, cex=1.0), ylab = list(axis.label, cex=1.0),
+    digits = getOption("digits"),
     ...)
 {
-    # the matrix to be passed in is found at diversity()$q$diversity.mat
-    # or ...$r$diversity.mat or ...$q.nielsen$diversity.mat
     statistic = match.arg(statistic)
-    # should I be doing this zeroeing?
-    diag(x) <- 0
+    # Diagonal is the identity value
+    diag(x) <- if (statistic == "divergence") 0 else 1
+    # Zeroeing for plotting
     x[upper.tri(x)] <- 0
-    rotateMatrix = function(mat) t(mat[nrow(mat):1, , drop=FALSE])
+    rotateMatrix <- function(mat) t(mat[nrow(mat):1, , drop=FALSE])
     x = rotateMatrix(x)
     opa <- par(mar = c(0, 0, 0, 5), ps = 10, xpd = NA)
     lp <- lattice::levelplot(x, bty = bty, aspect = aspect, 
@@ -89,12 +75,11 @@ plotPairwiseMatrix <- function(x,
     lattice::plot(lp, ...)
     if (! is.null(pairwise.mean)) {
         lims <- lapply(lattice::current.panel.limits(), round)
-        # TODO: is it sapply that i should use instead of unlist lapply?
-        rr <- abs(unlist(lapply(lims, diff)))
+        rr <- abs(sapply(lims, diff))
+        val <- signif(pairwise.mean, digits)
         xpr <- if (statistic == "divergence")
-            substitute(bar(delta) == OBS, list(OBS = round(pairwise.mean, 3)))
-        else substitute(bar(omega) == OBS, list(OBS = round(pairwise.mean, 3)))
-
+            substitute(bar(delta) == OBS, list(OBS = val))
+        else substitute(bar(omega) == OBS, list(OBS = val))
         lattice::panel.text(xpr, x = mean.position[1] * rr[1], 
                             y = mean.position[2] * rr[2], adj = c(0, 0),
                             cex = 1.0)

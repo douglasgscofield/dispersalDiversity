@@ -3,7 +3,7 @@
 #' Singleton groups, those with just one member, appear as white regions
 #' within their respective sites.  Multiton groups, with more than one
 #' member but all members appearing within a single site, also appear as
-#' white regions unless \code{fill.method = "color"} with
+#' white regions unless \code{fill.method = "colour"} with
 #' \code{distinguish.multiton = TRUE}, then they are grey.  Groups with 
 #' members in more than one site are given a unique colour/hatching 
 #' combination.  An example if its use is in Figure 2A-C of
@@ -19,26 +19,25 @@
 #' of plot produced.  Bar plots have received considerably more attention
 #' than pie plots.
 #'
-#' @param fill.method   \code{"color"} (the default, with synonym 
-#' \code{"colour"}, or \code{"bw"}, for the method of colouring different 
-#' groups within the plots.  For \code{"color"}, no more than eight separate
+#' @param fill.method   \code{"colour"} (the default, with synonym 
+#' \code{"color"}, or \code{"bw"}, for the method of colouring different 
+#' groups within the plots.  For \code{"colour"}, no more than eight separate
 #' colours are chosen; if there are more than eight groups, the
 #' colours for lower-frequency groups are modified by hatching lines of
 #' varying angles and densities.  For \code{"bw"}, fewer grades of grey are
 #' used, together with black-and-white patterns and hatching.
-#'
-#' For \code{"color"}, if the package \code{\link{RColorBrewer}} is 
+#' For \code{"colour"}, if the package \code{\link{RColorBrewer}} is 
 #' available, colours will be chosen from its \code{"Dark2"} palette.
 #' This may be modified with the \code{fill.pallete} option.  The aesthetics
-#' of color choice are important for distinguishing among groups in 
+#' of colour choice are important for distinguishing among groups in 
 #' membership plots.  If \code{\link{RColorBrewer}} is not available, colours
 #' are chosen using \code{\link{rainbow}}.
 #'
-#' @param fill.palette   For \code{fill.method = "color"}, if the 
+#' @param fill.palette   For \code{fill.method = "colour"}, if the 
 #' package \code{\link{RColorBrewer}} is available, use this palette to
 #' choose the base colours to use
 #'
-#' @param distinguish.multiton   For \code{fill.method = "color"}, whether 
+#' @param distinguish.multiton   For \code{fill.method = "colour"}, whether 
 #' to distinguish multiton groups (see Description) with grey rather than 
 #' the default white colour.
 #'
@@ -109,7 +108,7 @@ membershipPlot.default <- function(tab, ...)
 #' @export
 #'
 membershipPlot.divtable <- function(tab, method = c("bar", "pie"), 
-    fill.method = c("color", "bw", "colour"), fill.palette = "Dark2",
+    fill.method = c("colour", "bw", "color"), fill.palette = "Dark2",
     distinguish.multiton = FALSE, xlab = "Site", ylab = "Membership",
     las = 1, x.mar.width = ifelse(las >= 2, 4, 3), 
     cex = 0.7, header.cex = 0.9, cex.names = 0.85, 
@@ -126,7 +125,7 @@ membershipPlot.divtable <- function(tab, method = c("bar", "pie"),
     
     method <- match.arg(method)
     fill.method <- match.arg(fill.method)
-    if (fill.method == "colour") fill.method <- "color"
+    if (fill.method == "color") fill.method <- "colour"
     stopifnot(is.null(pdf.file) || is.null(postscript.file))
     to.file <- !is.null(pdf.file) || !is.null(postscript.file)
     
@@ -135,11 +134,11 @@ membershipPlot.divtable <- function(tab, method = c("bar", "pie"),
     tab <- t(tab)
     # so now types are along the rows, groups along the columns
     
-    # Generate colors: white for singleton types, grayscale for types that
-    # appear in a single site, color for multi-site types.  Sort the types in
+    # Generate colours: white for singleton types, grayscale for types that
+    # appear in a single site, colour for multi-site types.  Sort the types in
     # descending order of number of appearances of type
-    fill.colors <- rep("", nrow(tab))
-    names(fill.colors) <- rownames(tab)
+    fill.colours <- rep("", nrow(tab))
+    names(fill.colours) <- rownames(tab)
     n.types <- apply(tab, 1, sum)
     # names(n.types) <- rownames(tab)  # this should already be true
     n.types <- rev(sort(n.types))
@@ -151,21 +150,21 @@ membershipPlot.divtable <- function(tab, method = c("bar", "pie"),
     multiton.idx <- n.sites == 1 & n.types > 1
     multisite.idx <- n.sites > 1
     
-    if (fill.method == "color") {
+    if (fill.method == "colour") {
         
-        fill.colors[singleton.idx] <- "white"
-        fill.colors[multiton.idx] <- if (distinguish.multiton) 
+        fill.colours[singleton.idx] <- "white"
+        fill.colours[multiton.idx] <- if (distinguish.multiton) 
             gray(seq(from = 0.5, to = 0.8, length = sum(multiton.idx)))
         else "white"
         ang <- dens <- numeric(nrow(tab))
         ang[! multisite.idx] <- 0
         dens[! multisite.idx] <- -1
-        fill.colors[! multisite.idx] <- "white"
+        fill.colours[! multisite.idx] <- "white"
         n.multisite <- sum(multisite.idx)
         if (n.multisite) {  # we need colours
             n.cols <- min(sum(multisite.idx), 8)
             # if RColorBrewer is available, use it for colours, much nicer,
-            colors <- if (requireNamespace("RColorBrewer", quietly = TRUE))
+            colours <- if (requireNamespace("RColorBrewer", quietly = TRUE))
                 RColorBrewer::brewer.pal(max(n.cols, 3), fill.palette)
             else rainbow(n.cols)
             lo <- n.multisite - n.cols
@@ -176,9 +175,9 @@ membershipPlot.divtable <- function(tab, method = c("bar", "pie"),
             dens[multisite.idx] <- c(rep(-1, n.cols), 
                                      rep(c(40, 25), each = n.cols / 2, 
                                          length.out = lo))
-            fill.colors[multisite.idx] <- c(colors, rep(colors, length.out = lo))
+            fill.colours[multisite.idx] <- c(colours, rep(colours, length.out = lo))
         }
-        fill.args <- list(angle = ang, density = dens, col = fill.colors)
+        fill.args <- list(angle = ang, density = dens, col = fill.colours)
         
     } else if (fill.method == "bw") {
 
@@ -189,17 +188,17 @@ membershipPlot.divtable <- function(tab, method = c("bar", "pie"),
         ang <- dens <- numeric(nrow(tab))
         ang[!multisite.idx] <- 0
         dens[!multisite.idx] <- -1
-        fill.colors[!multisite.idx] <- "white"
+        fill.colours[!multisite.idx] <- "white"
         n.multisite <- sum(multisite.idx)
         if (n.multisite) {
             lo <- sum(multisite.idx) - 2
             ang[multisite.idx] <- c(90, 90, rep(c(90, 45, 135), length.out = lo))
             dens[multisite.idx] <- c(-1, -1, rep(c(40, 25), each = 3, 
                                                  length.out = lo))
-            fill.colors[multisite.idx] <- c("black", gray(0.5), rep(c(gray(0.5), 
+            fill.colours[multisite.idx] <- c("black", gray(0.5), rep(c(gray(0.5), 
                 "black"), each = 3, length.out = lo))
         }
-        fill.args <- list(angle = ang, density = dens, col = fill.colors)
+        fill.args <- list(angle = ang, density = dens, col = fill.colours)
         
     }
     
@@ -228,10 +227,8 @@ membershipPlot.divtable <- function(tab, method = c("bar", "pie"),
         xl <- seq(0.8, by = 1.3, length.out = max(length(l1), length(l2)))
         if (!is.null(l1)) 
             mtext(l1, at = xl, line = 1, cex = header.cex, xpd = NA)
-            #text(xl, 1.25, labels = l1, cex = header.cex, xpd = NA)
         if (!is.null(l2)) 
             mtext(l2, at = xl, line = 0.5, cex = header.cex, xpd = NA)
-            #text(xl, 1.125, labels = l2, cex = header.cex, xpd = NA)
 
     } else if (method == "pie") {
         
@@ -255,7 +252,6 @@ membershipPlot.divtable <- function(tab, method = c("bar", "pie"),
                              fill.args, ...))
         }
     }
-    if (to.file)
-        dev.off()
+    if (to.file) dev.off()
 }
  
