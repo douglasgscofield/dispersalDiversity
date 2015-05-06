@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* That wierdness when converting to as.divtable for the Thamnolia diversity stuff
 * Update figures with existing code
 * straighten out eps and pdf file for membershipPlot
 * continue generalising allele diversity tests

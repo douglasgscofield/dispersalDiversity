@@ -14,7 +14,7 @@ There are also new functions for calculating allelic diversity using these same
 conceptual and statistical principles, and for comparing allele diversity
 statistics.
 
-**NOTE: This version has major changes to the interface.  For the version used in Scofield et al. (2012) with the previous interface, get the [release tagged 0.1](https://github.com/douglasgscofield/dispersalDiversity/releases).  This README might be a bit out of sync with the current code.**
+**NOTE: This version has major changes to the interface.  For the version used in Scofield et al. (2012) with the previous interface, get the [release tagged 0.1](https://github.com/douglasgscofield/dispersalDiversity/releases), but simply `source` the files you are interested in... release 0.1 does not have an R package structure.**
 
 * * *
 
