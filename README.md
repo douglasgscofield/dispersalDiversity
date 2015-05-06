@@ -34,11 +34,11 @@ and has been moved to [its own repository](https://github.com/douglasgscofield/n
 Installation
 ------------
 
-Install this branch from github using `devtools`:
+Install from github using `devtools`:
 
 ```R
 install.packages("devtools")
-devtools::install_github("douglasgscofield/dispersalDiversity", ref = "make_R_package")
+devtools::install_github("douglasgscofield/dispersalDiversity")
 library(dispersalDiversity)
 ```
 
@@ -47,15 +47,8 @@ library(dispersalDiversity)
 Prerequisites
 -------------
 
-This package requires the `readGenalex` package available from CRAN, which will
-be installed by default.  I have made major changes to `readGenalex` since the
-current CRAN release, and recommend you use the development version, available
-for installation using the `devtools` package:
-
-```R
-devtools::install_github("douglasgscofield/readGenalex")
-library(readGenalex)
-```
+This package requires the `readGenalex` package v1.0 available from CRAN, which is
+a prerequisite for this package and will be installed by default.
 
 For producing plots, many find aesthetic colour choices to be available through
 palettes in the `RColorBrewer` package.  `membershipPlot` (see below) will use
