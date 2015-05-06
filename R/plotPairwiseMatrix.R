@@ -1,106 +1,90 @@
-# plotPairwiseMatrix.R
-
-# Provide function for plotting pairwise diversity matrices as returned by the
-# pmiDiversity() function.  Used during data analysis for Scofield et al 2012
-# American Naturalist 180(6) 719-732,
-# http://www.jstor.org/stable/10.1086/668202.  Requires as input one or more
-# tables of counts in sites (rows) X sources (columns) format.
-
-.plotPairwiseMatrix.Version = "0.1"
-
-# Copyright (c) 2012 Douglas G. Scofield, Umeå Plant Science Centre, Umeå, Sweden
-#
-# douglas.scofield@plantphys.umu.se
-# douglasgscofield@gmail.com
-#
-# These statistical tools were developed in collaboration with Peter Smouse
-# (Rutgers University) and Victoria Sork (UCLA) and were funded by U.S. National
-# Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
-#
-# Use as you see fit.  No warranty regarding this code is implied nor should be
-# assumed.  Send bug reports etc. to one of the above email addresses.
-#
-#
-# FUNCTIONS PROVIDED 
-#
-# 
-# See Scofield et al. Am. Nat, Figure 4A-C to see examples of this function in use.
-# 
-#
-# plotPairwiseMatrix() : Create a visual plot of pairwise divergence or overlap
-#                        values as calculated by pmiDiversity().  For example, with
-#                        tab defined as a sites-by-sources matrix as for pmiDiversity(),
-#                        plot the divergence matrix based on r_gg calculations, 
-#                        labelling the axes "Seed Pool", using the following code:
-#
-#                        pmiD = pmiDiversity(tab)
-#                        plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
-#                                           pairwise.mean=pmiD$r.divergence, 
-#                                           statistic="divergence", 
-#                                           axis.label="Seed Pool")
-# 
-#
-# CHANGELOG
-#
-# 0.1: First release
-#
-#
-# TODO
-#
-# * Turn this into an actual R package
-
-
-library(lattice)
-
-
-#---------------------------------------------
-
-
-plotPairwiseMatrix <- function(pairwise.mat, 
-                               pairwise.mean=NA, 
-                               statistic=c("divergence","overlap"), 
-                               axis.label="Seed Pool",
-                               ...)
+#' Plot pairwise divergence or overlap as calculated by \code{diversity}
+#'
+#' Plot pairwise values using \code{levelplot} from the \code{lattice} 
+#' package.  An example of its use is in Figure 4A-C of Scofield et al.
+#' (2012).
+#'
+#' @param x    Pairwise divergence or overlap matrix as found at,
+#' e.g., \code{diversity()$q$diversity.mat}.  Currently, prior to plotting
+#' this matrix has its diagonal and upper triangle zeroed, and is then
+#' rotated prior to passing to \code{\link{lattice::levelplot}}
+#' @param statistic    \code{"divergence"} or \code{"overlap"}, indicating
+#' the statistic being supplied for plotting
+#' @param pairwise.mean    Mean pairwise divergence or overlap as found at,
+#' e.g., \code{diversity()$q$divergence}.  If provided, this is added to
+#' the plot in the upper triangle, rounded to three digits, with 
+#' positions specified by \code{mean.pos}.  The value is plotted 
+#' together with '\eqn{\bar{\delta} = }' if \code{statistic} is
+#' \code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is 
+#' \code{"overlap"}.
+#' @param mean.pos    If \code{pairwise.mean} is given, the relative
+#' X and Y positions within the panel at which the value is plotted, in 
+#' a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
+#' value.
+#' @param axis.label    Label used for the X and Y axes, the X and Y axis
+#' labels can be changed with \code{xlab} and \code{ylab}
+#' @param bty,aspect,col.regions,colorkey,at,scales,xlab,ylab    Additional
+#' plot options passed to \code{\link{lattice::levelplot}}
+#' @param digits        Number of digits to use when printing mean value,
+#' taken from the \code{"digits"} option if not supplied
+#'
+#' @return The lattice plot object is returned invisibly
+#'
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+#' @examples
+#'
+#' data(granaries_2002_Qlob)
+#' dv <- diversity(granaries_2002_Qlob)
+#' plotPairwiseMatrix(x = dv$r$divergence.mat, 
+#'                    pairwise.mean = dv$r$divergence, 
+#'                    statistic = "divergence", 
+#'                    axis.label = "Granary")
+#'
+#' @seealso \code{\link{diversity}}, \code{\link{lattice::levelplot}}
+#'
+#' @export plotPairwiseMatrix
+#'
+plotPairwiseMatrix <- function(x, statistic = c("divergence", "overlap"), 
+    pairwise.mean = NULL, mean.position = c(0.45, 0.7),
+    bty = "L", aspect = "iso", 
+    col.regions = function(x) gray(c(1, seq(.9, .6, length.out=(x - 2)), 0)),
+    colorkey = list(labels = list(cex = 1.0)),
+    at = c(0, 0.01, seq(0.2, 0.8, 0.2), 0.99, 1.0),
+    scales = list(draw = FALSE, tck = 0, cex = 0.7, x = list(rot = 90)),
+    axis.label = "Species Pool",
+    xlab = list(axis.label, cex=1.0), ylab = list(axis.label, cex=1.0),
+    digits = getOption("digits"),
+    ...)
 {
-  statistic = match.arg(statistic)
-  # the matrix to be passed in is found at pmiDiversity()$r.diversity.mat 
-  diag(pairwise.mat) <- 0
-  pairwise.mat[upper.tri(pairwise.mat)] <- 0
-  rotateMatrix = function(mat) t(mat[nrow(mat):1,,drop=FALSE])
-  pairwise.mat = rotateMatrix(pairwise.mat)
-  par(mar=c(0,0,0,5), ps=10, xpd=NA)
-  lp <- levelplot(pairwise.mat, 
-                  at=c(0,0.01,seq(0.2,0.8,0.2),0.99,1.0),
-                  ### Uncomment below for the 5X figure containing the horizontal scale and delta_gh
-                  ### colorkey=list(space="top", labels=list(cex=1.0)),
-                  colorkey=list(labels=list(cex=1.0)),
-                  aspect="iso", 
-                  bty="L",
-                  regions=TRUE,
-                  col.regions=function(.x) gray(c(1,seq(.9,.6,length.out=(.x-2)),0)),
-                  xlab=list(axis.label, cex=1.0),
-                  ylab=list(axis.label, cex=1.0),
-                  scales=list(draw=FALSE, tck=0, cex=0.7, x=list(rot=90))
-                  )
-  plot(lp, ...)
-  if (! is.na(pairwise.mean)) {
-    lims <- lapply(current.panel.limits(), round)
-    rr <- abs(unlist(lapply(lims, diff)))
-    if (statistic == "divergence") {
-      panel.text(x=0.45*rr[1], y=0.7*rr[2],
-                substitute(bar(delta)==OBS, list(OBS=round(pairwise.mean,3))),
-                adj=c(0,0), cex=1.0)
-      ### Uncomment below for the 5X figure containing the scale and delta_gh
-      ### panel.text(x=0.45*rr[1], y=0.7*rr[2], expression(delta[italic(gh)]),
-      ###           adj=c(0,0), cex=1.0)
-    } else {
-      panel.text(x=0.45*rr[1], y=0.7*rr[2], #expression(omega[italic(gh)]),
-                substitute(bar(omega)==OMEGA, list(OMEGA=round(pairwise.mean,3))),
-                adj=c(0,0), cex=1.0)
+    statistic = match.arg(statistic)
+    # Diagonal is the identity value
+    diag(x) <- if (statistic == "divergence") 0 else 1
+    # Zeroeing for plotting
+    x[upper.tri(x)] <- 0
+    rotateMatrix <- function(mat) t(mat[nrow(mat):1, , drop=FALSE])
+    x = rotateMatrix(x)
+    opa <- par(mar = c(0, 0, 0, 5), ps = 10, xpd = NA)
+    lp <- lattice::levelplot(x, bty = bty, aspect = aspect, 
+        regions = TRUE, col.regions = col.regions, colorkey = colorkey,
+        at = at, scales = scales, xlab = xlab, ylab = ylab, ...)
+    lattice::plot(lp, ...)
+    if (! is.null(pairwise.mean)) {
+        lims <- lapply(lattice::current.panel.limits(), round)
+        rr <- abs(sapply(lims, diff))
+        val <- signif(pairwise.mean, digits)
+        xpr <- if (statistic == "divergence")
+            substitute(bar(delta) == OBS, list(OBS = val))
+        else substitute(bar(omega) == OBS, list(OBS = val))
+        lattice::panel.text(xpr, x = mean.position[1] * rr[1], 
+                            y = mean.position[2] * rr[2], adj = c(0, 0),
+                            cex = 1.0)
     }
-  }
+    par(opa)
+    invisible(lp)
 }
-
-
-#---------------------------------------------
 

@@ -1,20 +1,39 @@
 Package: dispersalDiversity
 Type: Package
-Title: Analyse individual and genetic diversity of dispersal processes in biological populations
-Version: 0.1
+Title: Analyse individual and genetic diversity of dispersal processes in
+    biological populations
+Version: 0.9.9001
+Date: 2015-04-13
 Authors@R: person(c("Douglas", "G."), "Scofield", email = "douglasgscofield@gmail.com", role = c("aut", "cre"))
 Maintainer: Douglas G. Scofield <douglasgscofield@gmail.com>
 Description: A collection of R functions to analyse individual and genetic
     diversity in biological populations, primarily in the context of studying
     dispersal processes.  The basic data format is a types x sites matrix.
-    Functions are provided for calculating alpha, beta, delta/ometa and gamma
-    diversity using a variety of measures; calculating alpha, beta, 
+    Functions are provided for calculating alpha, beta, delta/omega and gamma
+    diversity using a variety of measures; calculating alpha, beta,
     delta/omega and gamma diversity of allelic variation; and comparing
     diversity measures between samples.
 URL: https://github.com/douglasgscofield/dispersalDiversity
 BugReports: https://github.com/douglasgscofield/dispersalDiversity/issues
 License: LGPL-3 | file LICENSE
-Requires:
-    readGenalex (>= 1.0)
+Depends:
+    readGenalex (>= 0.9.9000)
+Imports:
+    lattice
 Suggests:
+    RColorBrewer,
     testthat
+Collate:
+    'allele_divtables-class.R'
+    'dispersalDiversity-data.R'
+    'dispersalDiversity-package.R'
+    'nielsenTransform.R'
+    'diversity-divtable.R'
+    'diversity-allele_divtables.R'
+    'diversityTests-divtable.R'
+    'diversityTests-allele_divtables.R'
+    'divtable-class.R'
+    'gammaAccum-divtable.R'
+    'gammaAccum-allele_divtables.R'
+    'membershipPlot.R'
+    'plotPairwiseMatrix.R'

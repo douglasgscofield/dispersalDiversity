@@ -1,13 +1,20 @@
-Dispersal Diversity : Statistics and Tests
-==========================================
+`dispersalDiversity`: Statistics and Tests
+------------------------------------------
 
+This is a collection of [R](http://www.r-project.org) functions to facilitate
+analysis of dispersal in biological communities.  The bulk of the functions
+calculate dispersal diversity statistics and allow for comparison of diversity
+statistics, as described in Scofield _et al._ 2012 [_American Naturalist_ 180:
+719-732](http://www.jstor.org/stable/10.1086/668202).  We originally developed
+the diversity tests to understand seed dispersal in plant populations, but the
+tests themselves should be useful for biodiversity data or any other
+diversity-like data that can be expressed with this same data structure.
 
-This is a collection of [R](http://www.r-project.org) functions to facilitate analysis of dispersal in biological communities.  The bulk of the functions calculate dispersal diversity statistics and allow for comparison of diversity statistics, as described in Scofield _et al._ 2012
-[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202).
+There are also new functions for calculating allelic diversity using these same
+conceptual and statistical principles, and for comparing allele diversity
+statistics.
 
-There are also new functions for calculating allelic diversity using these same conceptual and statistical principles, and for comparing allele diversity statistics.
-
-The **Mann-Whitney-Wilcoxon nested ranks test** we originally provided here has been made an R package and has been moved to [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
+**NOTE: This branch (`make_R_package`) has major changes to the interface, for the better I hope.  This README might not match the code.**
 
 * * *
 
@@ -15,28 +22,147 @@ These statistical tools were developed in collaboration with Peter Smouse ([Rutg
 
 * * *
 
+The **Mann-Whitney-Wilcoxon nested ranks test** we originally provided here has been made an R package:
+```R
+install.packages("nestedRanksTest")
+vignette("nestedRanksTest")
+```
+and has been moved to [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
 
-Dispersal Diversity
--------------------
 
-### Input requirements
 
-All functions take as input a simple data structure: a table of site (rows) by
-source (columns) counts.  Though we originally developed the diversity tests to
-understand seed dispersal in plant populations, the tests themselves should be
-useful for biodiversity data or any other diversity-like data that can be expressed 
-with this same data structure.
+Installation
+------------
 
-### Getting started
+Install this branch from github using `devtools`:
 
-The `pmiDiversity.R` and `diversityTests.R` source files are required for
-performing diversity tests.  If all that is desired are PMI ([Grivet _et al._
-2005](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x), [Scofield _et al._ 2010](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [Scofield _et al._ 2011](http://dx.doi.org/10.1007/s00442-010-1828-5)) and diversity ([Scofield _et al._ 2012](http://www.jstor.org/stable/10.1086/668202)) statistics (<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the source 
-file `pmiDiversity.R` contains the `pmiDiversity()` function that provides these 
-and can be used separately.
+```R
+install.packages("devtools")
+devtools::install_github("douglasgscofield/dispersalDiversity", ref = "make_R_package")
+library(dispersalDiversity)
+```
 
-Put all the source files in the same directory, and within your R session
-simply
+
+
+Prerequisites
+-------------
+
+This package requires the `readGenalex` package available from CRAN, which will
+be installed by default.  I have made major changes to `readGenalex` since the
+current CRAN release, and recommend you use the development version, available
+for installation using the `devtools` package:
+
+```R
+devtools::install_github("douglasgscofield/readGenalex")
+library(readGenalex)
+```
+
+For producing plots, many find aesthetic colour choices to be available through
+palettes in the `RColorBrewer` package.  `membershipPlot` (see below) will use
+this package if it is available.  You may already have it installed, and the
+metadata for `dispersalDiversity` lists it as a suggested package.  If it is
+not installed, get it from CRAN:
+
+```R
+install.package("RColorBrewer")
+```
+
+
+Input requirements
+------------------
+
+Most functions take as input a simple data structure: a table of site (rows) by
+source (columns) counts, which each cell representing the number of times that
+source/species/type was observed at that site.  The cells need not be integer
+counts, they can be e.g., proportional representations, and *I think* the
+statistics are robust to this, but some summaries expect counts and may not be
+sensible.
+
+This table will be converted to class `'matrix'` by each such function.
+
+To create a random matrix:
+
+```R
+n.sites <- 5
+n.sources <- 10
+n.samples <- 1000
+## data frame of site-source pairs
+t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+                source = round(runif(n.samples) * n.sources + 0.5))
+
+## site-by-source matrix
+m1 <- do.call(rbind, lapply(split(t, t$site), function(x) table(x$source)))
+# this creates a class c("matrix")
+
+## or use xtabs
+m2 <- xtabs(data = t)
+## this creates a class c("xtabs","table")
+```
+
+Both the above methods create a table with rownames of site levels, and column
+names of source levels.  `xtabs` also names the dims after the variables
+(`site` and `source`).
+
+
+
+Membership plots
+----------------
+
+One of the first things you may want to do is produce a membership plot.
+Membership plots provide a visual representation of the site-by-source table.
+
+**change these to plots from a random matrix**
+
+![membershipPlot output in black and white](membershipPlot_example_BW.png)
+
+If `fill.method = "color"` and the library `RColorBrewer` is available, then
+it is used to pick the colours used for filling groups.
+
+![membershipPlot output in colour](membershipPlot_example_colour.png)
+
+Singleton sources (those that appear just once in just one site) are
+distinguished using a white background, while multiton sources (those that
+appear multiple times but still in just one site) can be distinguished with a
+gray background using the option `distinguish.multiton = TRUE`.  Other options
+are provided for controlling labelling of the plot and producing output to PDF
+or PostScript files.
+
+Both plots show that if the number of categories requiring colour/fill is
+sufficiently large, hatching is combined with colours.  Both plots were
+produced with `distinguish.multiton = FALSE`.
+
+Further published examples of membership plots produced by this code or earlier
+versions of this code can be seen Scofield _et al._ 2010, 2011, 2012.
+
+
+
+Diversity statistics
+--------------------
+
+To calculate PMI statistics ([Grivet _et al._
+2005](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x), [Scofield _et al._
+2010](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [Scofield _et al._
+2011](http://dx.doi.org/10.1007/s00442-010-1828-5)) and dispersal diversity
+statistics([Scofield _et al._
+2012](http://www.jstor.org/stable/10.1086/668202)) statistics
+(<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the function
+`diversity()` has you covered.  It takes a site-by-source table and
+calculates PMI and diversity statistics three different ways, each of
+which treats possible bias differently and each of which is returned in
+an otherwise identical sublist:
+
+* `q` sublist, containing <i>q<sub>gg</sub></i>-based statistics, known to be 
+  biased (Grivet _et al._ 2005)
+
+* `q.nielsen`sublist, <i>q<sup>*</sup><sub>gg</sub></i>-based, which apply the
+  transformation developed by Nielsen _et al._ (2003) to be unbiased and seem
+  to perform well (Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et
+  al._ 2012).
+
+* `r` sublist, <i>r<sub>gg</sub></i>-based, unbiased but poor performers at low
+  sample sizes (Grivet _et al._ 2005, Scofield _et al._ 2012)
+
+
 
 ```R
 source("diversityTests.R")
@@ -60,24 +186,6 @@ directory:
 source("gammaAccum.R")
 ```
 
-### pmiDiversity.R
-
-Defines the R function `pmiDiversity()` which takes a site-by-source table and
-produces statistics for Probability of Maternal Identity aka PMI (Grivet _et al._
-2005, Scofield _et al._ 2010, Scofield _et al._ 2011) and dispersal
-diversity (Scofield _et al._ 2012).  Three different PMI and diversity
-statistics are calculated:
-
-* <i>q<sub>gg</sub></i>-based, known to be biased (Grivet _et al._ 2005)
-
-* <i>r<sub>gg</sub></i>-based, unbiased but poor performers at low sample sizes
-  (Grivet _et al._ 2005, Scofield _et al._ 2012)
-
-* <i>q<sup>*</sup><sub>gg</sub></i>-based, which apply the transformation
-  developed by Nielsen _et al._ (2003) to be unbiased and seem to perform well
-(Scofield _et al._ 2010, Scofield _et al._ 2011, Scofield _et al._ 2012).
-
-
 ### diversityTests.R
 
 Defines several R functions which, like `pmiDiversity()`, take a site-by-source
@@ -86,36 +194,26 @@ table (one or more) and test diversity statistics within and among them.  See
 (see above) is required to be in the same directory, as it provides functions
 used here.
 
-`alphaDiversityTest(tab)`
-: Test for differences in &alpha; diversity among sites within a single dataset
- 
-`alphaContrastTest(tab.a, tab.b)`
-: Test whether there is a difference in the &alpha; diversity between two datasets
+Function | Description
+-------- | -----------
+`alphaDiversityTest(tab)` | Test for differences in &alpha; diversity among sites within a single dataset
+`alphaContrastTest(tab.a, tab.b)` | Test whether there is a difference in the &alpha; diversity between two datasets
+`alphaContrastTest.3(tab.a, tab.b, tab.c)` | Test whether there is a difference in the &alpha; diversity among three datasets
+`plotAlphaTest(result)` | Plot the list returned from `alphaDiversityTest()` or `alphaContrastTest()` for evaluation
+`pairwiseMeanTest(tab)` | Test whether mean pairwise divergence/overlap among sites is different from the null espectation
+`plotPairwiseMeanTest()` | Plot the list returned from the above test for evaluation
+`gammaContrastTest(tab.a, tab.b)` | Test whether there is a difference in the &gamma; diversity between two datasets
+`gammaContrastTest.3(tab.a, tab.b, tab.c)` | Test whether there is a difference in the &gamma; diversity among three datasets
 
-`alphaContrastTest.3(tab.a, tab.b, tab.c)`
-: Test whether there is a difference in the &alpha; diversity among three datasets
+An example of the output of `plotAlphaTest()`:
 
-`plotAlphaTest(result)`
-: Plot the list returned from `alphaDiversityTest()` or `alphaContrastTest()` for evaluation
+![plotAlphaTest example](plotAlphaTest_example.png)
 
-`pairwiseMeanTest(tab)`
-: Test whether mean pairwise divergence/overlap among sites is different from the null espectation
+and of `plotPairwiseMeanTest()`:
 
-`plotPairwiseMeanTest()`
-: Plot the list returned from the above test for evaluation
-
-`gammaContrastTest(tab.a, tab.b)`
-: Test whether there is a difference in the &gamma; diversity between two datasets
-
-`gammaContrastTest.3(tab.a, tab.b, tab.c)`
-: Test whether there is a difference in the &gamma; diversity among three datasets
+![plotPairwiseMeanTest example](plotPairwiseMeanTest_example.png)
 
 
-### membershipPlot.R
-
-Provides the function `membershipPlot()` for plotting relative representations of sources within sites, and source sharing across sites, using the same site-by-source table used for input to the `pmiDiversity()` function.  Examples of membership plots can be seen in Figure 2A-C of Scofield _et al._ 2012 <I>Am Nat</I>.  Singleton sources (those that appear just once in just one site) are distinguished using a white background, while multiton sources (those that appear multiple times but still in just one site) can be distinguished with a gray background using the option `distinguish.multiton=TRUE`.  Other options are provided for controlling labelling of the plot and producing output to PDF or PostScript files.
-
-The function `membershipPlot.v0()` provides the original membership plot functionality.  The primary function has been generalised.
 
 ### plotPairwiseMatrix.R
 
@@ -129,16 +227,19 @@ Scofield _et al._ <I>Am Nat</I>.
 
 For example, with `tab` defined as above, plot the divergence matrix based on
 _r<sub>gg</sub>_ calculations, labelling the axes "Seed Pool", using the
-following code: 
+following code:
 
 
 ````R
-pmiD = pmiDiversity(tab)
-plotPairwiseMatrix(pairwise.mat=pmiD$r.divergence.mat, 
-                   pairwise.mean=pmiD$r.divergence, 
-                   statistic="divergence", 
-                   axis.label="Seed Pool")
+pmiD <- pmiDiversity(tab)
+plotPairwiseMatrix(pairwise.mat = pmiD$r$divergence.mat,
+                   pairwise.mean = pmiD$r$divergence,
+                   statistic = "divergence",
+                   axis.label = "Seed Pool")
 ````
+
+![plotPairwiseMatrix example](plotPairwiseMatrix_example.png)
+
 
 ### gammaAccum.R
 
@@ -150,7 +251,7 @@ the same directory, as it provides functions used here.
 A typical workflow using these functions would be:
 
 ````R
-rga.result = runGammaAccum(tab)
+rga.result <- runGammaAccum(tab)
 plotGammaAccum(rga.result)
 ````
 
@@ -162,22 +263,22 @@ plot the result.  Several arguments control the method of accumulation and
 value of &gamma; calculated.  Only the defaults have been tested; the others were
 developed while exploring the data and must be considered experimental.
 
-`tab` 
+`tab`
 : Site-by-source table, same format as that passed to `pmiDiversity()`
 
-`gamma.method` 
+`gamma.method`
 : Calculate &gamma; using `"r"` (default), `"q.nielsen"` or `"q"`
 method (see paper)
 
-`resample.method` 
+`resample.method`
 : `"permute"` (default) or `"bootstrap"`; whether to resample
 sites without (`"permute"`) or with (`"bootstrap"`) replacement
 
-`accum.method` 
+`accum.method`
 : `"random"` (default) or `"proximity"`.  If `proximity` is
 used, then `distance.file` must be supplied
 
-`distance.file` 
+`distance.file`
 : A file or data.frame containing three columns of data, with
 the header/column names being `pool`, `X`, and `Y`, containing the spatial
 locations of the seed pools named in the row names of tab; only used with
@@ -188,6 +289,7 @@ locations of the seed pools named in the row names of tab; only used with
 
 Create a visual plot of &gamma; accumulation results from `runGammaAccum()`.
 
+![plotGammaAccum example](plotGammaAccum_example.png)
 
 #### Additional functions
 
@@ -230,9 +332,9 @@ The workflow to calculate basic allelic diversity statistics:
 ```R
 library(readGenalex)
 source("allelePmiDiversity.R")
-dat = readGenalex("GenAlEx-format-file-of-genotypes.txt")
-gt = allele.createTableList(dat)
-div = allele.pmiDiversity(gt)
+dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
+gt <- allele.createTableList(dat)
+div <- allele.pmiDiversity(gt)
 ```
 
 For comparing allele diversity between two different samples:
@@ -241,12 +343,12 @@ For comparing allele diversity between two different samples:
 library(readGenalex)
 source("allelePmiDiversity.R")
 source("alleleDiversityTests.R")
-dat1 = readGenalex("file-of-genotypes-sample-1.txt")
-dat2 = readGenalex("file-of-genotypes-sample-2.txt")
-gt1 = allele.createTableList(dat1)
-gt2 = allele.createTableList(dat2)
-alpha.contrast = allele.alphaContrastTest(gt1, gt2)
-gamma.contrast = allele.gammaContrastTest(gt1, gt2)
+dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+gt1 <- allele.createTableList(dat1)
+gt2 <- allele.createTableList(dat2)
+alpha.contrast <- allele.alphaContrastTest(gt1, gt2)
+gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
 ```
 
 For calculating and plotting gamma accumulation curves across all loci:
@@ -255,15 +357,15 @@ For calculating and plotting gamma accumulation curves across all loci:
 library(readGenalex)
 source("allelePmiDiversity.R")
 source("alleleGammaAccum.R")
-dat = readGenalex("genotypes.txt")
-lst = allele.createTableList(dat)
-allele.rga.result = allele.runGammaAccum(lst)
+dat <- readGenalex("genotypes.txt")
+lst <- allele.createTableList(dat)
+allele.rga.result <- allele.runGammaAccum(lst)
 plotGammaAccum(allele.rga.result)
 ```
 
 #### Functions in `allelePmiDiversity.R`
 
-`allele.pmiDiversity()` 
+`allele.pmiDiversity()`
 : The function calculating diversity for a set of loci.  The single argument is a list produced by `allele.createTableList()`, and it uses the function `allele.pmiDiversitySingleLocus()`.
 
 `allele.createTableList()`
@@ -286,26 +388,17 @@ plotGammaAccum(allele.rga.result)
 #### Functions in `alleleGammaAccum.R`
 
 `allele.runGammaAccum(lst)`
-: Perform a gamma diversity accumulation on the site-by-source data in tab.  Several arguments control the method of accumulation and value of gamma calculated.  Other arguments are identical to `gammaAccum()`.  Only the defaults have been tested; the others were developed while exploring the data and must be considered experimental.  The result is returned in a list, which may be passed to `plotGammaAccum()` to plot the result.  
+: Perform a gamma diversity accumulation on the site-by-source data in tab.  Several arguments control the method of accumulation and value of gamma calculated.  Other arguments are identical to `gammaAccum()`.  Only the defaults have been tested; the others were developed while exploring the data and must be considered experimental.  The result is returned in a list, which may be passed to `plotGammaAccum()` to plot the result.
+
+* * *
+
+We also provide the datasets `granaries_2002_Qlob` and `granaries_2004_Qlob`,
+which include assignments of *Quercus lobata* acorns harvested from acorn
+woodpecker granaries in 2002 and 2004 to seed source trees.
 
 * * *
 
 # References
-
-Scofield DG, Smouse PE, Karubian J, Sork VL.  2012.  Use of
-&alpha;, &beta;, and &gamma; diversity measures to characterize seed dispersal by animals.
-[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202), 
-[supplement](http://www.jstor.org/stable/full/10.1086/668202#apa), [data](http://dx.doi.org/10.5061/dryad.40kq7).
-
-Scofield DG, Alfaro VR, Sork VL, Grivet D, Martinez E, Papp J, Pluess AR, Koenig WD, Smouse PE.  2011.  Foraging patterns of acorn woodpeckers (<i>Melanerpes
-formicivorus</i>) on valley oak (<i>Quercus lobata</i> N&eacute;e) in two California oak
-savanna-woodlands. [_Oecologia_ 166: 187-196](http://dx.doi.org/10.1007/s00442-010-1828-5), 
-[supplement](http://link.springer.com/content/esm/art:10.1007/s00442-010-1828-5/MediaObjects/442_2010_1828_MOESM1_ESM.doc).
-
-Scofield DG, Sork VL, Smouse PE. 2010. Influence of acorn
-woodpecker social behaviour on transport of coast live oak (<i>Quercus agrifolia</i>)
-acorns in a southern California oak savanna. [_Journal of Ecology_ 98: 561-572](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x),
-[supplement](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2010.01649.x/suppinfo).
 
 Grivet D, Smouse PE, Sork VL. 2005. A novel approach to an old
 problem: tracking dispersed seeds. [_Molecular Ecology_ 14: 3585-3595](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x).
@@ -313,4 +406,19 @@ problem: tracking dispersed seeds. [_Molecular Ecology_ 14: 3585-3595](http://dx
 Nielsen R, Tarpy DR, Reeve HK. 2003. Estimating effective paternity
 number in social insects and the effective number of alleles in a population.
 [_Molecular Ecology_ 12: 3157-3164](http://dx.doi.org/10.1046/j.1365-294X.2003.01994.x).
+
+Scofield DG, Smouse PE, Karubian J, Sork VL.  2012.  Use of
+alpha, beta, and gamma diversity measures to characterize seed dispersal by animals.
+[_American Naturalist_ 180: 719-732](http://www.jstor.org/stable/10.1086/668202),
+[supplement](http://www.jstor.org/stable/full/10.1086/668202#apa), [data](http://dx.doi.org/10.5061/dryad.40kq7).
+
+Scofield DG, Alfaro VR, Sork VL, Grivet D, Martinez E, Papp J, Pluess AR, Koenig WD, Smouse PE.  2011.  Foraging patterns of acorn woodpeckers (<i>Melanerpes
+formicivorus</i>) on valley oak (<i>Quercus lobata</i> N&eacute;e) in two California oak
+savanna-woodlands. [_Oecologia_ 166: 187-196](http://dx.doi.org/10.1007/s00442-010-1828-5),
+[supplement](http://link.springer.com/content/esm/art:10.1007/s00442-010-1828-5/MediaObjects/442_2010_1828_MOESM1_ESM.doc).
+
+Scofield DG, Sork VL, Smouse PE. 2010. Influence of acorn
+woodpecker social behaviour on transport of coast live oak (<i>Quercus agrifolia</i>)
+acorns in a southern California oak savanna. [_Journal of Ecology_ 98: 561-572](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x),
+[supplement](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2010.01649.x/suppinfo).
 
