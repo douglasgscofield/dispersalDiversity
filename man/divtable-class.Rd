@@ -5,17 +5,16 @@
 \alias{divtable-class}
 \title{Table holding diversity data}
 \description{
-An object of class \code{divtable}, a diversity table, holds
-site (rows) by membership (columns) count data.  Such data could
-represent numbers of individuals observed of specific species,
-numbers of seeds observed originating from different parental trees,
-or, as a component of class \code{\link{allele_divtables}}, counts
-of alleles observed for a specific genetic locus.  This is the basic
-data object of the \code{\link{dispersalDiversity}} package,
-and is accepted by the function \code{\link{diversity}}, which generates
-descriptive statistics, and the functions \code{\link{alphaDiversityTest}},
-\code{\link{gammaContrastTest}} and many others that test for differences
-in the structure of diversity.
+An object of class \code{divtable}, a diversity table, holds site (rows) by
+membership (columns) count data expressed using \code{numeric} values.  Such
+data could represent numbers of individuals observed of specific species,
+numbers of seeds observed originating from different parental trees, or, as a
+component of class \code{\link{allele_divtables}}, counts of alleles observed
+for a specific genetic locus.  This is the basic data object of the
+\code{\link{dispersalDiversity}} package, and is accepted by the function
+\code{\link{diversity}}, which generates descriptive statistics, and the
+functions \code{\link{alphaDiversityTest}}, \code{\link{gammaContrastTest}}
+and many others that test for differences in the structure of diversity.
 }
 \details{
 A \code{divtable} can be assembled by hand, but more typically, diversity
@@ -25,7 +24,7 @@ into a \code{table} or \code{xtabs} and then converted to a
 \code{\link{dispersalDiversity}} package that accept \code{divtable} also
 have methods that accept \code{matrix}, \code{data.frame}, \code{table}
 or \code{xtabs} and then convert these to \code{divtable} prior to
-analysis.
+analysis using \code{\link{as.divtable}}.
 }
 \examples{
 ## Generate divtables, starting with random site-species pairs with a

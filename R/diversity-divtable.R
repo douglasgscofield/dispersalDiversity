@@ -151,7 +151,8 @@ diversity.default <- function(tab, ...)
 #'
 diversity.divtable <- function(tab, ...)
 {
-    tab <- as.matrix(tab)
+    orig.tab <- tab
+    if (storage.mode(tab) == "integer") storage.mode(tab) <- "double"
     G <- dim(tab)[1]
     K <- dim(tab)[2]
     N <- sum(tab)
@@ -266,7 +267,7 @@ diversity.divtable <- function(tab, ...)
     r$divergence <- 1 - r$overlap
 
     # return value
-    ans <- list(table       = tab, # table passed in, as a matrix
+    ans <- list(table       = orig.tab, # table passed in
                 num.groups  = G,   # number of rows (sites)
                 num.sources = K,   # number of columns (sources)
                 num.samples = N, 

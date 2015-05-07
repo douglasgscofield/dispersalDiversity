@@ -9,3 +9,4 @@
 ^HI.*.txt$
 ^LO.*.txt$
 ^.*.png$
+^dat\..*$

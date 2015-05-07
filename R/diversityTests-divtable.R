@@ -42,7 +42,7 @@ print.diversity_test <- function(x, digits = getOption("digits"), ...)
     #cat("Samples N.a = ", x$N.a, ", N.b = ", x$N.b,
     #    ", groups = ", x$N.groups, "\n")
     cat("Observed log-likelihood ratio = ",
-        format(signif(x$observed.ln.lR, max(1L, digits - 2L))), "\n\n",
+        format(signif(x$observed.ln.LR, max(1L, digits - 2L))), "\n\n",
         sep = "")
     cat("Test against analytic X-2 distribution (usually not appropriate):\n")
     cat("Degrees of freedom = (N.groups - 1) = ", x$df.X2,
@@ -789,7 +789,9 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
 
 
 
-# construct a distance matrix from the site x group matrix
+# Construct a 0-1 distance matrix from the site x group matrix, each
+# entry is 1 of the group is identical and 0 if it is not.  This is
+# represented efficiently.
 #
 .diversityTest.distmat <- function(tab, group = dimnames(tab)[[1]],
                                    drop = TRUE)
@@ -825,7 +827,7 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
 
 
 
-# Create centroid distances for variances based on
+# Create centroid distances for variances based on Gower (1966)
 #
 # Gower JC. 1966. Some distance properties of latent root and vector
 # methods used in multivariate analysis.  Biometrika 53:325-338.

@@ -1,16 +1,15 @@
 #' Table holding diversity data
 #'
-#' An object of class \code{divtable}, a diversity table, holds
-#' site (rows) by membership (columns) count data.  Such data could
-#' represent numbers of individuals observed of specific species,
-#' numbers of seeds observed originating from different parental trees,
-#' or, as a component of class \code{\link{allele_divtables}}, counts
-#' of alleles observed for a specific genetic locus.  This is the basic
-#' data object of the \code{\link{dispersalDiversity}} package,
-#' and is accepted by the function \code{\link{diversity}}, which generates
-#' descriptive statistics, and the functions \code{\link{alphaDiversityTest}},
-#' \code{\link{gammaContrastTest}} and many others that test for differences
-#' in the structure of diversity.
+#' An object of class \code{divtable}, a diversity table, holds site (rows) by
+#' membership (columns) count data expressed using \code{numeric} values.  Such
+#' data could represent numbers of individuals observed of specific species,
+#' numbers of seeds observed originating from different parental trees, or, as a
+#' component of class \code{\link{allele_divtables}}, counts of alleles observed
+#' for a specific genetic locus.  This is the basic data object of the
+#' \code{\link{dispersalDiversity}} package, and is accepted by the function
+#' \code{\link{diversity}}, which generates descriptive statistics, and the
+#' functions \code{\link{alphaDiversityTest}}, \code{\link{gammaContrastTest}}
+#' and many others that test for differences in the structure of diversity.
 #'
 #' A \code{divtable} can be assembled by hand, but more typically, diversity
 #' data will be read into a \code{matrix} or \code{data.frame} or assembled
@@ -19,7 +18,7 @@
 #' \code{\link{dispersalDiversity}} package that accept \code{divtable} also
 #' have methods that accept \code{matrix}, \code{data.frame}, \code{table}
 #' or \code{xtabs} and then convert these to \code{divtable} prior to
-#' analysis.
+#' analysis using \code{\link{as.divtable}}.
 #'
 #' @examples
 #'
@@ -81,6 +80,7 @@ as.divtable <- function(x, ...) UseMethod("as.divtable")
 #'
 as.divtable.table <- function(x, ...)
 {
+    x <- as.numeric(x)
     structure(x, class = c('divtable', 'table'))
 }
 
@@ -92,6 +92,7 @@ as.divtable.table <- function(x, ...)
 #'
 as.divtable.matrix <- function(x, ...)
 {
+    x <- as.numeric(x)
     structure(as.table(x), class = c('divtable', 'table'))
 }
 
@@ -103,6 +104,7 @@ as.divtable.matrix <- function(x, ...)
 #'
 as.divtable.data.frame <- function(x, ...)
 {
+    x <- as.numeric(x)
     structure(as.table(as.matrix(x)), class = c('divtable', 'table'))
 }
 
@@ -114,6 +116,7 @@ as.divtable.data.frame <- function(x, ...)
 #'
 as.divtable.xtabs <- function(x, ...)
 {
+    x <- as.numeric(x)
     structure(as.table(x), class = c('divtable', 'table'))
 }
 
