@@ -71,9 +71,10 @@ alphaDiversityTest.allele_divtables <- function(lst, zero.var.adjust = TRUE,
 
         tab <- lst[[locus]]
 
-        g.vardist <- lapply(.diversityTest.distmat(tab), 
-                            function(x) diag(.diversityTest.gower(x)))  
-        n.g <- unlist(lapply(g.vardist, length))
+        #g.vardist <- lapply(.diversityTest.distmat(tab), 
+        #                    function(x) diag(.diversityTest.gower(x)))  
+        g.vardist <- .diversityTest.directGowerDiag(tab)
+        n.g <- sapply(g.vardist, length)
         N <- sum(n.g)
         G <- length(n.g)
         this.ans$name <- name
@@ -207,9 +208,10 @@ alphaContrastTest.allele_divtables <- function(lst.a, lst.b,
         this.ans$locus <- locus
 
         tab.a <- lst.a[[locus]]
-        a.vardist <- lapply(.diversityTest.distmat(tab.a), 
-                            function(x) diag(.diversityTest.gower(x)))  
-        n.a <- unlist(lapply(a.vardist, length))
+        #a.vardist <- lapply(.diversityTest.distmat(tab.a), 
+        #                    function(x) diag(.diversityTest.gower(x)))  
+        a.vardist <- .diversityTest.directGowerDiag(tab.a)
+        n.a <- sapply(a.vardist, length)
         N.a <- sum(n.a)
         G.a <- length(n.a)
         this.ans$name.a <- name.a
@@ -219,9 +221,10 @@ alphaContrastTest.allele_divtables <- function(lst.a, lst.b,
         terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
 
         tab.b <- lst.b[[locus]]
-        b.vardist <- lapply(.diversityTest.distmat(tab.b), 
-                            function(x) diag(.diversityTest.gower(x)))  
-        n.b <- unlist(lapply(b.vardist, length))
+        #b.vardist <- lapply(.diversityTest.distmat(tab.b), 
+        #                    function(x) diag(.diversityTest.gower(x)))  
+        b.vardist <- .diversityTest.directGowerDiag(tab.b)
+        n.b <- sapply(b.vardist, length)
         N.b <- sum(n.b)
         G.b <- length(n.b)
         this.ans$N.b <- N.b
@@ -384,9 +387,10 @@ gammaContrastTest.allele_divtables <- function(lst.a, lst.b,
                               ((N.b - 1) * log(V.b.tot)) 
 
 
-        a.distmat <- .diversityTest.distmat(X.a.k)
-        a.vardist <- list(a = diag(.diversityTest.gower(a.distmat)))
-        n.a <- unlist(lapply(a.vardist, length))
+        #a.distmat <- .diversityTest.distmat(X.a.k)
+        #a.vardist <- list(a = diag(.diversityTest.gower(a.distmat)))
+        a.vardist <- .diversityTest.directGowerDiag(X.a.k)
+        n.a <- lapply(a.vardist, length)
         stopifnot(sum(n.a) == N.a)
         N.a <- sum(n.a)
         G.a <- length(n.a)
@@ -395,9 +399,10 @@ gammaContrastTest.allele_divtables <- function(lst.a, lst.b,
         terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
         cat(sprintf("%s  terms.a$V.p = %f  V.a.tot = %f\n", locus, terms.a$V.p, V.a.tot))
 
-        b.distmat <- .diversityTest.distmat(X.b.k)
-        b.vardist <- list(b = diag(.diversityTest.gower(b.distmat)))
-        n.b <- unlist(lapply(b.vardist, length))
+        #b.distmat <- .diversityTest.distmat(X.b.k)
+        #b.vardist <- list(b = diag(.diversityTest.gower(b.distmat)))
+        b.vardist <- .diversityTest.directGowerDiag(X.b.k)
+        n.b <- lapply(b.vardist, length)
         stopifnot(sum(n.b) == N.b)
         N.b <- sum(n.b)
         G.b <- length(n.b)

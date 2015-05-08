@@ -110,7 +110,62 @@ alt.diversityTest.gowerDiag <- function(dmat)
         stop("dmat not symmetric")
     d <- -0.5 * dmat
     rd <- rowMeans(d)
-    diag(d) + (-rd + -rd) + mean(d)
+    # diag(d) is always 0
+    # diag(d) + (-rd + -rd) + mean(d)
+    (-rd + -rd) + mean(d)
+}
+
+#> microbenchmark(alt.gower1(m), alt.gower2(m), alt.gowerDiag(m), times = 100000)
+#Unit: microseconds
+#             expr     min       lq     mean   median       uq      max neval
+#    alt.gower1(m) 464.887 496.0135 538.8139 510.5865 530.2535 148723.3 1e+05
+#    alt.gower2(m) 245.627 264.0980 288.4119 271.9580 283.1540 157597.7 1e+05
+# alt.gowerDiag(m)  85.680  95.5160 105.2933  98.9100 103.8760 132955.0 1e+05
+
+alt.gower1 <- function(tab)
+{
+    g.distmat <- alt.diversityTest.distmat(tab)
+    lapply(g.distmat, function(x) diag(alt.diversityTest.gower(x)))
+}
+
+alt.gower2 <- function(tab)
+{
+    g.distmat <- alt.diversityTest.distmat(tab)
+    lapply(g.distmat, alt.diversityTest.gowerDiag)
+}
+
+alt.gowerDiag <- function(tab, group = dimnames(tab)[[1]], drop = TRUE)
+{
+    if (is.null(dim(tab))) {
+        dim(tab) <- c(1, length(tab))
+        dimnames(tab) <- list(Site = "onedim", Group = names(tab))
+    }
+    if (dim(tab)[1] > 1 && is.null(group))
+        stop("must supply group(s), all groups not supported")
+    else if (missing(group) && dim(tab)[1] == 1)
+        group <- 1
+    N.G <- rowSums(tab)
+    D <- list()
+    for (g in group) {
+        this.N.G <- N.G[g]  # total N for site
+        this.n.K <- unname(tab[g, ][tab[g, ] > 0])  # nonzero sources for site
+        storage.mode(this.N.G) <- storage.mode(this.n.K) <- "double"
+        # total 1s set in full distance matrix
+        # this.1.G <- (this.N.G * this.N.G) - this.sumsq.n.K
+        # mean distance value of full distance matrix
+        # this.mean.d <- -0.5 * this.1.G / (this.N.G * this.N.G)
+        this.mean.d <- -0.5 + (sum(this.n.K * this.n.K) / (2 * this.N.G * this.N.G))
+        # number of 0s in the row = number in this group
+        # this.0.g = rep(this.n.K[k], this.n.K[k])
+        # number of 1s in the row = this.N.G - number of 0s
+        # this.1.g = this.N.G - this.0.g
+        # this.row.mean = -0.5 * this.1.g / this.N.G
+        this.row.means <- -0.5 * (this.N.G - rep(this.n.K, times = this.n.K)) / this.N.G
+        D[[as.character(g)]] <- -2 * this.row.means + this.mean.d
+    }
+    if (length(D) == 1 && drop)
+        D[[1]]
+    else D
 }
 
 

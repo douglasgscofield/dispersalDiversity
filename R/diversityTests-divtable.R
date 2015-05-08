@@ -176,8 +176,7 @@ alphaDiversityTest.divtable <- function(tab, zero.var.adjust = TRUE,
     method <- match.arg(method)
     ans <- list(method = "Alpha diversity test, contrast among sites in single data set")
     ans$data.name <- deparse(substitute(tab))
-    g.distmat <- .diversityTest.distmat(tab)
-    g.vardist <- lapply(g.distmat, function(x) diag(.diversityTest.gower(x)))
+    g.vardist <- .diversityTest.directGowerDiag(tab)
     n.g <- unlist(lapply(g.vardist, length))
     N <- sum(n.g)
     G <- length(n.g)
@@ -252,8 +251,7 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     ans <- list(method = "Alpha diversity test, contrast between 2 datasets")
     ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
         deparse(substitute(tab.b)))
-    a.distmat <- .diversityTest.distmat(tab.a)
-    a.vardist <- lapply(a.distmat, function(x) diag(.diversityTest.gower(x)))
+    a.vardist <- .diversityTest.directGowerDiag(tab.a)
     n.a <- sapply(a.vardist, length)
     N.a <- sum(n.a)
     G.a <- length(n.a)
@@ -262,8 +260,7 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
     # V.a.p = terms.a$V.p
 
-    b.distmat <- .diversityTest.distmat(tab.b)
-    b.vardist <- lapply(b.distmat, function(x) diag(.diversityTest.gower(x)))
+    b.vardist <- .diversityTest.directGowerDiag(tab.b)
     n.b <- sapply(b.vardist, length)
     N.b <- sum(n.b)
     G.b <- length(n.b)
@@ -362,8 +359,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     ans <- list(method = "Alpha diversity test, contrast between 3 datasets")
     ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
         deparse(substitute(tab.b)), deparse(substitute(tab.b)))
-    a.distmat <- .diversityTest.distmat(tab.a)
-    a.vardist <- lapply(a.distmat, function(x) diag(.diversityTest.gower(x)))
+    a.vardist <- .diversityTest.directGowerDiag(tab.a)
     n.a <- sapply(a.vardist, length)
     N.a <- sum(n.a)
     G.a <- length(n.a)
@@ -372,8 +368,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
     # V.a.p <- terms.a$V.p
 
-    b.distmat <- .diversityTest.distmat(tab.b)
-    b.vardist <- lapply(b.distmat, function(x) diag(.diversityTest.gower(x)))
+    b.vardist <- .diversityTest.directGowerDiag(tab.b)
     n.b <- unlist(lapply(b.vardist, length))
     N.b <- sum(n.b)
     G.b <- length(n.b)
@@ -382,8 +377,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
     # V.b.p <- terms.b$V.p
 
-    c.distmat <- .diversityTest.distmat(tab.c)
-    c.vardist <- lapply(c.distmat, function(x) diag(.diversityTest.gower(x)))
+    c.vardist <- .diversityTest.directGowerDiag(tab.c)
     n.c <- unlist(lapply(c.vardist, length))
     N.c <- sum(n.c)
     G.c <- length(n.c)
@@ -595,7 +589,8 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     observed.ln.LR.a.b <- ((N.a + N.b - 2) * log(V.a.b.tot)) - 
                           ((N.a - 1) * log(V.a.tot)) - 
                           ((N.b - 1) * log(V.b.tot))
-    a.vardist <- list(a = diag(.diversityTest.gower(.diversityTest.distmat(X.a.k))))
+    #a.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.a.k))))
+    a.vardist <- .diversityTest.directGowerDiag(X.a.k)
     n.a <- sapply(a.vardist, length)
     stopifnot(sum(n.a) == N.a)
     G.a <- length(n.a)
@@ -604,7 +599,8 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
     #cat(sprintf("terms.a$V.p = %f  V.a.tot = %f\n", terms.a$V.p, V.a.tot))
 
-    b.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.b.k))))
+    #b.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.b.k))))
+    b.vardist <- .diversityTest.directGowerDiag(X.b.k)
     n.b <- unlist(lapply(b.vardist, length))
     stopifnot(sum(n.b) == N.b)
     G.b <- length(n.b)
@@ -712,8 +708,9 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
                           ((N.b - 1) * log(V.b.tot)) -
                           ((N.c - 1) * log(V.c.tot))
     # distances: distance matrix, then the diagonal of a Gower matrix
-    a.distmat <- .diversityTest.distmat(X.a.k)
-    a.vardist <- list(a = diag(.diversityTest.gower(a.distmat)))
+    #a.distmat <- .diversityTest.distmat(X.a.k)
+    #a.vardist <- list(a = diag(.diversityTest.gower(a.distmat)))
+    a.vardist <- .diversityTest.directGowerDiag(X.a.k)
     n.a <- sapply(a.vardist, length)
     stopifnot(sum(n.a) == N.a)
     N.a <- sum(n.a)
@@ -723,8 +720,9 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
     #cat(sprintf("terms.a$V.p = %f  V.a.tot = %f\n", terms.a$V.p, V.a.tot))
 
-    b.distmat <- .diversityTest.distmat(X.b.k)
-    b.vardist <- list(b = diag(.diversityTest.gower(a.distmat)))
+    #b.distmat <- .diversityTest.distmat(X.b.k)
+    #b.vardist <- list(b = diag(.diversityTest.gower(b.distmat)))
+    b.vardist <- .diversityTest.directGowerDiag(X.b.k)
     n.b <- sapply(b.vardist, length)
     stopifnot(sum(n.b) == N.b)
     N.b <- sum(n.b)
@@ -734,8 +732,9 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
     #cat(sprintf("terms.b$V.p = %f  V.b.tot = %f\n", terms.b$V.p, V.b.tot))
 
-    c.distmat <- .diversityTest.distmat(X.c.k)
-    c.vardist <- list(c = diag(.diversityTest.gower(a.distmat)))
+    #c.distmat <- .diversityTest.distmat(X.c.k)
+    #c.vardist <- list(c = diag(.diversityTest.gower(c.distmat)))
+    c.vardist <- .diversityTest.directGowerDiag(X.c.k)
     n.c <- sapply(c.vardist, length)
     stopifnot(sum(n.c) == N.c)
     N.c <- sum(n.c)
@@ -789,67 +788,46 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
 
 
 
-# Construct a 0-1 distance matrix from the site x group matrix, each
-# entry is 1 of the group is identical and 0 if it is not.  This is
-# represented efficiently.
+# Return diagonal of matrix of centroid distances for variances based on Gower (1966)
+# directly from a site-by-source table.
 #
-.diversityTest.distmat <- function(tab, group = dimnames(tab)[[1]],
-                                   drop = TRUE)
+# Gower JC. 1966. Some distance properties of latent root and vector
+# methods used in multivariate analysis.  Biometrika 53:325-338.
+#
+.diversityTest.directGowerDiag <- function(tab, group = dimnames(tab)[[1]], drop = TRUE)
 {
     if (is.null(dim(tab))) {
         dim(tab) <- c(1, length(tab))
-        dimnames(tab) <- list(Site = "onedim", Genotype = names(tab))
+        dimnames(tab) <- list(Site = "onedim", Group = names(tab))
     }
     if (dim(tab)[1] > 1 && is.null(group))
         stop("must supply group(s), all groups not supported")
     else if (missing(group) && dim(tab)[1] == 1)
         group <- 1
-    G <- dim(tab)[1]
-    K <- dim(tab)[2]
-    N <- sum(tab)
-    N.G <- apply(tab, 1, sum)
+    N.G <- rowSums(tab)
     D <- list()
     for (g in group) {
-        Dmat <- matrix(1, N.G[g], N.G[g])
-        n.K <- tab[g, ][tab[g, ] > 0]
-        cum.n.K <- cumsum(n.K)
-        for (src in 1:length(n.K)) {
-            # which rows/cols to 0
-            slice <- (cum.n.K[src] - n.K[src] + 1):cum.n.K[src]
-            Dmat[slice, slice] <- 0
-        }
-        D[[as.character(g)]] <- Dmat
+        this.N.G <- N.G[g]  # total N for site
+        n.K <- unname(tab[g, ][tab[g, ] > 0])  # nonzero sources for site
+        # protect against integer overflow
+        storage.mode(this.N.G) <- storage.mode(this.n.K) <- "double"
+        # Calculate total number of 1s that would be found in the full distance
+        # matrix for this site.  This is the total elements in the matrix,
+        # minus the number of elements in each of the 'self' 0-matrices along
+        # the diagonal.  Then calculate the mean using this count.  Note some
+        # algebraic simplification was used here, the mean is -0.5*(N^2 -
+        # sum(n.k^2)) / N^2
+        mean.d <- -0.5 + (sum(n.K * n.K) / (2 * this.N.G * this.N.G))
+        # Calculate the mean of each row in what would be the full distance
+        # matrix for this site.  We calculate the total number of 0s that would
+        # be found in the row, for each row, and then from this calculate the
+        # number of 1s and then the distance mean.
+        row.means <- -0.5 * (this.N.G - rep(n.K, times = n.K)) / this.N.G
+        D[[as.character(g)]] <- -2 * row.means + mean.d
     }
     if (length(D) == 1 && drop)
         D[[1]]
     else D
-}
-
-
-
-# Create centroid distances for variances based on Gower (1966)
-#
-# Gower JC. 1966. Some distance properties of latent root and vector
-# methods used in multivariate analysis.  Biometrika 53:325-338.
-#
-.diversityTest.gower <- function(dmat)
-{
-    if (is.null(dim(dmat))) {
-        dim(dmat) <- c(1, length(dmat))
-        dimnames(dmat) <- list(Site = "onedim", Genotype = names(dmat))
-    }
-    if (! all(dmat == t(dmat)))
-        stop("dmat not symmetric")
-    d <- -0.5 * dmat
-    rd <- apply(d, 1, mean)
-    if (! all(rd == apply(d, 2, mean)))
-        stop("dmat not symmetric")
-    gower.mat <- d + outer(-rd, -rd, "+") + mean(d)
-    if (! all(abs(rowSums(gower.mat)) <= .diversityTest.epsilon))
-        stop("abs(rowSums(gower.mat)) > .diversityTest.epsilon")
-    if (! all(abs(colSums(gower.mat)) <= .diversityTest.epsilon))
-        stop("abs(colSums(gower.mat)) > .diversityTest.epsilon")
-    gower.mat
 }
 
 
@@ -919,5 +897,154 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
         nulldist <- c(nulldist, terms$ln.LR)
     }
     sort(nulldist)
+}
+
+
+
+# After attempting to use these functions to contrast diversities of OTUs,
+# where counts/site were on the order of 10^5s, it was found to be very slow
+# and require a lot of memory for the distance matrix intermediate, as well as
+# the Gower intermediate.  My first thought was to cut out the generation of
+# the entire Gower matrix and just generate the diagonal.  This didn't remove
+# the need for the full distance matrix, so we still had a space issue, but it
+# definitely sped up the calculations.
+#
+# Then I attacked the space issue, and was able to avoid creating the distance
+# matrix completely.  I still calculate a per-site quantity, of course, but I
+# am able to avoid creating even a single complete row, because I am counting
+# 1s and 0s in the row and matrix, which is all the means I need require.
+#
+# The code below is legacy, containing both the original way of doing things,
+# the diagonal shortcut, and some wrappers used while doing a bit of
+# benchmarking.
+#
+#
+# In the tests, the original method was
+#
+#   g.distmat <- .diversityTest.distmat(tab)
+#   g.vardist <- lapply(g.distmat, function(x) diag(.diversityTest.gower(x)))
+#
+# Then the diag trick gave us
+#
+#   g.distmat <- .diversityTest.distmat(tab)
+#   g.vardist <- lapply(g.distmat, .diversityTest.gowerDiag(x))
+#
+# Then the final optimisation saving lots of time and space became
+#
+#   g.vardist <- .diversityTest.directGowerDiag(tab)
+#
+#
+# Benchmarking these against each other for a small example dataset:
+#
+# m = matrix(c(2,1,0,0,0,0,0,1,2,3,0,0,0,1,0,1,7,9),3,6,TRUE)
+# dimnames(m) = list(site=c("s1","s2","s3"), source=c("A","B","C","D","E","F"))
+#
+# alt.gower1 is the original method, alt.gower2 is the diagonal trick, and
+# alt.gowerDiag is the new optimisation.
+#
+# > microbenchmark(alt.gower1(m), alt.gower2(m), alt.gowerDiag(m), times = 100000)
+# Unit: microseconds
+#              expr     min       lq     mean   median       uq      max neval
+#     alt.gower1(m) 464.887 496.0135 538.8139 510.5865 530.2535 148723.3 1e+05
+#     alt.gower2(m) 245.627 264.0980 288.4119 271.9580 283.1540 157597.7 1e+05
+#  alt.gowerDiag(m)  85.680  95.5160 105.2933  98.9100 103.8760 132955.0 1e+05
+#
+# alt.gower1 <- function(tab)
+# {
+#     g.distmat <- .diversityTest.distmat(tab)
+#     lapply(g.distmat, function(x) diag(.diversityTest.gower(x)))
+# }
+#
+# alt.gower2 <- function(tab)
+# {
+#     g.distmat <- .diversityTest.distmat(tab)
+#     lapply(g.distmat, .diversityTest.gowerDiag)
+# }
+
+
+
+# Construct a 0-1 distance matrix from the site x group matrix, each
+# entry is 1 of the group is identical and 0 if it is not.  This is
+# represented efficiently.
+#
+.diversityTest.distmat <- function(tab, group = dimnames(tab)[[1]],
+                                   drop = TRUE)
+{
+    if (is.null(dim(tab))) {
+        dim(tab) <- c(1, length(tab))
+        dimnames(tab) <- list(Site = "onedim", Genotype = names(tab))
+    }
+    if (dim(tab)[1] > 1 && is.null(group))
+        stop("must supply group(s), all groups not supported")
+    else if (missing(group) && dim(tab)[1] == 1)
+        group <- 1
+    G <- dim(tab)[1]
+    K <- dim(tab)[2]
+    N <- sum(tab)
+    N.G <- apply(tab, 1, sum)
+    D <- list()
+    for (g in group) {
+        Dmat <- matrix(1, N.G[g], N.G[g])
+        n.K <- tab[g, ][tab[g, ] > 0]
+        cum.n.K <- cumsum(n.K)
+        for (src in 1:length(n.K)) {
+            # which rows/cols to 0
+            slice <- (cum.n.K[src] - n.K[src] + 1):cum.n.K[src]
+            Dmat[slice, slice] <- 0
+        }
+        D[[as.character(g)]] <- Dmat
+    }
+    if (length(D) == 1 && drop)
+        D[[1]]
+    else D
+}
+
+
+
+# Create centroid distances for variances based on Gower (1966)
+#
+# Gower JC. 1966. Some distance properties of latent root and vector
+# methods used in multivariate analysis.  Biometrika 53:325-338.
+#
+.diversityTest.gower <- function(dmat)
+{
+    if (is.null(dim(dmat))) {
+        dim(dmat) <- c(1, length(dmat))
+        dimnames(dmat) <- list(Site = "onedim", Genotype = names(dmat))
+    }
+    if (! all(dmat == t(dmat)))
+        stop("dmat not symmetric")
+    d <- -0.5 * dmat
+    rd <- apply(d, 1, mean)
+    if (! all(rd == apply(d, 2, mean)))
+        stop("dmat not symmetric")
+    gower.mat <- d + outer(-rd, -rd, "+") + mean(d)
+    if (! all(abs(rowSums(gower.mat)) <= .diversityTest.epsilon))
+        stop("abs(rowSums(gower.mat)) > .diversityTest.epsilon")
+    if (! all(abs(colSums(gower.mat)) <= .diversityTest.epsilon))
+        stop("abs(colSums(gower.mat)) > .diversityTest.epsilon")
+    gower.mat
+}
+
+
+
+# Return diagonal of matrix of centroid distances for variances based on Gower (1966)
+#
+# Gower JC. 1966. Some distance properties of latent root and vector
+# methods used in multivariate analysis.  Biometrika 53:325-338.
+#
+.diversityTest.gowerDiag <- function(dmat)
+{
+    if (is.null(dim(dmat))) {
+        dim(dmat) <- c(1, length(dmat))
+        dimnames(dmat) <- list(Site = "onedim", Group = names(dmat))
+    }
+    if (! all(dmat == t(dmat)))
+        stop("dmat not symmetric")
+    d <- -0.5 * dmat
+    rd <- rowMeans(d)
+    # diag(d) is always 0
+    # diag(d) + (-rd + -rd) + mean(d)
+    (-rd + -rd) + mean(d)
 }
 
