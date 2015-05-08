@@ -810,7 +810,7 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
         this.N.G <- N.G[g]  # total N for site
         n.K <- unname(tab[g, ][tab[g, ] > 0])  # nonzero sources for site
         # protect against integer overflow
-        storage.mode(this.N.G) <- storage.mode(this.n.K) <- "double"
+        storage.mode(this.N.G) <- storage.mode(n.K) <- "double"
         # Calculate total number of 1s that would be found in the full distance
         # matrix for this site.  This is the total elements in the matrix,
         # minus the number of elements in each of the 'self' 0-matrices along
