@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Sort out test differences
 * That wierdness when converting to as.divtable for the Thamnolia diversity stuff
 * Update figures with existing code
 * straighten out eps and pdf file for membershipPlot
@@ -26,6 +27,7 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* Optimisation of Gower distance matrix diagonal generation
 * Removed `accum.method` and `distance.file` arguments from `gammaAccum` functions.  The `proximity` method was never well thought through; a proximity-based method could be valuable but not in the way it was implemented here.
 * For alpha and gamma diversity tests, all return class `'diversity_test'` object which is handled by common `print.diversity_test` and `plot.diversity_test` methods
 * New `as.divtable` generic, with methods `as.divtable.table`, `as.divtable.xtabs`, `as.divtable.matrix` and `as.divtable.data.frame`, the latter of which first converts to `matrix`, then to `divtable`

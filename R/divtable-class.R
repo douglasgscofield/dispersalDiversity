@@ -80,7 +80,7 @@ as.divtable <- function(x, ...) UseMethod("as.divtable")
 #'
 as.divtable.table <- function(x, ...)
 {
-    x <- as.numeric(x)
+    mode(x) <- "numeric"
     structure(x, class = c('divtable', 'table'))
 }
 
@@ -92,7 +92,7 @@ as.divtable.table <- function(x, ...)
 #'
 as.divtable.matrix <- function(x, ...)
 {
-    x <- as.numeric(x)
+    mode(x) <- "numeric"
     structure(as.table(x), class = c('divtable', 'table'))
 }
 
@@ -104,7 +104,6 @@ as.divtable.matrix <- function(x, ...)
 #'
 as.divtable.data.frame <- function(x, ...)
 {
-    x <- as.numeric(x)
     structure(as.table(as.matrix(x)), class = c('divtable', 'table'))
 }
 
@@ -116,7 +115,7 @@ as.divtable.data.frame <- function(x, ...)
 #'
 as.divtable.xtabs <- function(x, ...)
 {
-    x <- as.numeric(x)
+    mode(x) <- "numeric"
     structure(as.table(x), class = c('divtable', 'table'))
 }
 

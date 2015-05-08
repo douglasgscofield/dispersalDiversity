@@ -26,15 +26,13 @@ n.samples <- 200
 ## data frame of site-source pairs
 t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
                 source = round(runif(n.samples) * n.sources + 0.5))
-m1 <- as.divtable(t)
+m1 <- as.divtable(table(t))
 d1 <- diversity(m1)
 
 context("Testing diversity.table()")
 
 test_that("results with various table formats are identical", {
     expect_equal(d1, diversity(table(t)))
-    mat <- do.call(rbind, lapply(split(t, t$site), function(x) table(x$source)))
-    expect_equal(d1, diversity(mat))
     xt <- xtabs(data = t)
     expect_equal(d1, diversity(xt))
 })
