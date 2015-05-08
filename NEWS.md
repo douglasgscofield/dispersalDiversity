@@ -1,5 +1,6 @@
 0.9.9000 (development version, branch make_R_package)
 ------
+* The calculation of distances for diversity tests is much more efficient in time and space, so tests may be performed on data with very high counts (e.g., OTU diversity)
 * Diversity tests return class `diversity_test`, which has `print` and `plot` methods
 * Gamma accumulation functions return class `gamma_accum`, which has a `plot` method
 * `diversity`, `alleleDiversityTest`, `alleleContrastTest`, and `alleleContrastTest3` have methods for `divtable` and `allele_divtables`
