@@ -116,6 +116,8 @@ as.divtable.data.frame <- function(x, ...)
 as.divtable.xtabs <- function(x, ...)
 {
     mode(x) <- "numeric"
+    if (! is.null(attr(x, "call")))
+        attr(x, "call") <- NULL
     structure(as.table(x), class = c('divtable', 'table'))
 }
 

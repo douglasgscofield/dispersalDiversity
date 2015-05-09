@@ -29,6 +29,66 @@ t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
 m1 <- as.divtable(table(t))
 d1 <- diversity(m1)
 
+test_that("divtable and diversity data types", {
+    expect_is(m1, "divtable")
+    expect_is(m1, "table")
+    expect_true(is.matrix(m1))
+    expect_equal(names(dimnames(m1)), c("site", "source"))
+    expect_equal(sum(m1), 200)
+    expect_equal(dim(m1), c(5, 10))
+    expect_is(d1, "diversity")
+    expect_is(d1, "list")
+    expect_true(! is.null(d1[["q"]]))
+    expect_true(! is.null(d1[["r"]]))
+    expect_true(! is.null(d1[["q.nielsen"]]))
+})
+
+
+#----------------------------------------
+
+context("Testing as.divtable methods")
+
+test_that("m1 (was table) vs. xt# (xtabs)", {
+    xt1 <- xtabs(data = t)
+    mxt1 <- as.divtable(xt1)
+    expect_is(mxt1, "divtable")
+    expect_is(mxt1, "table")
+    expect_true(is.matrix(mxt1))
+    expect_true(is.null(attr(mxt1, "call")))
+    expect_equal(m1, mxt1)
+    expect_equal(m1, as.matrix(mxt1))
+
+    xt2 <- xtabs(~ site + source, data = t)
+    mxt2 <- as.divtable(xt2)
+    expect_is(mxt2, "divtable")
+    expect_is(mxt2, "table")
+    expect_true(is.matrix(mxt2))
+    expect_true(is.null(attr(mxt2, "call")))
+    expect_equal(m1, mxt2)
+
+    xt3 <- with(t, xtabs(~ site + source))
+    mxt3 <- as.divtable(xt3)
+    expect_is(mxt3, "divtable")
+    expect_is(mxt3, "table")
+    expect_true(is.matrix(mxt3))
+    expect_true(is.null(attr(mxt3, "call")))
+    expect_equal(m1, mxt3)
+})
+
+
+test_that("m1 (was table) vs. xm# (matrix)", {
+    xm1 <- as.matrix(m1)
+    expect_true(is.matrix(xm1))
+    mxm1 <- as.divtable(xm1)
+    expect_is(mxm1, "divtable")
+    expect_is(mxm1, "table")
+    expect_true(is.matrix(mxm1))
+    expect_equal(m1, mxm1)
+})
+
+
+#----------------------------------------
+
 context("Testing diversity.table()")
 
 test_that("results with various table formats are identical", {
@@ -61,7 +121,7 @@ test_that("allele names and values correct in an allele_divtables", {
 })
 
 test_that("missing data reported correctly with quiet = FALSE", {
-    expect_match(aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE), "Excluding 92 entries based on")
+    expect_output(aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE), "Excluding 92 entries based on")
 })
 
 context("Testing as.allele_divtables() as createAlleleTables() synonym")
