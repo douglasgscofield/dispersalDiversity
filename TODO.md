@@ -1,8 +1,29 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Continue to straighten out .default cases for diversityTest*.R
 * Sort out test differences
 * That wierdness when converting to as.divtable for the Thamnolia diversity stuff
+* This wierdness:
+
+    mitchell-clustering> m = do.reads.matrix(subset(dat200, Site == "Iceland"), "Species")
+    mitchell-clustering> m
+               OTU
+    Species     OTU 1 OTU 2 OTU 3 OTU 4 OTU 5 OTU 6 OTU 7
+      Cetraria      5 26483    23     0     0     0     0
+      Thamnolia    19 12637     0     0     0     0     0
+    mitchell-clustering> alphaDiversityTest(m)
+    Error in UseMethod("alphaDiversityTest") : 
+      no applicable method for 'alphaDiversityTest' applied to an object of class "c('matrix', 'integer', 'numeric')"
+    mitchell-clustering> as.divtable(m)
+               OTU
+    Species     OTU 1 OTU 2 OTU 3 OTU 4 OTU 5 OTU 6 OTU 7
+      Cetraria      5 26483    23     0     0     0     0
+      Thamnolia    19 12637     0     0     0     0     0
+    mitchell-clustering> alphaDiversityTest(as.divtable(m))
+    Alpha diversity test, contrast among sites in single data set
+    ....
+
 * Update figures with existing code
 * straighten out eps and pdf file for membershipPlot
 * continue generalising allele diversity tests

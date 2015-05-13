@@ -5,42 +5,8 @@ NULL
 
 
 
-#' Test for alpha diversity difference between sites
-#'
-#' From Sork et al., extensions of those from Scofield et al. 2012 American
-#' Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
-#'
-#' @param lst  Object of class \code{\link{allele_divtables}}, as produced
-#' by the function \code{\link{createAlleleTables}}.  A list, one entry
-#' per locus, of site-by-allele counts.  Each table must have the same format.
-#'
-#' @param \dots  Additional parameters
-#'
-#' @return Fill this in
-#'
-#' @author Douglas G. Scofield
-#'
-#' @references
-#'
-#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-#' Use of alpha, beta and gamma diversity measures to characterize seed
-#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#'
-#' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (Submitted)
-#' Impact of asymmetric male and female gamete dispersal on allelic 
-#' diversity and spatial genetic structure in valley oak 
-#' (\emph{Quercus lobata} N\'{e}e).
-#'
-#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{diversity}}
-#'
-#' @examples
-#'
-#' ## For comparing allele diversity between sites in the same sample
-#' library(readGenalex)
-#' data(Qagr_pericarp_genotypes)
-#' gt <- createAlleleTables(Qagr_pericarp_genotypes)
-#' alpha.test <- alphaDiversityTest(gt)
-#'
+# Already documented in diversityTests-divtable.R
+#
 #' @rdname alphaDiversityTest
 #'
 #' @export

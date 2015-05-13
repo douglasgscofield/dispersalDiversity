@@ -134,13 +134,23 @@ plot.diversity_test <- function(x, add.analytic = FALSE,
 
 #' Test for differences in alpha diversity among sites within a single data set
 #'
+#' The null hypothesis for this tests is that there is no difference in alpha
+#' diversity between the sites represented in \code{tab} or \code{lst}.  The
+#' initial (class \code{divtable}) version of this was described in Scofield
+#' et al. (2012), while the allelic (class \code{allele_divtables} extension
+#' was described in Sort et al. (In press).
+#'
 #' @param tab    Site-by-source table of class \code{\link{divtable}}
-#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
-#' with minimum value, see \code{\link{BLAHBLAH}}
+#' @param lst    List of allele-based site-by-source tables, of class
+#' \code{\link{divtable}}
+#' @param zero.var.adjust Logical, if \code{TRUE} (the default), then groups
+#' with zero variance are assigned a very small number less than the minimum
+#' positive variance given the sample size
 #' @param n.resample Number of iterations for creation of the null distribution
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
+#' @param \dots  Additional parameters
 #'
 #' @return An \code{diversity_test} object with the result of the test
 #
@@ -152,8 +162,21 @@ plot.diversity_test <- function(x, add.analytic = FALSE,
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
-# @examples
-#
+#' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
+#' Impact of asymmetric male and female gamete dispersal on allelic 
+#' diversity and spatial genetic structure in valley oak 
+#' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
+#'
+#' @examples
+#'
+#' ## Add example with .divtable
+#' ##
+#' ## For comparing allele diversity between sites in the same sample
+#' library(readGenalex)
+#' data(Qagr_pericarp_genotypes)
+#' gt <- createAlleleTables(Qagr_pericarp_genotypes)
+#' alpha.test <- alphaDiversityTest(gt)
+#'
 #' @export
 #'
 #' @name alphaDiversityTest
@@ -197,6 +220,18 @@ alphaDiversityTest.divtable <- function(tab, zero.var.adjust = TRUE,
     ans$P.empirical <- sum(terms$ln.LR <= nulldist) / n.resample
     ans$empdist <- nulldist
     structure(ans, class = c('diversity_test', 'list'))
+}
+
+
+
+#' @rdname alphaDiversityTest
+#'
+#' @export
+#'
+alphaDiversityTest.default <- function(tab, ...)
+{
+    stop(deparse(substitute(tab)),
+         " must be of class divtable or class allele_divtables")
 }
 
 
@@ -300,6 +335,23 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     ans$empdist <- nulldist
     ans$a.b.vardist = a.b.vardist
     structure(ans, class = c('diversity_test', 'list'))
+}
+
+
+
+#' @rdname alphaContrastTest
+#'
+#' @export
+#'
+alphaContrastTest.default <- function(tab.a, tab.b, ...)
+{
+    args <- c()
+    if (! inherits(tab.a, "divtable"))
+        args <- c(args, deparse_substitute(tab.a))
+    if (! inherits(tab.b, "divtable"))
+        args <- c(args, deparse_substitute(tab.b))
+    stop(paste(collapse = " and ", args),
+         " must be of class divtable or class allele_divtables")
 }
 
 
@@ -428,6 +480,24 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
 
 
 
+#' @rdname alphaContrastTest3
+#'
+#' @export
+#'
+alphaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
+{
+    args <- c()
+    if (! inherits(tab.a, "divtable"))
+        args <- c(args, deparse_substitute(tab.a))
+    if (! inherits(tab.b, "divtable"))
+        args <- c(args, deparse_substitute(tab.b))
+    if (! inherits(tab.c, "divtable"))
+        args <- c(args, deparse_substitute(tab.c))
+    stop(paste(collapse = " and ", args),
+         " must be of class divtable or class allele_divtables")
+}
+
+
 
 #' Test for structure in pairwise divergence between sites
 #'
@@ -487,6 +557,17 @@ pairwiseMeanTest.divtable <- function(tab, n.iter = 10000,
                 P.lower = P.lower, P.upper = P.upper,
                 quantiles = q1, method = method, statistic = statistic)
     structure(ans, class = c('pairwise_mean_test', 'list'))
+}
+
+
+
+#' @rdname pairwiseMeanTest
+#'
+#' @export
+#'
+pairwiseMeanTest.default <- function(tab, ...)
+{
+    pairwiseMeanTest.divtable(as.divtable(tab), ...)
 }
 
 
@@ -637,6 +718,23 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
 
 
 
+#' @rdname gammaContrastTest
+#'
+#' @export
+#'
+gammaContrastTest.default <- function(tab.a, tab.b, ...)
+{
+    args <- c()
+    if (! inherits(tab.a, "divtable"))
+        args <- c(args, deparse_substitute(tab.a))
+    if (! inherits(tab.b, "divtable"))
+        args <- c(args, deparse_substitute(tab.b))
+    stop(paste(collapse = " and ", args),
+         " must be of class divtable or class allele_divtables")
+}
+
+
+
 #' Test for difference in gamma diversity among three datasets
 #'
 #' @param tab.a First site-by-source table
@@ -770,6 +868,25 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
     structure(ans, class = c('diversity_test', 'list'))
+}
+
+
+
+#' @rdname gammaContrastTest3
+#'
+#' @export
+#'
+gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
+{
+    args <- c()
+    if (! inherits(tab.a, "divtable"))
+        args <- c(args, deparse_substitute(tab.a))
+    if (! inherits(tab.b, "divtable"))
+        args <- c(args, deparse_substitute(tab.b))
+    if (! inherits(tab.c, "divtable"))
+        args <- c(args, deparse_substitute(tab.c))
+    stop(paste(collapse = " and ", args),
+         " must be of class divtable or class allele_divtables")
 }
 
 

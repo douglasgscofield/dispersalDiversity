@@ -3,6 +3,7 @@
 \name{alphaContrastTest.allele_divtables}
 \alias{alphaContrastTest}
 \alias{alphaContrastTest.allele_divtables}
+\alias{alphaContrastTest.default}
 \alias{alphaContrastTest.divtable}
 \title{Test for differences in alpha diversity between two allele diversity datasets}
 \usage{
@@ -14,6 +15,8 @@
 \method{alphaContrastTest}{divtable}(tab.a, tab.b, zero.var.adjust = TRUE,
   n.resample = 10000, method = c("bootstrap", "permute"),
   test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
+
+\method{alphaContrastTest}{default}(tab.a, tab.b, ...)
 }
 \arguments{
 \item{zero.var.adjust}{Logical, whether to adjust zero-variance groups

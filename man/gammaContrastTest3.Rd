@@ -2,6 +2,7 @@
 % Please edit documentation in R/diversityTests-divtable.R
 \name{gammaContrastTest3}
 \alias{gammaContrastTest3}
+\alias{gammaContrastTest3.default}
 \alias{gammaContrastTest3.divtable}
 \title{Test for difference in gamma diversity among three datasets}
 \usage{
@@ -9,6 +10,8 @@
   zero.var.adjust = TRUE, n.resample = 10000, method = c("bootstrap",
   "permute"), test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99,
   0.999), ...)
+
+\method{gammaContrastTest3}{default}(tab.a, tab.b, tab.c, ...)
 }
 \arguments{
 \item{tab.a}{First site-by-source table}

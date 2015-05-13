@@ -3,6 +3,7 @@
 \name{gammaContrastTest.allele_divtables}
 \alias{gammaContrastTest}
 \alias{gammaContrastTest.allele_divtables}
+\alias{gammaContrastTest.default}
 \alias{gammaContrastTest.divtable}
 \title{Test for difference in gamma diversity between two allele diversity datasets}
 \usage{
@@ -15,6 +16,8 @@
   n.resample = 10000, method = c("bootstrap", "permute"),
   test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
   ...)
+
+\method{gammaContrastTest}{default}(tab.a, tab.b, ...)
 }
 \arguments{
 \item{lst.a}{Allele diveristy dataset, a list, one entry per locus, of

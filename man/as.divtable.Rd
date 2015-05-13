@@ -3,6 +3,7 @@
 \name{as.divtable}
 \alias{as.divtable}
 \alias{as.divtable.data.frame}
+\alias{as.divtable.default}
 \alias{as.divtable.matrix}
 \alias{as.divtable.table}
 \alias{as.divtable.xtabs}
@@ -15,6 +16,8 @@
 \method{as.divtable}{data.frame}(x, ...)
 
 \method{as.divtable}{xtabs}(x, ...)
+
+\method{as.divtable}{default}(x, ...)
 }
 \description{
 Convert to class \code{'divtable'}

@@ -3,8 +3,9 @@
 \name{alphaDiversityTest.allele_divtables}
 \alias{alphaDiversityTest}
 \alias{alphaDiversityTest.allele_divtables}
+\alias{alphaDiversityTest.default}
 \alias{alphaDiversityTest.divtable}
-\title{Test for alpha diversity difference between sites}
+\title{Test for differences in alpha diversity among sites within a single data set}
 \usage{
 \method{alphaDiversityTest}{allele_divtables}(lst, zero.var.adjust = TRUE,
   n.resample = 10000, method = c("bootstrap", "permute"),
@@ -15,14 +16,16 @@
   n.resample = 10000, method = c("bootstrap", "permute"),
   test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
   ...)
+
+\method{alphaDiversityTest}{default}(tab, ...)
 }
 \arguments{
-\item{lst}{Object of class \code{\link{allele_divtables}}, as produced
-by the function \code{\link{createAlleleTables}}.  A list, one entry
-per locus, of site-by-allele counts.  Each table must have the same format.}
+\item{lst}{List of allele-based site-by-source tables, of class
+\code{\link{divtable}}}
 
-\item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
-with minimum value, see \code{\link{BLAHBLAH}}}
+\item{zero.var.adjust}{Logical, if \code{TRUE} (the default), then groups
+with zero variance are assigned a very small number less than the minimum
+positive variance given the sample size}
 
 \item{n.resample}{Number of iterations for creation of the null distribution}
 
@@ -35,43 +38,35 @@ distribution iterations with (\code{"bootstrap"}) or without
 \item{\dots}{Additional parameters}
 }
 \value{
-Fill this in
-
 An \code{diversity_test} object with the result of the test
 }
 \description{
-From Sork et al., extensions of those from Scofield et al. 2012 American
-Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
-
-Test for differences in alpha diversity among sites within a single data set
+The null hypothesis for this tests is that there is no difference in alpha
+diversity between the sites represented in \code{tab} or \code{lst}.  The
+initial (class \code{divtable}) version of this was described in Scofield
+et al. (2012), while the allelic (class \code{allele_divtables} extension
+was described in Sort et al. (In press).
 }
 \examples{
+## Add example with .divtable
+##
 ## For comparing allele diversity between sites in the same sample
 library(readGenalex)
 data(Qagr_pericarp_genotypes)
 gt <- createAlleleTables(Qagr_pericarp_genotypes)
 alpha.test <- alphaDiversityTest(gt)
 }
-\author{
-Douglas G. Scofield
-}
 \references{
 Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
 Use of alpha, beta and gamma diversity measures to characterize seed
 dispersal by animals.  \emph{American Naturalist} 180:719-732.
 
-Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (Submitted)
+Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
 Impact of asymmetric male and female gamete dispersal on allelic
 diversity and spatial genetic structure in valley oak
-(\emph{Quercus lobata} N\'{e}e).
-
-Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-Use of alpha, beta and gamma diversity measures to characterize seed
-dispersal by animals.  \emph{American Naturalist} 180:719-732.
+(\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 }
 \seealso{
-\code{\link{alphaDiversityTest}}, \code{\link{diversity}}
-
 \code{\link{alphaContrastTest}}, \code{\link{alphaContrastTest3}}, \code{\link{print.diversity_test}}
 }
 

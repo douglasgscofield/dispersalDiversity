@@ -2,6 +2,7 @@
 % Please edit documentation in R/diversityTests-divtable.R
 \name{pairwiseMeanTest}
 \alias{pairwiseMeanTest}
+\alias{pairwiseMeanTest.default}
 \alias{pairwiseMeanTest.divtable}
 \title{Test for structure in pairwise divergence between sites}
 \usage{
@@ -9,6 +10,8 @@
   "q", "q.nielsen"), statistic = c("divergence", "overlap"),
   test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
   ...)
+
+\method{pairwiseMeanTest}{default}(tab, ...)
 }
 \description{
 Test for structure in pairwise divergence between sites

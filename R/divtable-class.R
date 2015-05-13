@@ -104,7 +104,9 @@ as.divtable.matrix <- function(x, ...)
 #'
 as.divtable.data.frame <- function(x, ...)
 {
-    structure(as.table(as.matrix(x)), class = c('divtable', 'table'))
+    x <- as.matrix(x)
+    mode(x) <- "numeric"
+    structure(as.table(x), class = c('divtable', 'table'))
 }
 
 
@@ -121,3 +123,14 @@ as.divtable.xtabs <- function(x, ...)
     structure(as.table(x), class = c('divtable', 'table'))
 }
 
+
+
+#' @rdname as.divtable
+#'
+#' @export
+#'
+as.divtable.default <- function(x, ...)
+{
+    stop(deparse(substitute(x)), " cannot be converted to class divtable, ",
+         "must be class table, matrix, xtabs or data.frame")
+}
