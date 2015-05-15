@@ -11,14 +11,14 @@ NULL
 #'
 #' @export
 #'
-alphaDiversityTest.allele_divtables <- function(lst, zero.var.adjust = TRUE, 
+alphaDiversityTest.allele_divtables <- function(adt, zero.var.adjust = TRUE, 
     n.resample = 10000, method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
 {
     method <- match.arg(method)
-    name <- deparse(substitute(lst))
-    nm <- names(lst)
+    name <- deparse(substitute(adt))
+    nm <- names(adt)
 
     ans <- list()
     ans$name <- name
@@ -28,14 +28,14 @@ alphaDiversityTest.allele_divtables <- function(lst, zero.var.adjust = TRUE,
     ans$empdist <- numeric(n.resample)
     # sublists for each locus
 
-    for (l in 1:length(lst)) {
+    for (l in 1:length(adt)) {
 
         locus <- nm[l]
 
         this.ans <- list()
         this.ans$locus <- locus
 
-        tab <- lst[[locus]]
+        tab <- adt[[locus]]
 
         #g.vardist <- lapply(.diversityTest.distmat(tab), 
         #                    function(x) diag(.diversityTest.gower(x)))  
@@ -141,19 +141,19 @@ alphaDiversityTest.allele_divtables <- function(lst, zero.var.adjust = TRUE,
 #'
 #' @export
 #'
-alphaContrastTest.allele_divtables <- function(lst.a, lst.b,
+alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
     zero.var.adjust = TRUE, n.resample = 10000, 
     method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
 
-    name.a <- deparse(substitute(lst.a))
-    name.b <- deparse(substitute(lst.b))
-    if (! inherits(lst.b, 'allele_divtables'))
+    name.a <- deparse(substitute(adt.a))
+    name.b <- deparse(substitute(adt.b))
+    if (! inherits(adt.b, 'allele_divtables'))
         stop("both ", name.a, " and ", name.b, " must be of class 'allele_divtables'")
     method <- match.arg(method)
-    stopifnot(length(lst.a) == length(lst.b) && all(names(lst.a) == names(lst.b)))
-    nm <- names(lst.a)
+    stopifnot(length(adt.a) == length(adt.b) && all(names(adt.a) == names(adt.b)))
+    nm <- names(adt.a)
     .RT <- .diversityTest.ReverseTerms
     .diversityTest.ReverseTerms <- FALSE
 
@@ -166,14 +166,14 @@ alphaContrastTest.allele_divtables <- function(lst.a, lst.b,
     ans$empdist <- numeric(n.resample)
     # sublists for each locus
 
-    for (l in 1:length(lst.a)) {
+    for (l in 1:length(adt.a)) {
 
         locus <- nm[l]
 
         this.ans <- list()
         this.ans$locus <- locus
 
-        tab.a <- lst.a[[locus]]
+        tab.a <- adt.a[[locus]]
         #a.vardist <- lapply(.diversityTest.distmat(tab.a), 
         #                    function(x) diag(.diversityTest.gower(x)))  
         a.vardist <- .diversityTest.directGowerDiag(tab.a)
@@ -186,7 +186,7 @@ alphaContrastTest.allele_divtables <- function(lst.a, lst.b,
         this.ans$G.a <- G.a
         terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
 
-        tab.b <- lst.b[[locus]]
+        tab.b <- adt.b[[locus]]
         #b.vardist <- lapply(.diversityTest.distmat(tab.b), 
         #                    function(x) diag(.diversityTest.gower(x)))  
         b.vardist <- .diversityTest.directGowerDiag(tab.b)
@@ -284,11 +284,10 @@ alphaContrastTest.allele_divtables <- function(lst.a, lst.b,
 #' From Sork et al., extensions of those from Scofield et al. 2012 American
 #' Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
 #
-#' @param lst.a  Allele diveristy dataset, a list, one entry per locus, of 
-#'               site x allele counts. Each table must have the same format.
+#' @param adt.a  Allele diversity dataset of class \code{allele_divtables}, a
+#' list, one entry per locus, of site-by-allele counts
 #'
-#' @param lst.b  Allele diveristy dataset, a list, one entry per locus, of 
-#'               site x allele counts. Each table must have the same format.
+#' @param adt.b  Allele diversity dataset of class \code{allele_divtables}
 #'
 #' @param \dots  Additional parameters
 #'
@@ -308,19 +307,19 @@ alphaContrastTest.allele_divtables <- function(lst.a, lst.b,
 #'
 #' @export
 #'
-gammaContrastTest.allele_divtables <- function(lst.a, lst.b,
+gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
     zero.var.adjust = TRUE, n.resample = 10000, 
     method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
-    name.a <- deparse(substitute(lst.a))
-    name.b <- deparse(substitute(lst.b))
-    if (! inherits(lst.b, 'allele_divtables'))
+    name.a <- deparse(substitute(adt.a))
+    name.b <- deparse(substitute(adt.b))
+    if (! inherits(adt.b, 'allele_divtables'))
         stop("both ", name.a, " and ", name.b, " must be of class 'allele_divtables'")
     method <- match.arg(method)
-    stopifnot(length(lst.a) == length(lst.b) && 
-              all(names(lst.a) == names(lst.b)))
-    nm <- names(lst.a)
+    stopifnot(length(adt.a) == length(adt.b) && 
+              all(names(adt.a) == names(adt.b)))
+    nm <- names(adt.a)
 
     ans <- list()
     ans$name.a <- name.a
@@ -329,14 +328,14 @@ gammaContrastTest.allele_divtables <- function(lst.a, lst.b,
     ans$observed.ln.LR <- 0
     ans$empdist <- numeric(n.resample)
 
-    for (l in 1:length(lst.a)) {
+    for (l in 1:length(adt.a)) {
         locus <- nm[l]
 
         this.ans <- list()
         this.ans$locus <- locus
 
-        tab.a <- lst.a[[ nm[l] ]]
-        tab.b <- lst.b[[ nm[l] ]]
+        tab.a <- adt.a[[ nm[l] ]]
+        tab.b <- adt.b[[ nm[l] ]]
 
         X.a.k <- apply(tab.a, 2, sum)
         X.b.k <- apply(tab.b, 2, sum)

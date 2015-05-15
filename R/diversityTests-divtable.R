@@ -135,14 +135,14 @@ plot.diversity_test <- function(x, add.analytic = FALSE,
 #' Test for differences in alpha diversity among sites within a single data set
 #'
 #' The null hypothesis for this tests is that there is no difference in alpha
-#' diversity between the sites represented in \code{tab} or \code{lst}.  The
+#' diversity between the sites represented in \code{tab} or \code{adt}.  The
 #' initial (class \code{divtable}) version of this was described in Scofield
 #' et al. (2012), while the allelic (class \code{allele_divtables} extension
 #' was described in Sort et al. (In press).
 #'
 #' @param tab    Site-by-source table of class \code{\link{divtable}}
-#' @param lst    List of allele-based site-by-source tables, of class
-#' \code{\link{divtable}}
+#' @param adt    Allele diversity dataset of class \code{allele_divtables}, a
+#' list of site-by-allele tables, each of class \code{\link{divtable}}
 #' @param zero.var.adjust Logical, if \code{TRUE} (the default), then groups
 #' with zero variance are assigned a very small number less than the minimum
 #' positive variance given the sample size
@@ -171,7 +171,8 @@ plot.diversity_test <- function(x, add.analytic = FALSE,
 #'
 #' ## Add example with .divtable
 #' ##
-#' ## For comparing allele diversity between sites in the same sample
+#' ## Using allele diversity dataset of class allele_divtables.  Compare
+#' ## allele diversity between sites in the same sample:
 #' library(readGenalex)
 #' data(Qagr_pericarp_genotypes)
 #' gt <- createAlleleTables(Qagr_pericarp_genotypes)
