@@ -3,7 +3,7 @@ library(dispersalDiversity)
 
 
 #########################################
-context("diversity.divtable basic attributes and q list")
+context("Testing diversity.divtable basic attributes")
 
 
 t <- matrix(c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3), byrow = TRUE, nrow = 3, ncol = 4,
@@ -32,6 +32,8 @@ test_that("diversity.divtable gets basic attributes right", {
                                  dimnames = list(G=c("a","b","c"),G=c("a","b","c"))))
 })
 
+context("Testing diversity.divtable contents of q list")
+
 test_that("diversity.divtable gets q right for scaled diversity", {
     expect_equal(d$q$q.gg, setNames(c(0.25,0.25,0.25), c("a","b","c")))
     expect_equal(d$q$q.bar.0, 0.25)
@@ -51,6 +53,8 @@ test_that("diversity.divtable gets q right for scaled diversity", {
     expect_equal(d$q$divergence, 0)
 })
 
+context("Testing diversity.divtable contents of r list")
+
 test_that("diversity.divtable gets r 'right' for scaled diversity, a = 1 makes r Inf there", {
     expect_equal(d$r$q.gg, setNames(c(0,0.1428571429,0.1818181818), c("a","b","c")))
     expect_equal(d$r$q.bar.0, 0.16)
@@ -69,6 +73,8 @@ test_that("diversity.divtable gets r 'right' for scaled diversity, a = 1 makes r
     expect_equal(d$r$overlap, 2.31)
     expect_equal(d$r$divergence, -1.31)
 })
+
+context("Testing diversity.divtable contents of q.nielsen list")
 
 test_that("diversity.divtable gets q.nielsen right for scaled diversity, low-sample-size problems here as well", {
     expect_equal(d$q.nielsen$q.gg, setNames(c(0.1666666667,0.1734693878,0.1942148760), c("a","b","c")))
