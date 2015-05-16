@@ -3,7 +3,7 @@ Type: Package
 Title: Analyse individual and genetic diversity of dispersal processes in
     biological populations
 Version: 0.9.9001
-Date: 2015-04-13
+Date: 2015-05-16
 Authors@R: person(c("Douglas", "G."), "Scofield", email = "douglasgscofield@gmail.com", role = c("aut", "cre"))
 Maintainer: Douglas G. Scofield <douglasgscofield@gmail.com>
 Description: A collection of R functions to analyse individual and genetic
@@ -17,7 +17,7 @@ URL: https://github.com/douglasgscofield/dispersalDiversity
 BugReports: https://github.com/douglasgscofield/dispersalDiversity/issues
 License: LGPL-3 | file LICENSE
 Depends:
-    readGenalex (>= 0.9.9000)
+    readGenalex (>= 1.0)
 Imports:
     lattice
 Suggests:

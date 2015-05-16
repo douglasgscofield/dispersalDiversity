@@ -1,5 +1,7 @@
-0.9.9000 (development version, branch make_R_package)
+0.9.9001 (development version)
 ------
+
+* `membershipPlot` drops the `method` argument along with the plotting of pie charts
 * The calculation of distances for diversity tests is much more efficient in time and space, so tests may be performed on data with very high counts (e.g., OTU diversity)
 * Diversity tests return class `diversity_test`, which has `print` and `plot` methods
 * Gamma accumulation functions return class `gamma_accum`, which has a `plot` method
