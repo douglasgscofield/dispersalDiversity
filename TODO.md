@@ -48,6 +48,7 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* `membershipPlot` has the `method` argument removed along with the production of pie plots
 * Optimisation of Gower distance matrix diagonal generation
 * Removed `accum.method` and `distance.file` arguments from `gammaAccum` functions.  The `proximity` method was never well thought through; a proximity-based method could be valuable but not in the way it was implemented here.
 * For alpha and gamma diversity tests, all return class `'diversity_test'` object which is handled by common `print.diversity_test` and `plot.diversity_test` methods

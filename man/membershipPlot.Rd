@@ -4,16 +4,16 @@
 \alias{membershipPlot}
 \alias{membershipPlot.default}
 \alias{membershipPlot.divtable}
-\title{Plot a series of bars or pies indicating membership in groups}
+\title{Plot a series of stacked bars indicating membership in groups}
 \usage{
 \method{membershipPlot}{default}(tab, ...)
 
-\method{membershipPlot}{divtable}(tab, method = c("bar", "pie"),
-  fill.method = c("colour", "bw", "color"), fill.palette = "Dark2",
-  distinguish.multiton = FALSE, xlab = "Site", ylab = "Membership",
-  las = 1, x.mar.width = ifelse(las >= 2, 4, 3), cex = 0.7,
-  header.cex = 0.9, cex.names = 0.85, l1 = NULL, l2 = NULL,
-  pdf.file = NULL, postscript.file = NULL, file.dim = c(5.25, 2), ...)
+\method{membershipPlot}{divtable}(tab, fill.method = c("colour", "bw",
+  "color"), fill.palette = "Dark2", distinguish.multiton = FALSE,
+  xlab = "Site", ylab = "Membership", las = 1, x.mar.width = ifelse(las
+  >= 2, 4, 3), cex = 0.7, header.cex = 0.9, cex.names = 0.85, l1 = NULL,
+  l2 = NULL, pdf.file = NULL, postscript.file = NULL, file.dim = c(5.25,
+  2), ...)
 }
 \arguments{
 \item{tab}{Object of class \code{\link{divtable}} of counts of sites
@@ -21,10 +21,6 @@
 (\code{table}, \code{matrix}, \code{data.frame}, \code{xtabs}) that
 can be converted with \code{\link{as.divtable}}.  This argument is
 standardized by site so values may be counts or proportions.}
-
-\item{method}{\code{"bar"} (the default) or \code{"pie"}, for the form
-of plot produced.  Bar plots have received considerably more attention
-than pie plots.}
 
 \item{fill.method}{\code{"colour"} (the default, with synonym
 \code{"color"}, or \code{"bw"}, for the method of colouring different

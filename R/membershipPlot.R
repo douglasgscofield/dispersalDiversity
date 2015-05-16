@@ -1,4 +1,4 @@
-#' Plot a series of bars or pies indicating membership in groups
+#' Plot a series of stacked bars indicating membership in groups
 #'
 #' Singleton groups, those with just one member, appear as white regions
 #' within their respective sites.  Multiton groups, with more than one
@@ -14,10 +14,6 @@
 #' (\code{table}, \code{matrix}, \code{data.frame}, \code{xtabs}) that
 #' can be converted with \code{\link{as.divtable}}.  This argument is
 #' standardized by site so values may be counts or proportions.
-#'
-#' @param method   \code{"bar"} (the default) or \code{"pie"}, for the form
-#' of plot produced.  Bar plots have received considerably more attention
-#' than pie plots.
 #'
 #' @param fill.method   \code{"colour"} (the default, with synonym 
 #' \code{"color"}, or \code{"bw"}, for the method of colouring different 
@@ -107,7 +103,7 @@ membershipPlot.default <- function(tab, ...)
 #'
 #' @export
 #'
-membershipPlot.divtable <- function(tab, method = c("bar", "pie"), 
+membershipPlot.divtable <- function(tab,
     fill.method = c("colour", "bw", "color"), fill.palette = "Dark2",
     distinguish.multiton = FALSE, xlab = "Site", ylab = "Membership",
     las = 1, x.mar.width = ifelse(las >= 2, 4, 3), 
@@ -202,56 +198,32 @@ membershipPlot.divtable <- function(tab, method = c("bar", "pie"),
         
     }
     
-    if (method == "bar") {
-        
-        # adjust to proportions so they sum to 1
-        tab <- scale(tab, scale = apply(tab, 2, sum), center = FALSE)
-        if (any(abs(apply(tab, 2, sum) - 1) > (.Machine$double.eps^0.5))) 
-            stop("didn't scale tab correctly")
-        
-        if (to.file) {
-            if (!is.null(pdf.file)) 
-                .pdf(file = pdf.file, 
-                     width = file.dim[1], height = file.dim[2])
-            else .eps(file = postscript.file, 
-                      width = file.dim[1], height = file.dim[2])
-            par(mar = c(x.mar.width, 3, 3, 0), mgp = c(1.9, 0.4, 0), 
-                bty = "n", xpd = NA, las = las, tcl = -0.25, cex = cex)
-        } else par(mar = c(x.mar.width, 7, 3, 1), bty = "n", xpd = NA, 
-                   las = las)
-        
-        tab <- tab[, rev(1:ncol(tab)), drop = FALSE]
-        do.call("barplot", c(list(height = tab, space = 0.3, horiz = FALSE), 
-            cex.names = cex.names, fill.args, ...))
-        title(xlab = , ylab = ylab)
-        xl <- seq(0.8, by = 1.3, length.out = max(length(l1), length(l2)))
-        if (!is.null(l1)) 
-            mtext(l1, at = xl, line = 1, cex = header.cex, xpd = NA)
-        if (!is.null(l2)) 
-            mtext(l2, at = xl, line = 0.5, cex = header.cex, xpd = NA)
+    # adjust to proportions so they sum to 1
+    tab <- scale(tab, scale = apply(tab, 2, sum), center = FALSE)
+    if (any(abs(apply(tab, 2, sum) - 1) > (.Machine$double.eps^0.5))) 
+        stop("didn't scale tab correctly")
+    
+    if (to.file) {
+        if (!is.null(pdf.file)) 
+            .pdf(file = pdf.file, 
+                 width = file.dim[1], height = file.dim[2])
+        else .eps(file = postscript.file, 
+                  width = file.dim[1], height = file.dim[2])
+        par(mar = c(x.mar.width, 3, 3, 0), mgp = c(1.9, 0.4, 0), 
+            bty = "n", xpd = NA, las = las, tcl = -0.25, cex = cex)
+    } else par(mar = c(x.mar.width, 7, 3, 1), bty = "n", xpd = NA, 
+               las = las)
+    
+    tab <- tab[, rev(1:ncol(tab)), drop = FALSE]
+    do.call("barplot", c(list(height = tab, space = 0.3, horiz = FALSE), 
+        cex.names = cex.names, fill.args, ...))
+    title(xlab = , ylab = ylab)
+    xl <- seq(0.8, by = 1.3, length.out = max(length(l1), length(l2)))
+    if (!is.null(l1)) 
+        mtext(l1, at = xl, line = 1, cex = header.cex, xpd = NA)
+    if (!is.null(l2)) 
+        mtext(l2, at = xl, line = 0.5, cex = header.cex, xpd = NA)
 
-    } else if (method == "pie") {
-        
-        n.pie <- ncol(tab)
-        n.pie.col <- 5
-        n.pie.row <- ceiling(n.pie/n.pie.col)
-        if (to.file) {
-            if (!is.null(pdf.file)) 
-                .pdf(file = pdf.file, 
-                     width = file.dim[1], height = file.dim[2])
-            else .eps(file = postscript.file, 
-                      width = file.dim[1], height = file.dim[2])
-        }
-        par(mfrow = c(n.pie.row, n.pie.col), mar = c(1, 1, 1, 1), bty = "n", 
-            xpd = NA, cex = cex)
-        for (p in 1:n.pie) {
-            ttl <- paste(sep = "", colnames(tab)[p], " (n=", sum(tab[, p]), 
-                         ")")
-            do.call("pie", c(list(x = tab[, p], radius = 0.95, main = ttl, 
-                                  labels = ""), 
-                             fill.args, ...))
-        }
-    }
     if (to.file) dev.off()
 }
  
