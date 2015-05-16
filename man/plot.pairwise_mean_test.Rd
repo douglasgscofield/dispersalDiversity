@@ -2,11 +2,14 @@
 % Please edit documentation in R/diversityTests-divtable.R
 \name{plot.pairwise_mean_test}
 \alias{plot.pairwise_mean_test}
-\title{Plot the result of \code{'pairwiseMeanTest'}}
+\title{Plot the result of \code{\link{pairwiseMeanTest}}}
 \usage{
 \method{plot}{pairwise_mean_test}(result, ...)
 }
 \description{
-Plot the result of \code{'pairwiseMeanTest'}
+Plot the result of \code{\link{pairwiseMeanTest}}
+}
+\seealso{
+\code{\link{pairwiseMeanTest}}
 }
 

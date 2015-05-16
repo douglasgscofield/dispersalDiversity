@@ -7,12 +7,12 @@
 \alias{alphaDiversityTest.divtable}
 \title{Test for differences in alpha diversity among sites within a single data set}
 \usage{
-\method{alphaDiversityTest}{allele_divtables}(lst, zero.var.adjust = TRUE,
+\method{alphaDiversityTest}{allele_divtables}(adt, zero.div.adjust = TRUE,
   n.resample = 10000, method = c("bootstrap", "permute"),
   test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
   ...)
 
-\method{alphaDiversityTest}{divtable}(tab, zero.var.adjust = TRUE,
+\method{alphaDiversityTest}{divtable}(tab, zero.div.adjust = TRUE,
   n.resample = 10000, method = c("bootstrap", "permute"),
   test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
   ...)
@@ -20,12 +20,12 @@
 \method{alphaDiversityTest}{default}(tab, ...)
 }
 \arguments{
-\item{lst}{List of allele-based site-by-source tables, of class
-\code{\link{divtable}}}
+\item{adt}{Allele diversity dataset of class
+\code{\link{allele_divtables}}}
 
-\item{zero.var.adjust}{Logical, if \code{TRUE} (the default), then groups
-with zero variance are assigned a very small number less than the minimum
-positive variance given the sample size}
+\item{zero.div.adjust}{Logical, if \code{TRUE} (the default), then groups
+with 0 within-group diversity are assigned a minimum diversity which is
+half the empirical diversity possible given the group size}
 
 \item{n.resample}{Number of iterations for creation of the null distribution}
 
@@ -42,15 +42,18 @@ An \code{diversity_test} object with the result of the test
 }
 \description{
 The null hypothesis for this tests is that there is no difference in alpha
-diversity between the sites represented in \code{tab} or \code{lst}.  The
-initial (class \code{divtable}) version of this was described in Scofield
-et al. (2012), while the allelic (class \code{allele_divtables} extension
-was described in Sort et al. (In press).
+diversity between the sites represented in \code{tab} or \code{adt}.  The
+initial (class \code{\link{divtable}}) version of this was described in
+Scofield et al. (2012), while the allelic (class
+\code{link{allele_divtables}} extension was described in Sort et al. (In
+press).
 }
 \examples{
-## Add example with .divtable
+## Add example with class divtable
 ##
-## For comparing allele diversity between sites in the same sample
+## Using allele diversity dataset of class allele_divtables.  Compare
+## allele diversity between sites in the same sample:
+##
 library(readGenalex)
 data(Qagr_pericarp_genotypes)
 gt <- createAlleleTables(Qagr_pericarp_genotypes)

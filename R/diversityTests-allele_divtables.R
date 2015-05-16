@@ -5,13 +5,13 @@ NULL
 
 
 
-# Already documented in diversityTests-divtable.R
+# Already documented in diversityTests.divtable
 #
 #' @rdname alphaDiversityTest
 #'
 #' @export
 #'
-alphaDiversityTest.allele_divtables <- function(adt, zero.var.adjust = TRUE, 
+alphaDiversityTest.allele_divtables <- function(adt, zero.div.adjust = TRUE, 
     n.resample = 10000, method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
@@ -47,7 +47,7 @@ alphaDiversityTest.allele_divtables <- function(adt, zero.var.adjust = TRUE,
         this.ans$N.samples <- N
         this.ans$N.groups <- G
 
-        terms <- .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
+        terms <- .diversityTest.CalcTerms(n.g, g.vardist, zero.div.adjust)
         PVAL <- pchisq(terms$ln.LR, df = terms$DF, lower.tail = FALSE)
         cat("Bartlett's Test for Heteroscedasticity in Intra-group Variances for", name, "\n")
         cat("Current locus:", locus, "\n")
@@ -60,7 +60,7 @@ alphaDiversityTest.allele_divtables <- function(adt, zero.var.adjust = TRUE,
         this.ans$P.analytic <- PVAL
         nulldist <- .diversityTest.NullDist(obs = terms$ln.LR, 
                                             n.g = n.g, g.vardist = g.vardist, 
-                                            zero.var.adjust = zero.var.adjust, 
+                                            zero.div.adjust = zero.div.adjust, 
                                             method = method, 
                                             n.resample = n.resample)
         PVAL <- sum(terms$ln.LR <= nulldist)/n.resample
@@ -109,40 +109,14 @@ alphaDiversityTest.allele_divtables <- function(adt, zero.var.adjust = TRUE,
 
 
 
-#' Test for differences in alpha diversity between two allele diversity datasets
-#'
-#' From Sork et al. (2015), extending methods developed in Scofield et al.
-#' (2012).
-#'
-#' @seealso \code{\link{alphaContrastTest}}
-#'
-#' @references
-#'
-#' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (Submitted)
-#' Impact of asymmetric male and female gamete dispersal on allelic 
-#' diversity and spatial genetic structure in valley oak 
-#' (\emph{Quercus lobata} N\'{e}e).
-#'
-#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-#' Use of alpha, beta and gamma diversity measures to characterize seed
-#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
-#'
-#' @examples
-#'
-#' # For comparing allele diversity between two different samples:
-#'
-#' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
-#' # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-#' # gt1 <- createAlleleTables(dat1)
-#' # gt2 <- createAlleleTables(dat2)
-#' # alpha.contrast <- alphaContrastTest(gt1, gt2)
-#'
+# Already documented under alleleContrastTest.divtable
+#
 #' @rdname alphaContrastTest
 #'
 #' @export
 #'
 alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
-    zero.var.adjust = TRUE, n.resample = 10000, 
+    zero.div.adjust = TRUE, n.resample = 10000, 
     method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
@@ -184,7 +158,7 @@ alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
         this.ans$name.b <- name.b
         this.ans$N.a <- N.a
         this.ans$G.a <- G.a
-        terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+        terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.div.adjust)
 
         tab.b <- adt.b[[locus]]
         #b.vardist <- lapply(.diversityTest.distmat(tab.b), 
@@ -195,7 +169,7 @@ alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
         G.b <- length(n.b)
         this.ans$N.b <- N.b
         this.ans$G.b <- G.b
-        terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+        terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.div.adjust)
 
         V.a.b.p <- (((N.a - G.a) * terms.a$V.p) + 
                     ((N.b - G.b) * terms.b$V.p)) / (N.a + N.b - G.a - G.b)
@@ -224,7 +198,7 @@ alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
         nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b,
                                             n.g = n.a.b,
                                             g.vardist = a.b.vardist,
-                                            zero.var.adjust, method, n.resample)
+                                            zero.div.adjust, method, n.resample)
         PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
         cat("Contrasting groups, compare against bootstrap X^2 distribution:\n")
         q2 <- quantile(nulldist, test.quantiles)
@@ -279,36 +253,14 @@ alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
 
 
 
-#' Test for difference in gamma diversity between two allele diversity datasets
-#'
-#' From Sork et al., extensions of those from Scofield et al. 2012 American
-#' Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
+# Documentation in gammaContrastTest.divtable
 #
-#' @param adt.a  Allele diversity dataset of class \code{allele_divtables}, a
-#' list, one entry per locus, of site-by-allele counts
-#'
-#' @param adt.b  Allele diversity dataset of class \code{allele_divtables}
-#'
-#' @param \dots  Additional parameters
-#'
-#' @return Fill this in
-#'
-#' @examples
-#'
-#' # For comparing allele diversity between two different samples:
-#'
-#' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
-#' # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-#' # gt1 <- createAlleleTables(dat1)
-#' # gt2 <- createAlleleTables(dat2)
-#' # gamma.contrast <- gammaContrastTest(gt1, gt2)
-#'
 #' @rdname gammaContrastTest
 #'
 #' @export
 #'
 gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
-    zero.var.adjust = TRUE, n.resample = 10000, 
+    zero.div.adjust = TRUE, n.resample = 10000, 
     method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
@@ -361,7 +313,7 @@ gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
         G.a <- length(n.a)
         this.ans$N.a <- N.a
         this.ans$G.a <- G.a
-        terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+        terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.div.adjust)
         cat(sprintf("%s  terms.a$V.p = %f  V.a.tot = %f\n", locus, terms.a$V.p, V.a.tot))
 
         #b.distmat <- .diversityTest.distmat(X.b.k)
@@ -373,7 +325,7 @@ gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
         G.b <- length(n.b)
         this.ans$N.b <- N.b
         this.ans$G.b <- G.b
-        terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+        terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.div.adjust)
         cat(sprintf("%s  terms.b$V.p = %f  V.b.tot = %f\n", locus, terms.b$V.p, V.b.tot))
 
         # Combine A and B into stratta for comparison
@@ -398,7 +350,7 @@ gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
         nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b,
                                             n.g = n.a.b,
                                             g.vardist = a.b.vardist,
-                                            zero.var.adjust, method, n.resample)
+                                            zero.div.adjust, method, n.resample)
         PVAL <- sum(observed.ln.LR.a.b <= nulldist)/n.resample
         cat("Contrasting groups, compare against bootstrap X-2 distribution:\n")
         q2 <- quantile(nulldist, test.quantiles)

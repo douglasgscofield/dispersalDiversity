@@ -136,20 +136,26 @@ plot.diversity_test <- function(x, add.analytic = FALSE,
 #'
 #' The null hypothesis for this tests is that there is no difference in alpha
 #' diversity between the sites represented in \code{tab} or \code{adt}.  The
-#' initial (class \code{divtable}) version of this was described in Scofield
-#' et al. (2012), while the allelic (class \code{allele_divtables} extension
-#' was described in Sort et al. (In press).
+#' initial (class \code{\link{divtable}}) version of this was described in
+#' Scofield et al. (2012), while the allelic (class
+#' \code{link{allele_divtables}} extension was described in Sort et al. (In
+#' press).
 #'
 #' @param tab    Site-by-source table of class \code{\link{divtable}}
-#' @param adt    Allele diversity dataset of class \code{allele_divtables}, a
-#' list of site-by-allele tables, each of class \code{\link{divtable}}
-#' @param zero.var.adjust Logical, if \code{TRUE} (the default), then groups
-#' with zero variance are assigned a very small number less than the minimum
-#' positive variance given the sample size
+#'
+#' @param adt    Allele diversity dataset of class
+#' \code{\link{allele_divtables}}
+#'
+#' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
+#' with 0 within-group diversity are assigned a minimum diversity which is
+#' half the empirical diversity possible given the group size
+#'
 #' @param n.resample Number of iterations for creation of the null distribution
+#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
+#'
 #' @param \dots  Additional parameters
 #'
 #' @return An \code{diversity_test} object with the result of the test
@@ -169,10 +175,11 @@ plot.diversity_test <- function(x, add.analytic = FALSE,
 #'
 #' @examples
 #'
-#' ## Add example with .divtable
+#' ## Add example with class divtable
 #' ##
 #' ## Using allele diversity dataset of class allele_divtables.  Compare
 #' ## allele diversity between sites in the same sample:
+#' ##
 #' library(readGenalex)
 #' data(Qagr_pericarp_genotypes)
 #' gt <- createAlleleTables(Qagr_pericarp_genotypes)
@@ -192,7 +199,7 @@ alphaDiversityTest <- function(tab, ...) UseMethod("alphaDiversityTest")
 #'
 #' @export
 #'
-alphaDiversityTest.divtable <- function(tab, zero.var.adjust = TRUE,
+alphaDiversityTest.divtable <- function(tab, zero.div.adjust = TRUE,
     n.resample = 10000, method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
@@ -206,14 +213,14 @@ alphaDiversityTest.divtable <- function(tab, zero.var.adjust = TRUE,
     G <- length(n.g)
     ans$N.samples <- N
     ans$N.groups <- G
-    terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
+    terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.div.adjust)
     ans$observed.ln.LR <- terms$ln.LR
     # Analytic distribution
     ans$df.X2 <- terms$DF
     ans$P.analytic <- pchisq(terms$ln.LR, df = terms$DF, TRUE)
     # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = terms$ln.LR, n.g = n.g, 
-        g.vardist = g.vardist, zero.var.adjust = zero.var.adjust,
+        g.vardist = g.vardist, zero.div.adjust = zero.div.adjust,
         method = method, n.resample=n.resample)
     ans$n.resample <- n.resample
     ans$resample.method <- method
@@ -239,18 +246,29 @@ alphaDiversityTest.default <- function(tab, ...)
 
 #' Test for differences in alpha diversity between two data sets
 #'
-#' @param tab.a First ite x soure table
-#' @param tab.b Second site x soure table
-#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
-#' with minimum value, see \code{\link{BLAHBLAH}}
+#' The null hypothesis for this tests is that there is no difference in alpha
+#' diversity between the two sets of datasets sites represented in \code{tab.a}
+#' and \code{tab.b}, or \code{adt.a} and \code{adt.b}.  The method for the
+#' initial class \code{\link{divtable}} version of this was described in
+#' Scofield et al. (2012), while that for the allelic extension as class
+#' \code{link{allele_divtables}} was described in Sork \emph{et al}.
+#' (In press).
+#'
+#' @param tab.a Site-by-source table of class \code{\link{divtable}}
+#' @param tab.b Site-by-source table of class \code{\link{divtable}}
+#' @param adt.a Allelic diversity dataset of class
+#' \code{\link{allele_divtables}}
+#' @param adt.b Allelic diversity dataset of class
+#' \code{\link{allele_divtables}}
+#' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
+#' with 0 within-group diversity are assigned a minimum diversity which is
+#' half the empirical diversity possible given the group size
 #' @param n.resample Number of iterations for creation of the null distribution
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
 #'
-#' @return An \code{'htest_boot'} object with the result of the test. The
-#' test also prints the result, so perhaps I should modify it to only
-#' return the htest_boot object?  Or should it return a different object?
+#' @return An \code{diversity_test} object with the result of the test
 #'
 #' @seealso \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest3}}
 #'
@@ -260,7 +278,20 @@ alphaDiversityTest.default <- function(tab, ...)
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
-# @examples
+#' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
+#' Impact of asymmetric male and female gamete dispersal on allelic 
+#' diversity and spatial genetic structure in valley oak 
+#' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
+#'
+#' @examples
+#'
+#' ## Comparing allele diversity between two different samples:
+#'
+#' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+#' # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+#' # gt1 <- createAlleleTables(dat1)
+#' # gt2 <- createAlleleTables(dat2)
+#' # alpha.contrast <- alphaContrastTest(gt1, gt2)
 #'
 #' @export
 #'
@@ -268,7 +299,7 @@ alphaDiversityTest.default <- function(tab, ...)
 #'
 NULL
 
-alphaContrastTest <- function(tab.a, tab.b, ...) UseMethod("alphaContrastTest")
+alphaContrastTest <- function(a, b, ...) UseMethod("alphaContrastTest")
 
 
 
@@ -276,7 +307,7 @@ alphaContrastTest <- function(tab.a, tab.b, ...) UseMethod("alphaContrastTest")
 #'
 #' @export
 #"
-alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
+alphaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     n.resample = 10000, method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
@@ -293,7 +324,7 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     G.a <- length(n.a)
     ans$N.a <- N.a
     ans$G.a <- G.a
-    terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+    terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.div.adjust)
     # V.a.p = terms.a$V.p
 
     b.vardist <- .diversityTest.directGowerDiag(tab.b)
@@ -302,7 +333,7 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     G.b <- length(n.b)
     ans$N.b <- N.b
     ans$G.b <- G.b
-    terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+    terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.div.adjust)
     # V.b.p = terms.b$V.p
     V.a.b.p <- (((N.a - G.a) * terms.a$V.p) + ((N.b - G.b) * terms.b$V.p)) / 
               (N.a + N.b - G.a - G.b)
@@ -327,7 +358,7 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     nulldist <- .diversityTest.NullDist(obs=observed.ln.LR.a.b,
                                         n.g = n.a.b,
                                         g.vardist = a.b.vardist,
-                                        zero.var.adjust, method, 
+                                        zero.div.adjust, method, 
                                         n.resample)
     ans$n.resample <- n.resample
     ans$resample.method <- method
@@ -359,19 +390,31 @@ alphaContrastTest.default <- function(tab.a, tab.b, ...)
 
 #' Test for differences in alpha diversity between three data sets
 #'
-#' @param tab.a First site-by-source table
-#' @param tab.b Second site-by-source table
-#' @param tab.c Third site-by-source table
-#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
-#' with minimum value, see \code{\link{BLAHBLAH}}
+#' The null hypothesis for this tests is that there is no difference in alpha
+#' diversity between the three sets of datasets sites represented in \code{tab}
+#' and \code{tab}, or or \code{adt.a} and \code{adt.b}.  The method for the
+#' initial class \code{\link{divtable}} version of this was described in
+#' Scofield et al. (2012), while the allelic (class
+#' \code{link{allele_divtables}} extension was described in Sork \emph{et al}.
+#' (In press).
+#'
+#' The null hypothesis for this tests is that there is no difference in alpha
+#' diversity between the three sets of datasets sites represented in 
+#' \code{tab.a}, \code{tab.b} and \code{tab.c}.  The method was described in
+#' Scofield et al. (2012).
+#'
+#' @param tab.a First site-by-source table, of class \code{\link{divtable}}
+#' @param tab.b Second site-by-source table, of class \code{\link{divtable}}
+#' @param tab.c Third site-by-source table, of class \code{\link{divtable}}
+#' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
+#' with 0 within-group diversity are assigned a minimum diversity which is
+#' half the empirical diversity possible given the group size
 #' @param n.resample Number of iterations for creation of the null distribution
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
 #'
-#' @return An \code{'htest_boot'} object with the result of the test. The
-#' test also prints the result, so perhaps I should modify it to only
-#' return the htest_boot object?  Or should it return a different object?
+#' @return An \code{diversity_test} object with the result of the test
 #'
 #' @seealso \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}
 #'
@@ -389,7 +432,7 @@ alphaContrastTest.default <- function(tab.a, tab.b, ...)
 #'
 NULL
 
-alphaContrastTest3 <- function(tab.a, tab.b, tab.c, ...)
+alphaContrastTest3 <- function(a, b, c, ...)
     UseMethod("alphaContrastTest3")
 
 
@@ -399,7 +442,7 @@ alphaContrastTest3 <- function(tab.a, tab.b, tab.c, ...)
 #' @export
 #'
 alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
-    zero.var.adjust = TRUE, n.resample = 10000,
+    zero.div.adjust = TRUE, n.resample = 10000,
     method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
@@ -418,7 +461,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     G.a <- length(n.a)
     ans$N.a <- N.a
     ans$G.a <- G.a
-    terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+    terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.div.adjust)
     # V.a.p <- terms.a$V.p
 
     b.vardist <- .diversityTest.directGowerDiag(tab.b)
@@ -427,7 +470,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     G.b <- length(n.b)
     ans$N.b <- N.b
     ans$G.b <- G.b
-    terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+    terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.div.adjust)
     # V.b.p <- terms.b$V.p
 
     c.vardist <- .diversityTest.directGowerDiag(tab.c)
@@ -436,7 +479,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     G.c <- length(n.c)
     ans$N.c <- N.c
     ans$G.c <- G.c
-    terms.c <- .diversityTest.CalcTerms(n.c, c.vardist, zero.var.adjust)
+    terms.c <- .diversityTest.CalcTerms(n.c, c.vardist, zero.div.adjust)
     # V.c.p <- terms.c$V.p
 
     V.a.b.c.p <- (((N.a - G.a) * terms.a$V.p) + 
@@ -468,7 +511,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b.c,
                                         n.g = n.a.b.c,
                                         g.vardist = a.b.c.vardist,
-                                        zero.var.adjust, method, 
+                                        zero.div.adjust, method, 
                                         n.resample)
     ans$n.resample <- n.resample
     ans$resample.method <- method
@@ -508,7 +551,7 @@ alphaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 #'
 NULL
 
-pairwiseMeanTest <- function(tab, ...) UseMethod("pairwiseMeanTest")
+pairwiseMeanTest <- function(a, ...) UseMethod("pairwiseMeanTest")
 
 
 
@@ -573,7 +616,9 @@ pairwiseMeanTest.default <- function(tab, ...)
 
 
 
-#' Plot the result of \code{'pairwiseMeanTest'}
+#' Plot the result of \code{\link{pairwiseMeanTest}}
+#'
+#' @seealso \code{\link{pairwiseMeanTest}}
 #'
 #' @export
 #'
@@ -615,10 +660,23 @@ plot.pairwise_mean_test <- function(result, ...)
 
 #' Test for difference in gamma diversity between two datasets
 #'
-#' @param tab.a First site-by-source table
-#' @param tab.b Second site-by-source table
-#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
-#' with minimum value, see \code{\link{BLAHBLAH}}
+#' The null hypothesis for this tests is that there is no difference in gamma
+#' diversity between the two sets of datasets sites represented in \code{tab.a}
+#' and \code{tab.b}, or \code{adt.a} and \code{adt.b}.  The method for the
+#' initial class \code{\link{divtable}} version of this was described in
+#' Scofield et al. (2012), while that for the allelic extension as class
+#' \code{link{allele_divtables}} was described in Sork \emph{et al}.
+#' (in press).
+#'
+#' @param tab.a Site-by-source table of class \code{\link{divtable}}
+#' @param tab.b Site-by-source table of class \code{\link{divtable}}
+#' @param adt.a Allelic diversity dataset of class
+#' \code{\link{allele_divtables}}
+#' @param adt.b Allelic diversity dataset of class
+#' \code{\link{allele_divtables}}
+#' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
+#' with 0 within-group diversity are assigned a minimum diversity which is
+#' half the empirical diversity possible given the group size
 #' @param n.resample Number of iterations for creation of the null distribution
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
@@ -634,15 +692,27 @@ plot.pairwise_mean_test <- function(result, ...)
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
-# @examples
-#
+#' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
+#' Impact of asymmetric male and female gamete dispersal on allelic 
+#' diversity and spatial genetic structure in valley oak 
+#' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
+#'
+#' @examples
+#'
+#' ## Compare gamma diversity between two datasets
+#' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+#' # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+#' # gt1 <- createAlleleTables(dat1)
+#' # gt2 <- createAlleleTables(dat2)
+#' # gamma.contrast <- gammaContrastTest(gt1, gt2)
+#'
 #' @export
 #'
 #' @name gammaContrastTest
 #'
 NULL
 
-gammaContrastTest <- function(tab.a, tab.b, ...) UseMethod("gammaContrastTest")
+gammaContrastTest <- function(a, b, ...) UseMethod("gammaContrastTest")
 
 
 
@@ -650,7 +720,7 @@ gammaContrastTest <- function(tab.a, tab.b, ...) UseMethod("gammaContrastTest")
 #'
 #' @export
 #"
-gammaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
+gammaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     n.resample = 10000, method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
@@ -678,7 +748,7 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     G.a <- length(n.a)
     ans$N.a <- N.a
     ans$G.a <- G.a
-    terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+    terms.a = .diversityTest.CalcTerms(n.a, a.vardist, zero.div.adjust)
     #cat(sprintf("terms.a$V.p = %f  V.a.tot = %f\n", terms.a$V.p, V.a.tot))
 
     #b.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.b.k))))
@@ -688,7 +758,7 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     G.b <- length(n.b)
     ans$N.b <- N.b
     ans$G.b <- G.b
-    terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+    terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.div.adjust)
     #cat(sprintf("terms.b$V.p = %f  V.b.tot = %f\n", terms.b$V.p, V.b.tot))
 
     # Combine A and B into stratta for comparison
@@ -707,7 +777,7 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.var.adjust = TRUE,
     # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b,
                                         n.g = n.a.b, g.vardist = a.b.vardist,
-                                        zero.var.adjust, method, n.resample)
+                                        zero.div.adjust, method, n.resample)
     ans$n.resample <- n.resample
     ans$resample.method <- method
     ans$quantiles <- quantile(nulldist, test.quantiles)
@@ -738,11 +808,16 @@ gammaContrastTest.default <- function(tab.a, tab.b, ...)
 
 #' Test for difference in gamma diversity among three datasets
 #'
-#' @param tab.a First site-by-source table
-#' @param tab.b Second site-by-source table
-#' @param tab.c Third site-by-source table
-#' @param zero.var.adjust Logical, whether to adjust zero-variance groups
-#' with minimum value, see \code{\link{BLAHBLAH}}
+#' The null hypothesis for this tests is that there is no difference in gamma
+#' diversity between the three datasets in \code{tab.a}, \code{tab.b} and
+#' and \code{tab.c}.  The method was described in Scofield et al. (2012).
+#'
+#' @param tab.a Site-by-source table of class \code{\link{divtable}}
+#' @param tab.b Site-by-source table of class \code{\link{divtable}}
+#' @param tab.c Site-by-source table of class \code{\link{divtable}}
+#' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
+#' with 0 within-group diversity are assigned a minimum diversity which is
+#' half the empirical diversity possible given the group size
 #' @param n.resample Number of iterations for creation of the null distribution
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
@@ -776,7 +851,7 @@ gammaContrastTest3 <- function(tab.a, tab.b, ...)
 #' @export
 #"
 gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
-    zero.var.adjust = TRUE, n.resample = 10000,
+    zero.div.adjust = TRUE, n.resample = 10000,
     method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
@@ -816,7 +891,7 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     G.a <- length(n.a)
     ans$N.a <- N.a
     ans$G.a <- G.a
-    terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.var.adjust)
+    terms.a <- .diversityTest.CalcTerms(n.a, a.vardist, zero.div.adjust)
     #cat(sprintf("terms.a$V.p = %f  V.a.tot = %f\n", terms.a$V.p, V.a.tot))
 
     #b.distmat <- .diversityTest.distmat(X.b.k)
@@ -828,7 +903,7 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     G.b <- length(n.b)
     ans$N.b <- N.b
     ans$G.b <- G.b
-    terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.var.adjust)
+    terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.div.adjust)
     #cat(sprintf("terms.b$V.p = %f  V.b.tot = %f\n", terms.b$V.p, V.b.tot))
 
     #c.distmat <- .diversityTest.distmat(X.c.k)
@@ -840,7 +915,7 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     G.c <- length(n.c)
     ans$N.c <- N.c
     ans$G.c <- G.c
-    terms.c <- .diversityTest.CalcTerms(n.c, c.vardist, zero.var.adjust)
+    terms.c <- .diversityTest.CalcTerms(n.c, c.vardist, zero.div.adjust)
     #cat(sprintf("terms.c$V.p = %f  V.c.tot = %f\n", terms.c$V.p, V.c.tot))
 
     # Combine A B C into stratta for comparison
@@ -861,7 +936,7 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b.c,
                                         n.g = n.a.b.c,
                                         g.vardist = a.b.c.vardist,
-                                        zero.var.adjust, method, n.resample)
+                                        zero.div.adjust, method, n.resample)
     ans$n.resample <- n.resample
     ans$resample.method <- method
     ans$quantiles <- quantile(nulldist, test.quantiles)
@@ -968,12 +1043,12 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 
 
 # Calculate terms of the variance, log-likelihood and degrees of freedom
-.diversityTest.CalcTerms <- function(n.g, g.vardist, zero.var.adjust = TRUE)
+.diversityTest.CalcTerms <- function(n.g, g.vardist, zero.div.adjust = TRUE)
 {
     N <- sum(n.g)
     G <- length(n.g)
     V.g <- unlist(lapply(g.vardist, sum)) / (n.g - 1)
-    if (zero.var.adjust)
+    if (zero.div.adjust)
         V.g <- .diversityTest.ZeroVarAdjust(V.g, n.g)
     # ss.pooled
     V.p <- sum((n.g - 1) * V.g) / (N - G)
@@ -993,7 +1068,7 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 
 # Construct null distribution of the variance
 .diversityTest.NullDist <- function(obs, n.g, g.vardist,
-    zero.var.adjust = TRUE, method = c("bootstrap", "permute"),
+    zero.div.adjust = TRUE, method = c("bootstrap", "permute"),
     n.resample = 10000)
 {
     method <- match.arg(method)
@@ -1011,7 +1086,7 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
             slice <- (cum.n.g[n] - n.g[n] + 1):cum.n.g[n]
             g.vardist[[n]] <- p[slice]
         }
-        terms <- .diversityTest.CalcTerms(n.g, g.vardist, zero.var.adjust)
+        terms <- .diversityTest.CalcTerms(n.g, g.vardist, zero.div.adjust)
         nulldist <- c(nulldist, terms$ln.LR)
     }
     sort(nulldist)
@@ -1022,20 +1097,19 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 # After attempting to use these functions to contrast diversities of OTUs,
 # where counts/site were on the order of 10^5s, it was found to be very slow
 # and require a lot of memory for the distance matrix intermediate, as well as
-# the Gower intermediate.  My first thought was to cut out the generation of
+# the Gower intermediate.  The first thought was to cut out the generation of
 # the entire Gower matrix and just generate the diagonal.  This didn't remove
-# the need for the full distance matrix, so we still had a space issue, but it
+# the need for the full distance matrix, there was still a space issue, but it
 # definitely sped up the calculations.
 #
-# Then I attacked the space issue, and was able to avoid creating the distance
-# matrix completely.  I still calculate a per-site quantity, of course, but I
-# am able to avoid creating even a single complete row, because I am counting
-# 1s and 0s in the row and matrix, which is all the means I need require.
+# Addressing the space issue, we can avoid creating the distance matrix
+# completely.  We still need to calculate a per-site quantity, but never create
+# a complete row, instead we count the 1s and 0s in the row and matrix, which
+# is all that is required to calculate the means.
 #
 # The code below is legacy, containing both the original way of doing things,
 # the diagonal shortcut, and some wrappers used while doing a bit of
 # benchmarking.
-#
 #
 # In the tests, the original method was
 #
@@ -1078,12 +1152,13 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 #     g.distmat <- .diversityTest.distmat(tab)
 #     lapply(g.distmat, .diversityTest.gowerDiag)
 # }
-
-
+#
+# For space, with a total of N items belonging to K sites and G groups, the
+# first method was something like O(2*N^2), while the diagonal method was
+# O(N+N^2) and the new method is O(K).
 
 # Construct a 0-1 distance matrix from the site x group matrix, each
-# entry is 1 of the group is identical and 0 if it is not.  This is
-# represented efficiently.
+# entry is 1 of the group is identical and 0 if it is not.
 #
 .diversityTest.distmat <- function(tab, group = dimnames(tab)[[1]],
                                    drop = TRUE)

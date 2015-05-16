@@ -5,14 +5,14 @@
 \alias{gammaContrastTest.allele_divtables}
 \alias{gammaContrastTest.default}
 \alias{gammaContrastTest.divtable}
-\title{Test for difference in gamma diversity between two allele diversity datasets}
+\title{Test for difference in gamma diversity between two datasets}
 \usage{
-\method{gammaContrastTest}{allele_divtables}(lst.a, lst.b,
-  zero.var.adjust = TRUE, n.resample = 10000, method = c("bootstrap",
+\method{gammaContrastTest}{allele_divtables}(adt.a, adt.b,
+  zero.div.adjust = TRUE, n.resample = 10000, method = c("bootstrap",
   "permute"), test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99,
   0.999))
 
-\method{gammaContrastTest}{divtable}(tab.a, tab.b, zero.var.adjust = TRUE,
+\method{gammaContrastTest}{divtable}(tab.a, tab.b, zero.div.adjust = TRUE,
   n.resample = 10000, method = c("bootstrap", "permute"),
   test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
   ...)
@@ -20,14 +20,15 @@
 \method{gammaContrastTest}{default}(tab.a, tab.b, ...)
 }
 \arguments{
-\item{lst.a}{Allele diveristy dataset, a list, one entry per locus, of
-              site x allele counts. Each table must have the same format.}
+\item{adt.a}{Allelic diversity dataset of class
+\code{\link{allele_divtables}}}
 
-\item{lst.b}{Allele diveristy dataset, a list, one entry per locus, of
-              site x allele counts. Each table must have the same format.}
+\item{adt.b}{Allelic diversity dataset of class
+\code{\link{allele_divtables}}}
 
-\item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
-with minimum value, see \code{\link{BLAHBLAH}}}
+\item{zero.div.adjust}{Logical, if \code{TRUE} (the default), then groups
+with 0 within-group diversity are assigned a minimum diversity which is
+half the empirical diversity possible given the group size}
 
 \item{n.resample}{Number of iterations for creation of the null distribution}
 
@@ -35,26 +36,24 @@ with minimum value, see \code{\link{BLAHBLAH}}}
 distribution iterations with (\code{"bootstrap"}) or without
 (\code{"permute"}) replacement}
 
-\item{tab.a}{First site-by-source table}
+\item{tab.a}{Site-by-source table of class \code{\link{divtable}}}
 
-\item{tab.b}{Second site-by-source table}
-
-\item{\dots}{Additional parameters}
+\item{tab.b}{Site-by-source table of class \code{\link{divtable}}}
 }
 \value{
-Fill this in
-
 Class \code{diversity_test} object with the result of the test
 }
 \description{
-From Sork et al., extensions of those from Scofield et al. 2012 American
-Naturalist 180(6) 719-732, http://www.jstor.org/stable/10.1086/668202).
-
-Test for difference in gamma diversity between two datasets
+The null hypothesis for this tests is that there is no difference in gamma
+diversity between the two sets of datasets sites represented in \code{tab.a}
+and \code{tab.b}, or \code{adt.a} and \code{adt.b}.  The method for the
+initial class \code{\link{divtable}} version of this was described in
+Scofield et al. (2012), while that for the allelic extension as class
+\code{link{allele_divtables}} was described in Sork \emph{et al}.
+(in press).
 }
 \examples{
-# For comparing allele diversity between two different samples:
-
+## Compare gamma diversity between two datasets
 # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
 # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
 # gt1 <- createAlleleTables(dat1)
@@ -65,6 +64,11 @@ Test for difference in gamma diversity between two datasets
 Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
 Use of alpha, beta and gamma diversity measures to characterize seed
 dispersal by animals.  \emph{American Naturalist} 180:719-732.
+
+Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
+Impact of asymmetric male and female gamete dispersal on allelic
+diversity and spatial genetic structure in valley oak
+(\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 }
 \seealso{
 \code{\link{gammaContrastTest3}}, \code{\link{alphaContrastTest}}

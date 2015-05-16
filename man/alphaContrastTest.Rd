@@ -5,22 +5,29 @@
 \alias{alphaContrastTest.allele_divtables}
 \alias{alphaContrastTest.default}
 \alias{alphaContrastTest.divtable}
-\title{Test for differences in alpha diversity between two allele diversity datasets}
+\title{Test for differences in alpha diversity between two data sets}
 \usage{
-\method{alphaContrastTest}{allele_divtables}(lst.a, lst.b,
-  zero.var.adjust = TRUE, n.resample = 10000, method = c("bootstrap",
+\method{alphaContrastTest}{allele_divtables}(adt.a, adt.b,
+  zero.div.adjust = TRUE, n.resample = 10000, method = c("bootstrap",
   "permute"), test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99,
   0.999))
 
-\method{alphaContrastTest}{divtable}(tab.a, tab.b, zero.var.adjust = TRUE,
+\method{alphaContrastTest}{divtable}(tab.a, tab.b, zero.div.adjust = TRUE,
   n.resample = 10000, method = c("bootstrap", "permute"),
   test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 
 \method{alphaContrastTest}{default}(tab.a, tab.b, ...)
 }
 \arguments{
-\item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
-with minimum value, see \code{\link{BLAHBLAH}}}
+\item{adt.a}{Allelic diversity dataset of class
+\code{\link{allele_divtables}}}
+
+\item{adt.b}{Allelic diversity dataset of class
+\code{\link{allele_divtables}}}
+
+\item{zero.div.adjust}{Logical, if \code{TRUE} (the default), then groups
+with 0 within-group diversity are assigned a minimum diversity which is
+half the empirical diversity possible given the group size}
 
 \item{n.resample}{Number of iterations for creation of the null distribution}
 
@@ -28,23 +35,24 @@ with minimum value, see \code{\link{BLAHBLAH}}}
 distribution iterations with (\code{"bootstrap"}) or without
 (\code{"permute"}) replacement}
 
-\item{tab.a}{First ite x soure table}
+\item{tab.a}{Site-by-source table of class \code{\link{divtable}}}
 
-\item{tab.b}{Second site x soure table}
+\item{tab.b}{Site-by-source table of class \code{\link{divtable}}}
 }
 \value{
-An \code{'htest_boot'} object with the result of the test. The
-test also prints the result, so perhaps I should modify it to only
-return the htest_boot object?  Or should it return a different object?
+An \code{diversity_test} object with the result of the test
 }
 \description{
-From Sork et al. (2015), extending methods developed in Scofield et al.
-(2012).
-
-Test for differences in alpha diversity between two data sets
+The null hypothesis for this tests is that there is no difference in alpha
+diversity between the two sets of datasets sites represented in \code{tab.a}
+and \code{tab.b}, or \code{adt.a} and \code{adt.b}.  The method for the
+initial class \code{\link{divtable}} version of this was described in
+Scofield et al. (2012), while that for the allelic extension as class
+\code{link{allele_divtables}} was described in Sork \emph{et al}.
+(In press).
 }
 \examples{
-# For comparing allele diversity between two different samples:
+## Comparing allele diversity between two different samples:
 
 # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
 # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
@@ -53,22 +61,16 @@ Test for differences in alpha diversity between two data sets
 # alpha.contrast <- alphaContrastTest(gt1, gt2)
 }
 \references{
-Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (Submitted)
+Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+Use of alpha, beta and gamma diversity measures to characterize seed
+dispersal by animals.  \emph{American Naturalist} 180:719-732.
+
+Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
 Impact of asymmetric male and female gamete dispersal on allelic
 diversity and spatial genetic structure in valley oak
-(\emph{Quercus lobata} N\'{e}e).
-
-Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-Use of alpha, beta and gamma diversity measures to characterize seed
-dispersal by animals.  \emph{American Naturalist} 180:719-732.
-
-Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
-Use of alpha, beta and gamma diversity measures to characterize seed
-dispersal by animals.  \emph{American Naturalist} 180:719-732.
+(\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 }
 \seealso{
-\code{\link{alphaContrastTest}}
-
 \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest3}}
 }
 

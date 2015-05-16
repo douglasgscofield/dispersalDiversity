@@ -7,21 +7,22 @@
 \title{Test for differences in alpha diversity between three data sets}
 \usage{
 \method{alphaContrastTest3}{divtable}(tab.a, tab.b, tab.c,
-  zero.var.adjust = TRUE, n.resample = 10000, method = c("bootstrap",
+  zero.div.adjust = TRUE, n.resample = 10000, method = c("bootstrap",
   "permute"), test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99,
   0.999), ...)
 
 \method{alphaContrastTest3}{default}(tab.a, tab.b, tab.c, ...)
 }
 \arguments{
-\item{tab.a}{First site-by-source table}
+\item{tab.a}{First site-by-source table, of class \code{\link{divtable}}}
 
-\item{tab.b}{Second site-by-source table}
+\item{tab.b}{Second site-by-source table, of class \code{\link{divtable}}}
 
-\item{tab.c}{Third site-by-source table}
+\item{tab.c}{Third site-by-source table, of class \code{\link{divtable}}}
 
-\item{zero.var.adjust}{Logical, whether to adjust zero-variance groups
-with minimum value, see \code{\link{BLAHBLAH}}}
+\item{zero.div.adjust}{Logical, if \code{TRUE} (the default), then groups
+with 0 within-group diversity are assigned a minimum diversity which is
+half the empirical diversity possible given the group size}
 
 \item{n.resample}{Number of iterations for creation of the null distribution}
 
@@ -30,12 +31,22 @@ distribution iterations with (\code{"bootstrap"}) or without
 (\code{"permute"}) replacement}
 }
 \value{
-An \code{'htest_boot'} object with the result of the test. The
-test also prints the result, so perhaps I should modify it to only
-return the htest_boot object?  Or should it return a different object?
+An \code{diversity_test} object with the result of the test
 }
 \description{
-Test for differences in alpha diversity between three data sets
+The null hypothesis for this tests is that there is no difference in alpha
+diversity between the three sets of datasets sites represented in \code{tab}
+and \code{tab}, or or \code{adt.a} and \code{adt.b}.  The method for the
+initial class \code{\link{divtable}} version of this was described in
+Scofield et al. (2012), while the allelic (class
+\code{link{allele_divtables}} extension was described in Sork \emph{et al}.
+(In press).
+}
+\details{
+The null hypothesis for this tests is that there is no difference in alpha
+diversity between the three sets of datasets sites represented in
+\code{tab.a}, \code{tab.b} and \code{tab.c}.  The method was described in
+Scofield et al. (2012).
 }
 \references{
 Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
