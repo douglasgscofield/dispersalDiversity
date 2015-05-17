@@ -13,21 +13,26 @@ variety of measures; calculating alpha, beta, delta/omega and gamma diversity
 of allelic variation; and comparing diversity measures between samples.
 }
 \details{
-A similar set of functions provides analyses of two similar dispersal data
-sets.  The first is ecological sites-by-counts data, and in this context the
-alpha, beta and gamma quantities produced should be similar.  The second is
-genetic data such as allele identities, which is analysed to partition
-diversity into a structure similar to alpha, beta etc.  See Sork et al.
+A similar set of functions provides analyses for individual and genetic
+diversity of data held within one of two data set structures.  The first is
+sites-by-counts data, with counts being of species, parents, haplotypes,
+etc., and is held within a table of class \code{\link{divtable}}.  The
+methods underlying these analyses are described in Scofield \emph{et al}.
+(2012).  The second dataset is of class \code{\link{allele_divtables}}, which
+is a list of \code{\link{divtable}} tables containing sites-by-alleles counts
+individual loci.  These data are analysed with extensions of the Scofield
+\emph{et al}. methods as described in Sork \emph{et al}. (In press).
 
 The function \code{createAlleleTables} accepts an argument of class
-\code{'genalex'} and creates an object of class \code{'allele_tables'}, a
+\code{genalex} and creates an object of class \code{allele_divtables}, a
 list of site-by-allele count tables, one per locus.  Further analyses may be
-applied to objects of class \code{'allele_tables'}, including structural
+applied to objects of class \code{allele_divtables}, including structural
 tests and comparisons.
-
+}
+\note{
 These statistical tools were developed in collaboration with Peter E.
-Smouse (Rutgers University) and Victoria L. Sork (UCLA) and were funded by
-U.S. National Science Foundation awards NSF-DEB-0514956 and
+Smouse (Rutgers University) and Victoria L. Sork (UCLA) and were funded
+in part by U.S. National Science Foundation awards NSF-DEB-0514956 and
 NSF-DEB-0516529.
 }
 \references{
@@ -53,10 +58,10 @@ Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
 Use of alpha, beta and gamma diversity measures to characterize seed
 dispersal by animals.  \emph{American Naturalist} 180:719-732.
 
-Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G.  Impact of
-asymmetric male and female gamete dispersal on allelic diversity and
-spatial genetic structure in valley oak (\emph{Quercus lobata} N\'{e}e).
-\emph{In revision}.
+Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G.  (In press)
+Impact of asymmetric male and female gamete dispersal on allelic diversity
+and spatial genetic structure in valley oak (\emph{Quercus lobata} N\'{e}e).
+\emph{Evolutionary Ecology}.
 
 \url{https://github.com/douglasgscofield/dispersalDiversity}
 }

@@ -1,3 +1,7 @@
+# print method
+# plot method
+
+
 #' List of divtables holding allele diversity data
 #'
 #' An object of class \code{allele_divtables} is a list of 

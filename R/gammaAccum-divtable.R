@@ -97,59 +97,94 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
 
 
 
-#' Perform gamma diversity accumulation on site-by-source data
+#' Perform gamma diversity accumulation on \code{divtable} or \code{allele_divtables} objects
+
+# Perform a gamma diversity accumulation on site-by-source data in \code{tab}, an object of class \code{\link{divtable}}, or a set of site-by-alleles count data for several loci, an object of classs \code{\link{allele_divtables}}.
+# Several arguments control the method of accumulation and value of gamma
+# calculated.  Only the defaults have been tested; the others were developed
+# while exploring the data and must be considered experimental.  The result is
+# returned in a list, which may be passed to \code{plotGammaAccum} to plot the
+# result.
+
+#' @param tab    Site-by-source table of class \code{\link{divtable}}
 #'
-#' Perform a gamma diversity accumulation on the site-by-source data in tab.
-#' Several arguments control the method of accumulation and value of gamma
-#' calculated.  Only the defaults have been tested; the others were developed
-#' while exploring the data and must be considered experimental.  The result is
-#' returned in a list, which may be passed to \code{plotGammaAccum} to plot the
-#' result.
-#'
-#' @param tab           Site-by-source table, as passed to diversity()
+#' @param adt    Allele diversity dataset of class
+#' \code{\link{allele_divtables}}
 #'
 #' @param resample.method  \code{"permute"} (default) or \code{"bootstrap"}.
 #' Whether to resample sites without replacement (\code{"permute"}) or with
 #' replacement (\code{"bootstrap"}).
 #'
-#' @param gamma.method Calculate gamma using \code{"r"} (default),
-#' \code{"q"} or \code{"q.nielsen"} method (see paper).
+#' @param n.resample Number of resamples for accumulation curve
 #'
-#' @param \dots Additional parameters passed to \code{runGammaAccumSimple}
+#' @param gamma.method Calculate gamma using \code{"q"} (default for class
+#' \code{\link{divtable}}), \code{"r"} (default for class
+#' \code{\link{allele_divtables}}) or \code{"q.nielsen"} method
 #'
-#' TODO does runGammaAccumSimple need to be exposed?  does it need more options?
+#' @param \dots Additional parameters, currently unused
 #'
+#' @note Only the defaults have been tested; other options were developed while
+#' exploring the data and must be considered experimental.
+#'
+#' @references
+#'
+#' Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+#' Use of alpha, beta and gamma diversity measures to characterize seed
+#' dispersal by animals.  \emph{American Naturalist} 180:719-732.
+#'
+#' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
+#' Impact of asymmetric male and female gamete dispersal on allelic 
+#' diversity and spatial genetic structure in valley oak 
+#' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 #'
 #' @seealso \code{\link{plot.gamma_accum}}, \code{\link{runGammaAccumSimple}}
 #'
 #' @examples
 #'
-#' ##TODO get examples
+#' ## get more examples
+#' #dat <- readGenalex("genotypes.txt")
+#' #adt <- createAlleleTables(dat)
+#' #allele.rga.result <- gammaAccum(adt)
+#' #plot(allele.rga.result)
 #'
+#' @export
+#'
+#' @name gammaAccum
+#'
+NULL
+
+gammaAccum <- function(x, ...) UseMethod("gammaAccum")
+
+
+
 #' @rdname gammaAccum
 #'
 #' @export
 #'
 gammaAccum.divtable <- function(tab, 
-    resample.method = c("permute", "bootstrap"),
-    gamma.method = c("r", "q.nielsen", "q"),
-    ...)
+    resample.method = c("permute", "bootstrap"), n.resample = 1000,
+    gamma.method = c("q", "r", "q.nielsen"), ...)
 {
     resample.method <- match.arg(resample.method)
     gamma.method <- match.arg(gamma.method)
-    pmiD <- diversity(tab)
+    d <- diversity(tab)
     ans <- list()
     #TODO: account for new diversity return value?
-    ans$obs.gamma <- pmiD[[paste(sep="", "d.gamma.", gamma.method)]]
-    ans$obs.omega.mean <- pmiD[[paste(sep="", gamma.method, ".overlap")]]
-    ans$obs.delta.mean <- pmiD[[paste(sep="", gamma.method, ".divergence")]]
+    ans$obs.gamma <- d[[paste(sep="", "d.gamma.", gamma.method)]]
+    ans$obs.omega.mean <- d[[paste(sep="", gamma.method, ".overlap")]]
+    ans$obs.delta.mean <- d[[paste(sep="", gamma.method, ".divergence")]]
     ans$simple.results <- runGammaAccumSimple.divtable(tab,
-        resample.method = resample.method, gamma.method = gamma.method, ...)
+        resample.method = resample.method, gamma.method = gamma.method)
     structure(ans, class = c('gamma_accum', 'list'))
 }
 
 
 
+gammaAccumSimple <- function(x, ...) UseMethod("gammaAccumSimple")
+
+
+# .allele_divtables method in gammaAccum-allele_divtables.R
+#
 gammaAccumSimple.divtable <- function(tab, ...)
 {
     return(gammaAccumStats(gammaAccumWorker.divtable(tab, ...)))
@@ -175,6 +210,10 @@ gammaAccumStats <- function(ga)
 
 
 
+gammaAccumWorker <- function(x, ...) UseMethod("gammaAccumWorker")
+
+# .allele_divtables method in gammaAccum-allele_divtables.R
+#
 gammaAccumWorker.divtable <- function(tab, n.sites=dim(tab)[1],
     n.resample=1000, resample.method=c("permute", "bootstrap"),
     gamma.method=c("r", "q.nielsen", "q"), ...)

@@ -27,6 +27,7 @@
 #' See Thompson \emph{et al}. (2014) for more study details.
 #'
 #' @references
+#'
 #' Thompson, P. G., Smouse, P. E., Scofield, D. G. and Sork, V. L. (2014)
 #' What seeds tell us about birds: a multi-year analysis of acorn woodpecker
 #' foraging movements.  \emph{Movement Ecology} 2:12.
@@ -73,6 +74,7 @@ NULL
 #' See Thompson \emph{et al}. (2014) for more study details.
 #'
 #' @references
+#'
 #' Thompson, P. G., Smouse, P. E., Scofield, D. G. and Sork, V. L. (2014)
 #' What seeds tell us about birds: a multi-year analysis of acorn woodpecker
 #' foraging movements.  \emph{Movement Ecology} 2:12.
