@@ -33,7 +33,6 @@ TODO for dispersalDiversity
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
 * Define `print` and `plot` methods for `allele_divtables`
 * Am I happy with `print.divtable` and `plot.divtable` methods?
-* Separate doc for `diversity` class
 * finish pooled PMI description in `diversity`
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
@@ -41,14 +40,15 @@ TODO for dispersalDiversity
 * sort out reverseTerms stuff
 * reverseTerms especially with empirical PVAL calculation with pchisq
 * make allele diversity function returns match `pmiDiversity` function returns
-* expand documentation for `nielsenTransform`
 * Get data permission from VLS
 * Tests
 
 Completed
 ---------
 
-* `membershipPlot` has the `method` argument removed along with the production of pie plots
+* The `divtable` and `allele_divtables` classes have separate documentation
+* Export and document the `nielsenTransform` function
+* Production of pie plots and the `method` argument are removed from `membershipPlot`
 * Optimisation of Gower distance matrix diagonal generation
 * Removed `accum.method` and `distance.file` arguments from `gammaAccum` functions.  The `proximity` method was never well thought through; a proximity-based method could be valuable but not in the way it was implemented here.
 * For alpha and gamma diversity tests, all return class `'diversity_test'` object which is handled by common `print.diversity_test` and `plot.diversity_test` methods
@@ -57,7 +57,7 @@ Completed
 * For allelic data, new class `allele_divtables`, which is shared with `list` and is a list of `divtable` objects for each locus
 * Quantiles checked are now richer and symmetric
 * Renamed `allele.createTableList` to S3 generic and method `createAlleleTables` and `createAlleleTables.genalex`.  Added the synonym generic `as.allele_divtables`.
-* Started streamlining with S3 classes.
+* Stabilised function interfaces using S3 classes.
 * Incorporated random distance matrix creation in to README.
 * Changes function name of `pmiDiversity` to `diversity`
 * For data, added 2002 and 2004 granary assignments for *Q. lobata*

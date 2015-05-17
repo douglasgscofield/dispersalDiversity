@@ -1,5 +1,14 @@
 #' Transform vector of squared frequencies using the method of Nielsen et al. (2003)
 #'
+#' Inverses of squared frequencies are commonly used to estimate so-called
+#' effective numbers of mates, alleles etc., but these estimates are subject
+#' to bias especially at low sample sizes.  The common method of handling
+#' low sample sizes (the \code{r} estimates provided here) involve a
+#' subtraction of 1 from observed counts and produce no values for 1-sized
+#' groups.  This function starts with squared frequencies and group sizes
+#' and transforms them into approximately unbiased estimates using the 
+#' method described by Nielsen \emph{et al}. (2003).
+#'
 #' @param q.gg Vector of squared frequencies
 #'
 #' @param n.g Vector with group size for each element of \code{q.gg}
