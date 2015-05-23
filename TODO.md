@@ -33,7 +33,6 @@ TODO for dispersalDiversity
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
 * Define `print` and `plot` methods for `allele_divtables`
 * Am I happy with `print.divtable` and `plot.divtable` methods?
-* finish pooled PMI description in `diversity`
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
 * Incorporate weighted means and variances equations from Scofield et al. 2011
@@ -46,6 +45,7 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* The pooled PMI values returned by `diversity` are documented
 * The `divtable` and `allele_divtables` classes have separate documentation
 * Export and document the `nielsenTransform` function
 * Production of pie plots and the `method` argument are removed from `membershipPlot`
