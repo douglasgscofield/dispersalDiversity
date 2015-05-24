@@ -61,6 +61,7 @@ install.package("RColorBrewer")
 ```
 
 
+
 Input requirements
 ------------------
 
@@ -78,7 +79,7 @@ To create a random matrix:
 ```R
 n.sites <- 5
 n.sources <- 10
-n.samples <- 1000
+n.samples <- 120
 ## data frame of site-source pairs
 t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
                 source = round(runif(n.samples) * n.sources + 0.5))
@@ -108,7 +109,7 @@ Membership plots provide a visual representation of the site-by-source table.
 
 ![membershipPlot output in black and white](membershipPlot_example_BW.png)
 
-If `fill.method = "color"` and the library `RColorBrewer` is available, then
+If `fill.method = "colour"` and the library `RColorBrewer` is available, then
 it is used to pick the colours used for filling groups.
 
 ![membershipPlot output in colour](membershipPlot_example_colour.png)

@@ -106,12 +106,11 @@ membershipPlot.default <- function(tab, ...)
 membershipPlot.divtable <- function(tab,
     fill.method = c("colour", "bw", "color"), fill.palette = "Dark2",
     distinguish.multiton = FALSE, xlab = "Site", ylab = "Membership",
-    las = 1, x.mar.width = ifelse(las >= 2, 4, 3), 
-    cex = 0.7, header.cex = 0.9, cex.names = 0.85, 
-    l1 = NULL, l2 = NULL, file = NULL, file.dim = c(5.25, 2), 
+    las = 1, x.mar.width = ifelse(las >= 2, 4, 3), cex = 0.7,
+    header.cex = 0.9, cex.names = 0.85, l1 = NULL, l2 = NULL,
+    file = NULL, file.dim = c(5.25, 2),
     ...)
 {
-    method <- match.arg(method)
     fill.method <- match.arg(fill.method)
     if (fill.method == "color") fill.method <- "colour"
     
@@ -126,7 +125,6 @@ membershipPlot.divtable <- function(tab,
     fill.colours <- rep("", nrow(tab))
     names(fill.colours) <- rownames(tab)
     n.types <- apply(tab, 1, sum)
-    # names(n.types) <- rownames(tab)  # this should already be true
     n.types <- rev(sort(n.types))
     tab <- tab[names(n.types), , drop = FALSE]
     # Number of sites in which each type can be found

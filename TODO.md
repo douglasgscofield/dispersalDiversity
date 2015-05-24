@@ -37,7 +37,7 @@ TODO for dispersalDiversity
 * Incorporate weighted means and variances equations from Scofield et al. 2011
 * sort out reverseTerms stuff
 * reverseTerms especially with empirical PVAL calculation with pchisq
-* make allele diversity function returns match `pmiDiversity` function returns
+* make `diversityMultilocus` function returns match `diversity` function returns
 * Get data permission from VLS
 * Tests
 
