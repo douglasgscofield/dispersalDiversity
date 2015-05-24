@@ -6,7 +6,7 @@ NULL
 
 #' Plot the gamma accumulation result from \code{gammaAccum}
 #'
-#' For an example of its use see Figure 4D-F of Scofield et al. (2012).
+#' For an example of its use see Figure 4D-F of Scofield \emph{et al}. (2012).
 #'
 #' @param g  Object of class \code{'gamma_accum'} returned by
 #' \code{\link{gammaAccum}}
@@ -45,9 +45,23 @@ NULL
 #'
 #' @examples
 #'
-#' ##TODO: find a tab
-#' #rga.result = gammaAccum(tab)
-#' #plot(rga.result)
+#' ## generate random divtable
+#' n.sites <- 5
+#' n.sources <- 10
+#' n.samples <- 160
+#' set.seed(75333)
+#' t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+#'                 source = round(runif(n.samples) * n.sources + 0.5))
+#' tab <- as.divtable(table(t))
+#' ## generate gamma accumulation results
+#' rga.result = gammaAccum(tab)
+#' ## plot gamma accumulation curve
+#' plot(rga.result)
+#' ## generate random allele_divtables
+#' ##
+#' ## plot gamma accumulation curve for allele data
+#' ##
+#'
 #'
 #' @seealso \code{\link{gammaAccum}}
 #'
@@ -98,14 +112,16 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
 
 
 #' Perform gamma diversity accumulation on \code{divtable} or \code{allele_divtables} objects
-
-# Perform a gamma diversity accumulation on site-by-source data in \code{tab}, an object of class \code{\link{divtable}}, or a set of site-by-alleles count data for several loci, an object of classs \code{\link{allele_divtables}}.
-# Several arguments control the method of accumulation and value of gamma
-# calculated.  Only the defaults have been tested; the others were developed
-# while exploring the data and must be considered experimental.  The result is
-# returned in a list, which may be passed to \code{plotGammaAccum} to plot the
-# result.
-
+#'
+#' Perform a gamma diversity accumulation on site-by-source data in \code{tab},
+#' an object of class \code{\link{divtable}}, or a set of site-by-alleles count
+#' data for several loci, an object of classs \code{\link{allele_divtables}}.
+#' Several arguments control the method of accumulation and value of gamma
+#' calculated.  Only the defaults have been tested; the others were developed
+#' while exploring the data and must be considered experimental.  The result is
+#' returned in a list, which may be passed to \code{plotGammaAccum} to plot the
+#' result.
+#'
 #' @param tab    Site-by-source table of class \code{\link{divtable}}
 #'
 #' @param adt    Allele diversity dataset of class
@@ -137,15 +153,24 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
 #' diversity and spatial genetic structure in valley oak 
 #' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 #'
-#' @seealso \code{\link{plot.gamma_accum}}, \code{\link{runGammaAccumSimple}}
+#' @seealso \code{\link{plot.gamma_accum}}, \code{\link{gammaAccumSimple}}
 #'
 #' @examples
 #'
-#' ## get more examples
-#' #dat <- readGenalex("genotypes.txt")
-#' #adt <- createAlleleTables(dat)
-#' #allele.rga.result <- gammaAccum(adt)
-#' #plot(allele.rga.result)
+#' ## generate random divtable
+#' n.sites <- 5
+#' n.sources <- 10
+#' n.samples <- 160
+#' set.seed(75333)
+#' t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+#'                 source = round(runif(n.samples) * n.sources + 0.5))
+#' tab <- as.divtable(table(t))
+#' ## generate gamma accumulation results
+#' rga.result = gammaAccum(tab)
+#'
+#' ## generate random allele_divtables
+#' ##
+#' ##
 #'
 #' @export
 #'
@@ -170,10 +195,10 @@ gammaAccum.divtable <- function(tab,
     d <- diversity(tab)
     ans <- list()
     #TODO: account for new diversity return value?
-    ans$obs.gamma <- d[[paste(sep="", "d.gamma.", gamma.method)]]
-    ans$obs.omega.mean <- d[[paste(sep="", gamma.method, ".overlap")]]
-    ans$obs.delta.mean <- d[[paste(sep="", gamma.method, ".divergence")]]
-    ans$simple.results <- runGammaAccumSimple.divtable(tab,
+    ans$obs.gamma <- d[[gamma.method]][["d.gamma"]]
+    ans$obs.omega.mean <- d[[gamma.method]][["overlap"]]
+    ans$obs.delta.mean <- d[[gamma.method]][["divergence"]]
+    ans$simple.results <- gammaAccumSimple.divtable(tab,
         resample.method = resample.method, gamma.method = gamma.method)
     structure(ans, class = c('gamma_accum', 'list'))
 }
@@ -216,7 +241,7 @@ gammaAccumWorker <- function(x, ...) UseMethod("gammaAccumWorker")
 #
 gammaAccumWorker.divtable <- function(tab, n.sites=dim(tab)[1],
     n.resample=1000, resample.method=c("permute", "bootstrap"),
-    gamma.method=c("r", "q.nielsen", "q"), ...)
+    gamma.method=c("q", "r", "q.nielsen"), ...)
 {
     resample.method <- match.arg(resample.method)
     gamma.method <- match.arg(gamma.method)

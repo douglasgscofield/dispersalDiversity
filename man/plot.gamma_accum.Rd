@@ -43,12 +43,25 @@ see \code{?pch}}
 Nothing returned
 }
 \description{
-For an example of its use see Figure 4D-F of Scofield et al. (2012).
+For an example of its use see Figure 4D-F of Scofield \emph{et al}. (2012).
 }
 \examples{
-##TODO: find a tab
-#rga.result = gammaAccum(tab)
-#plot(rga.result)
+## generate random divtable
+n.sites <- 5
+n.sources <- 10
+n.samples <- 160
+set.seed(75333)
+t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+                source = round(runif(n.samples) * n.sources + 0.5))
+tab <- as.divtable(table(t))
+## generate gamma accumulation results
+rga.result = gammaAccum(tab)
+## plot gamma accumulation curve
+plot(rga.result)
+## generate random allele_divtables
+##
+## plot gamma accumulation curve for allele data
+##
 }
 \references{
 Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)

@@ -7,7 +7,7 @@
 \title{Perform gamma diversity accumulation on \code{divtable} or \code{allele_divtables} objects}
 \usage{
 \method{gammaAccum}{allele_divtables}(adt, resample.method = c("permute",
-  "bootstrap"), n.resample = 1000, gamma.method = c("r", "q.nielsen", "q"),
+  "bootstrap"), n.resample = 1000, gamma.method = c("q", "r", "q.nielsen"),
   ...)
 
 \method{gammaAccum}{divtable}(tab, resample.method = c("permute",
@@ -33,18 +33,34 @@ replacement (\code{"bootstrap"}).}
 \item{\dots}{Additional parameters, currently unused}
 }
 \description{
-Perform gamma diversity accumulation on \code{divtable} or \code{allele_divtables} objects
+Perform a gamma diversity accumulation on site-by-source data in \code{tab},
+an object of class \code{\link{divtable}}, or a set of site-by-alleles count
+data for several loci, an object of classs \code{\link{allele_divtables}}.
+Several arguments control the method of accumulation and value of gamma
+calculated.  Only the defaults have been tested; the others were developed
+while exploring the data and must be considered experimental.  The result is
+returned in a list, which may be passed to \code{plotGammaAccum} to plot the
+result.
 }
 \note{
 Only the defaults have been tested; other options were developed while
 exploring the data and must be considered experimental.
 }
 \examples{
-## get more examples
-#dat <- readGenalex("genotypes.txt")
-#adt <- createAlleleTables(dat)
-#allele.rga.result <- gammaAccum(adt)
-#plot(allele.rga.result)
+## generate random divtable
+n.sites <- 5
+n.sources <- 10
+n.samples <- 160
+set.seed(75333)
+t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
+                source = round(runif(n.samples) * n.sources + 0.5))
+tab <- as.divtable(table(t))
+## generate gamma accumulation results
+rga.result = gammaAccum(tab)
+
+## generate random allele_divtables
+##
+##
 }
 \references{
 Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
@@ -57,6 +73,6 @@ diversity and spatial genetic structure in valley oak
 (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 }
 \seealso{
-\code{\link{plot.gamma_accum}}, \code{\link{runGammaAccumSimple}}
+\code{\link{plot.gamma_accum}}, \code{\link{gammaAccumSimple}}
 }
 

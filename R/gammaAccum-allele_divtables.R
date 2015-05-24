@@ -11,7 +11,7 @@ NULL
 #'
 gammaAccum.allele_divtables <- function(adt, 
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
-    gamma.method = c("r", "q.nielsen", "q"), ...)
+    gamma.method = c("q", "r", "q.nielsen"), ...)
 {
     accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)
@@ -40,7 +40,7 @@ gammaAccumSimple.allele_divtables <- function(adt, ...)
 
 gammaAccumWorker.allele_divtables <- function(adt, n.sites = dim(adt[[1]])[1],
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
-    gamma.method = c("r", "q.nielsen", "q"), ...)
+    gamma.method = c("q", "r", "q.nielsen"), ...)
 {
     accum.method <- match.arg(accum.method)
     resample.method <- match.arg(resample.method)
