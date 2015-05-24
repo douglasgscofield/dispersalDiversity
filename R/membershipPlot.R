@@ -35,14 +35,14 @@
 #'
 #' @param distinguish.multiton   For \code{fill.method = "colour"}, whether 
 #' to distinguish multiton groups (see Description) with grey rather than 
-#' the default white colour.
+#' the default white colour
 #'
-#' @param pdf.file,postscript.file   Filename for output of PDF file, using
-#' \code{\link{pdf}}, or PostScript file, using \code{\link{postscript}}.
-#' file.  Only one can be set.  Either file is produced using the options
-#' \code{onefile = FALSE, paper = "special"}.
+#' @param file   If specified, produce PDF output to \code{file}, using
+#' \code{\link{pdf}}.  Options \code{onefile = FALSE, paper = "special"}
+#' are used.
 #'
-#' @param file.dim   Dimensions of the plot, in inches
+#' @param file.dim   Dimensions of the PDF plot if \code{file} is specified,
+#' in inches
 #'
 #' @param xlab,ylab,las,cex   Plot parameters (see \code{\link{par}}
 #'
@@ -108,22 +108,12 @@ membershipPlot.divtable <- function(tab,
     distinguish.multiton = FALSE, xlab = "Site", ylab = "Membership",
     las = 1, x.mar.width = ifelse(las >= 2, 4, 3), 
     cex = 0.7, header.cex = 0.9, cex.names = 0.85, 
-    l1 = NULL, l2 = NULL,
-    pdf.file = NULL, postscript.file = NULL, file.dim = c(5.25, 2), 
+    l1 = NULL, l2 = NULL, file = NULL, file.dim = c(5.25, 2), 
     ...)
 {
-    .eps <- function(...) {
-        postscript(onefile = FALSE, horizontal = FALSE, paper = "special", ...)
-    }
-    .pdf <- function(...) {
-        pdf(onefile = FALSE, paper = "special", ...)
-    }
-    
     method <- match.arg(method)
     fill.method <- match.arg(fill.method)
     if (fill.method == "color") fill.method <- "colour"
-    stopifnot(is.null(pdf.file) || is.null(postscript.file))
-    to.file <- !is.null(pdf.file) || !is.null(postscript.file)
     
     # data comes in 'backwards' to what we expect when organising for the plot
     tab <- tab[rev(1:nrow(tab)), , drop = FALSE]
@@ -203,16 +193,14 @@ membershipPlot.divtable <- function(tab,
     if (any(abs(apply(tab, 2, sum) - 1) > (.Machine$double.eps^0.5))) 
         stop("didn't scale tab correctly")
     
-    if (to.file) {
-        if (!is.null(pdf.file)) 
-            .pdf(file = pdf.file, 
-                 width = file.dim[1], height = file.dim[2])
-        else .eps(file = postscript.file, 
-                  width = file.dim[1], height = file.dim[2])
+    if (! is.null(file)) {
+        pdf(file = file, width = file.dim[1], height = file.dim[2],
+            onefile = FALSE, paper = "special")
         par(mar = c(x.mar.width, 3, 3, 0), mgp = c(1.9, 0.4, 0), 
             bty = "n", xpd = NA, las = las, tcl = -0.25, cex = cex)
-    } else par(mar = c(x.mar.width, 7, 3, 1), bty = "n", xpd = NA, 
-               las = las)
+    } else {
+        par(mar = c(x.mar.width, 7, 3, 1), bty = "n", xpd = NA, las = las)
+    }
     
     tab <- tab[, rev(1:ncol(tab)), drop = FALSE]
     do.call("barplot", c(list(height = tab, space = 0.3, horiz = FALSE), 
@@ -224,6 +212,6 @@ membershipPlot.divtable <- function(tab,
     if (!is.null(l2)) 
         mtext(l2, at = xl, line = 0.5, cex = header.cex, xpd = NA)
 
-    if (to.file) dev.off()
+    if (! is.null(file)) dev.off()
 }
  

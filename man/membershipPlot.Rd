@@ -12,8 +12,7 @@
   "color"), fill.palette = "Dark2", distinguish.multiton = FALSE,
   xlab = "Site", ylab = "Membership", las = 1, x.mar.width = ifelse(las
   >= 2, 4, 3), cex = 0.7, header.cex = 0.9, cex.names = 0.85, l1 = NULL,
-  l2 = NULL, pdf.file = NULL, postscript.file = NULL, file.dim = c(5.25,
-  2), ...)
+  l2 = NULL, file = NULL, file.dim = c(5.25, 2), ...)
 }
 \arguments{
 \item{tab}{Object of class \code{\link{divtable}} of counts of sites
@@ -42,7 +41,7 @@ choose the base colours to use}
 
 \item{distinguish.multiton}{For \code{fill.method = "colour"}, whether
 to distinguish multiton groups (see Description) with grey rather than
-the default white colour.}
+the default white colour}
 
 \item{xlab,ylab,las,cex}{Plot parameters (see \code{\link{par}}}
 
@@ -56,12 +55,12 @@ the bars in a bar plot}
 \item{l1,l2}{First and second lines of annotation to appear above
 bars in a bar plot}
 
-\item{pdf.file,postscript.file}{Filename for output of PDF file, using
-\code{\link{pdf}}, or PostScript file, using \code{\link{postscript}}.
-file.  Only one can be set.  Either file is produced using the options
-\code{onefile = FALSE, paper = "special"}.}
+\item{file}{If specified, produce PDF output to \code{file}, using
+\code{\link{pdf}}.  Options \code{onefile = FALSE, paper = "special"}
+are used.}
 
-\item{file.dim}{Dimensions of the plot, in inches}
+\item{file.dim}{Dimensions of the PDF plot if \code{file} is specified,
+in inches}
 }
 \value{
 No value is returned

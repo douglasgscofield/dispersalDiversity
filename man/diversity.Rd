@@ -88,9 +88,14 @@ The list also contains the original \code{\link{divtable}} passed to
 Finally, some additional statistics representing pooled PMI measures
 (Scofield \emph{et al}. 2010) are returned:
 \itemize{
-    \item \code{y.gh}
-    \item \code{prop.y.0.gh}
-    \item \code{q.0.gh}
+    \item \code{y.gh}, a pairwise matrix of counts of items in each group
+          from any source that are shared with each other group
+    \item \code{prop.y.0.gh}, a matrix of proportions of items in each
+          group from any source that are shared with each other group,
+          derived from \code{y.gh}
+    \item \code{q.0.gh}, a matrix of probabilities that two items drawn
+          from group g and h are from any of the sources shared between
+          g and h
 }
 }
 \description{

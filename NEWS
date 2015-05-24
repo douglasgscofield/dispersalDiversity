@@ -23,6 +23,8 @@
     package if it is available; the default palette is "Dark2" and this
     can be changed with fill.palette. Also, "colour" is a fill.method
     synonym for "color".
+-   membershipPlot will on option write the plot to a PDF file; the
+    option to write to an EPS file is removed
 -   membershipPlot drops the method argument along with the plotting of
     pie charts
 -   The datasets granaries_2002_Qlob and granaries_2004_Qlob are

@@ -8,6 +8,39 @@
 \method{diversityMultilocus}{allele_divtables}(x, ploidy = 2,
   method = c("r", "q.nielsen", "q"), ...)
 }
+\arguments{
+\item{x}{Allele diversity data contained in an object of class
+\code{\link{allele_divtables}}}
+
+\item{ploidy}{Ploidy of underlying genotypes}
+
+\item{method}{Method to use for calculating diversity statistics.
+See \code{\link{diversity}} and Scofield \emph{et al}. (2012),
+Sort \emph{et al}. (in press).}
+}
+\value{
+ans <- list(q.gg               = q.gg,
+              alpha.gk           = alpha.gk,
+              q.k                = q.k,
+              alpha.k            = alpha.k,
+              q.bar.weighted.a   = q.bar.weighted.a,
+              Q.0.a              = Q.0.a,
+              q.bar.weighted     = q.bar.weighted,
+              alpha.bar.weighted = alpha.bar.weighted,
+              gamma              = gamma,
+              beta               = beta,
+              G                  = G,
+              N                  = N,
+              K                  = K,
+              alpha.scaled       = alpha.scaled,
+              gamma.scaled       = gamma.scaled,
+              beta.scaled        = beta.scaled,
+              q.gh               = q.gh,
+              overlap            = overlap,
+              divergence         = divergence,
+              overlap.mean       = overlap.mean,
+              divergence.mean    = divergence.mean)
+}
 \description{
 Calculate diversity for a set of loci encoded in an object of class
 \code{'allele_tables'} as created with \code{\link{createAlleleTables}},
@@ -20,5 +53,15 @@ library(readGenalex)
 data(Qagr_pericarp_genotypes)
 gt <- createAlleleTables(Qagr_pericarp_genotypes)
 div <- diversityMultilocus(gt)
+}
+\references{
+Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)
+Use of alpha, beta and gamma diversity measures to characterize seed
+dispersal by animals.  \emph{American Naturalist} 180:719-732.
+
+Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
+Impact of asymmetric male and female gamete dispersal on allelic
+diversity and spatial genetic structure in valley oak
+(\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 }
 
