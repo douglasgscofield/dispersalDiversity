@@ -7,7 +7,7 @@
 #' @param x    Pairwise divergence or overlap matrix as found at,
 #' e.g., \code{diversity()$q$diversity.mat}.  Currently, prior to plotting
 #' this matrix has its diagonal and upper triangle zeroed, and is then
-#' rotated prior to passing to \code{\link{lattice::levelplot}}
+#' rotated prior to passing to \code{\link{lattice::levelplot}}.
 #' @param statistic    \code{"divergence"} or \code{"overlap"}, indicating
 #' the statistic being supplied for plotting
 #' @param pairwise.mean    Mean pairwise divergence or overlap as found at,
@@ -39,9 +39,9 @@
 #' @examples
 #'
 #' data(granaries_2002_Qlob)
-#' dv <- diversity(granaries_2002_Qlob)
-#' plotPairwiseMatrix(x = dv$r$divergence.mat, 
-#'                    pairwise.mean = dv$r$divergence, 
+#' d <- diversity(granaries_2002_Qlob)
+#' plotPairwiseMatrix(x = d$r$divergence.mat, 
+#'                    pairwise.mean = d$r$divergence, 
 #'                    statistic = "divergence", 
 #'                    axis.label = "Granary")
 #'
@@ -56,23 +56,24 @@ plotPairwiseMatrix <- function(x, statistic = c("divergence", "overlap"),
     colorkey = list(labels = list(cex = 1.0)),
     at = c(0, 0.01, seq(0.2, 0.8, 0.2), 0.99, 1.0),
     scales = list(draw = FALSE, tck = 0, cex = 0.7, x = list(rot = 90)),
-    axis.label = "Species Pool",
+    axis.label = "Group",
     xlab = list(axis.label, cex=1.0), ylab = list(axis.label, cex=1.0),
     digits = getOption("digits"),
     ...)
 {
-    statistic = match.arg(statistic)
+    stopifnot(is.matrix(x))
+    statistic <- match.arg(statistic)
     # Diagonal is the identity value
     diag(x) <- if (statistic == "divergence") 0 else 1
     # Zeroeing for plotting
     x[upper.tri(x)] <- 0
-    rotateMatrix <- function(mat) t(mat[nrow(mat):1, , drop=FALSE])
+    rotateMatrix <- function(.x) t(.x[nrow(.x):1, , drop = FALSE])
     x = rotateMatrix(x)
     opa <- par(mar = c(0, 0, 0, 5), ps = 10, xpd = NA)
     lp <- lattice::levelplot(x, bty = bty, aspect = aspect, 
         regions = TRUE, col.regions = col.regions, colorkey = colorkey,
         at = at, scales = scales, xlab = xlab, ylab = ylab, ...)
-    lattice::plot(lp, ...)
+    plot(lp, ...)
     if (! is.null(pairwise.mean)) {
         lims <- lapply(lattice::current.panel.limits(), round)
         rr <- abs(sapply(lims, diff))
