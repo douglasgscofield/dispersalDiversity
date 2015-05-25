@@ -33,7 +33,7 @@
 #' foraging movements.  \emph{Movement Ecology} 2:12.
 #' \url{http://www.movementecologyjournal.com/content/2/1/12}
 #'
-#' @format   Matrix with 21 rows and 50 variables.
+#' @format   Matrix with 20 rows and 50 variables.
 #' @author   Douglas G. Scofield \email{douglasgscofield@@gmail.com}
 #' @source   Dataset originates from the lab of Victoria L. Sork
 #'           \email{vlsork@@ucla.edu} and is used with permission.

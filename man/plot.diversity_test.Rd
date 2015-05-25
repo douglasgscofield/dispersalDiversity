@@ -4,9 +4,9 @@
 \alias{plot.diversity_test}
 \title{Plot the result of a diversity test (alpha or gamma)}
 \usage{
-\method{plot}{diversity_test}(x, add.analytic = FALSE, breaks = 50,
-  compress.x = TRUE, compress.ratio = 1.2, xlab = "ln(LR) value",
-  ylab = "Frequency", main = x$method, legend.text = "Observed ln(LR) = ",
+\method{plot}{diversity_test}(x, breaks = 50, compress.x = TRUE,
+  compress.ratio = 1.2, xlab = "ln(LR) value", ylab = "Frequency",
+  main = x$method, legend.text = "Observed ln(LR) = ",
   digits = getOption("digits"), ...)
 }
 \arguments{
@@ -14,9 +14,6 @@
 \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
 \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
 \code{\link{gammaContrastTest3}}}
-
-\item{add.analytic}{Logical, if \code{TRUE} a curve of the \eqn{\Chi^2}
-distribution with the appropriate degrees of freedom is added to the plot}
 
 \item{breaks}{Number of breaks to use when plotting the histogram of
 the empirical distribution, passed to \code{\link{hist(..., plot = FALSE)}}}

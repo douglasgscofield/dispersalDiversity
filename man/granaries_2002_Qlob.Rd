@@ -4,7 +4,7 @@
 \name{granaries_2002_Qlob}
 \alias{granaries_2002_Qlob}
 \title{Source tree assignments for acorns harvested from acorn woodpecker granaries in 2002}
-\format{Matrix with 21 rows and 50 variables.}
+\format{Matrix with 20 rows and 50 variables.}
 \source{
 Dataset originates from the lab of Victoria L. Sork
           \email{vlsork@ucla.edu} and is used with permission.

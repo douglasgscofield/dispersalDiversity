@@ -53,7 +53,17 @@ Scofield et al. (2012), while that for the allelic extension as class
 (in press).
 }
 \examples{
-## Compare gamma diversity between two datasets
+## Compare gamma diversity between two diversity datasets
+##
+data(granaries_2002_Qlob)
+data(granaries_2004_Qlob)
+par(mfrow = c(1, 2))
+plot(gammaAccum(granaries_2002_Qlob))
+plot(gammaAccum(granaries_2004_Qlob))
+gammaContrastTest(granaries_2002_Qlob, granaries_2004_Qlob)
+##
+## Compare gamma diversity between two allele datasets
+##
 # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
 # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
 # gt1 <- createAlleleTables(dat1)

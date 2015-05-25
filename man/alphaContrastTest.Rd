@@ -52,8 +52,17 @@ Scofield et al. (2012), while that for the allelic extension as class
 (In press).
 }
 \examples{
+## Comparing alpha diversity between two different sites:
+##
+data(granaries_2002_Qlob)
+data(granaries_2004_Qlob)
+par(mfcol = c(2, 1))
+membershipPlot(granaries_2002_Qlob)
+membershipPlot(granaries_2004_Qlob)
+alphaContrastTest(granaries_2002_Qlob, granaries_2004_Qlob)
+##
 ## Comparing allele diversity between two different samples:
-
+##
 # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
 # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
 # gt1 <- createAlleleTables(dat1)

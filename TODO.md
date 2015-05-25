@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* See what happens when a site has just one sample, NaN is generated
 * Continue to straighten out .default cases for diversityTest*.R
 * Sort out test differences
 * That wierdness when converting to as.divtable for the Thamnolia diversity stuff

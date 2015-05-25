@@ -44,15 +44,11 @@ print.diversity_test <- function(x, digits = getOption("digits"), ...)
     cat("Observed log-likelihood ratio = ",
         format(signif(x$observed.ln.LR, max(1L, digits - 2L))), "\n\n",
         sep = "")
-    cat("Test against analytic X-2 distribution (usually not appropriate):\n")
-    cat("Degrees of freedom = (N.groups - 1) = ", x$df.X2,
-        ", P = ", format.pval(x$P.analytic, digits = max(1L, digits - 3L)),
-        "\n", sep = "")
-    cat("Test against empirical X-2 distribution (much better test):\n")
+    cat("Test against empirical X^2 distribution:\n")
     cat("Iterations = ", x$n.resample,
-        ", P = ", format.pval(x$P.empirical, digits = max(1L, digits - 3L)),
+        ", P = ", format.pval(x$P, digits = max(1L, digits - 3L)),
         "\n", sep = "")
-    cat("Quantiles of the empirical distribution:\n")
+    cat("\nQuantiles of the empirical distribution:\n")
     print(x$quantiles, digits = digits, ...)
     invisible(x)
 }
@@ -73,8 +69,6 @@ print.diversity_test <- function(x, digits = getOption("digits"), ...)
 #' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
 #' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
 #' \code{\link{gammaContrastTest3}}
-#' @param add.analytic  Logical, if \code{TRUE} a curve of the \eqn{\Chi^2}
-#' distribution with the appropriate degrees of freedom is added to the plot
 #' @param breaks  Number of breaks to use when plotting the histogram of
 #' the empirical distribution, passed to \code{\link{hist(..., plot = FALSE)}}
 #' @param compress.x  Logical, if \code{TRUE} and the observed value is more
@@ -92,10 +86,10 @@ print.diversity_test <- function(x, digits = getOption("digits"), ...)
 #'
 #' @export
 #'
-plot.diversity_test <- function(x, add.analytic = FALSE, 
-    breaks = 50, compress.x = TRUE, compress.ratio = 1.2,
-    xlab = "ln(LR) value", ylab = "Frequency", main = x$method, 
-    legend.text = "Observed ln(LR) = ", digits = getOption("digits"), ...)
+plot.diversity_test <- function(x, breaks = 50, compress.x = TRUE,
+    compress.ratio = 1.2, xlab = "ln(LR) value", ylab = "Frequency",
+    main = x$method, legend.text = "Observed ln(LR) = ",
+    digits = getOption("digits"), ...)
 {
     par(mar = c(3.5, 3.5, 1.5, 1), mgp = c(2, 0.5, 0))
     plotted.observed.ln.LR <- x$observed.ln.LR
@@ -112,19 +106,11 @@ plot.diversity_test <- function(x, add.analytic = FALSE,
         h <- hist(x$empdist[-x$n.resample], breaks = breaks, plot = FALSE)
         xlim <- range(c(h$breaks, x$empdist[x$n.resample]))
     }
-    if (add.analytic) {
-        analytic.x <- seq(xlim[1], xlim[2], length.out = 200)
-        analytic.X2 <- dchisq(x = analytic.x, df = x$df.ln.LR)
-        ylim <- range(c(0, h$count, analytic.X2))
-    } else {
-        ylim <- range(c(0, h$count))
-    }
+    ylim <- range(c(0, h$count))
     plot(h, xlim = xlim, ylim = ylim, freq = TRUE, 
          xlab = ylab, ylab = ylab, main = main, ...)
     lines(rep(plotted.observed.ln.LR, 2), c(ylim[1], ylim[2]*0.5),
           col = "darkgray", lty = 1, lwd = 2)
-    if (add.analytic)
-        lines(analytic.x, analytic.X2, lty=3, lwd=1)
     if (! is.null(legend.text))
         legend("topright", bty = "n", legend = paste0(legend.text,
                format(signif(x$observed.ln.LR, max(1L, digits - 2L)))))
@@ -215,9 +201,6 @@ alphaDiversityTest.divtable <- function(tab, zero.div.adjust = TRUE,
     ans$N.groups <- G
     terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.div.adjust)
     ans$observed.ln.LR <- terms$ln.LR
-    # Analytic distribution
-    ans$df.X2 <- terms$DF
-    ans$P.analytic <- pchisq(terms$ln.LR, df = terms$DF, TRUE)
     # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = terms$ln.LR, n.g = n.g, 
         g.vardist = g.vardist, zero.div.adjust = zero.div.adjust,
@@ -225,7 +208,7 @@ alphaDiversityTest.divtable <- function(tab, zero.div.adjust = TRUE,
     ans$n.resample <- n.resample
     ans$resample.method <- method
     ans$quantiles <- quantile(nulldist, test.quantiles)
-    ans$P.empirical <- sum(terms$ln.LR <= nulldist) / n.resample
+    ans$P <- sum(terms$ln.LR <= nulldist) / n.resample
     ans$empdist <- nulldist
     structure(ans, class = c('diversity_test', 'list'))
 }
@@ -285,8 +268,17 @@ alphaDiversityTest.default <- function(tab, ...)
 #'
 #' @examples
 #'
+#' ## Comparing alpha diversity between two different sites:
+#' ##
+#' data(granaries_2002_Qlob)
+#' data(granaries_2004_Qlob)
+#' par(mfcol = c(2, 1))
+#' membershipPlot(granaries_2002_Qlob)
+#' membershipPlot(granaries_2004_Qlob)
+#' alphaContrastTest(granaries_2002_Qlob, granaries_2004_Qlob)
+#' ##
 #' ## Comparing allele diversity between two different samples:
-#'
+#' ##
 #' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
 #' # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
 #' # gt1 <- createAlleleTables(dat1)
@@ -351,9 +343,6 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     ans$N.samples <- N
     ans$N.groups <- G
     ans$observed.ln.LR <- observed.ln.LR.a.b
-    # Analytic distribution
-    ans$df.X2 <- G - 1
-    ans$P.analytic <- pchisq(observed.ln.LR.a.b, df = DF, lower.tail = TRUE)
     # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs=observed.ln.LR.a.b,
                                         n.g = n.a.b,
@@ -363,7 +352,7 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     ans$n.resample <- n.resample
     ans$resample.method <- method
     ans$quantiles <- quantile(nulldist, test.quantiles)
-    ans$P.empirical <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
+    ans$P <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.vardist = a.b.vardist
     structure(ans, class = c('diversity_test', 'list'))
@@ -379,9 +368,9 @@ alphaContrastTest.default <- function(tab.a, tab.b, ...)
 {
     args <- c()
     if (! inherits(tab.a, "divtable"))
-        args <- c(args, deparse_substitute(tab.a))
+        args <- c(args, deparse(substitute(tab.a)))
     if (! inherits(tab.b, "divtable"))
-        args <- c(args, deparse_substitute(tab.b))
+        args <- c(args, deparse(substitute(tab.b)))
     stop(paste(collapse = " and ", args),
          " must be of class divtable or class allele_divtables")
 }
@@ -504,9 +493,6 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     ans$N.samples <- N
     ans$N.groups <- G
     ans$observed.ln.LR <- observed.ln.LR.a.b.c
-    # Analytic distribution
-    ans$df.X2 <- G - 1
-    ans$P.analytic <- pchisq(observed.ln.LR.a.b.c, df = DF, lower.tail = TRUE)
     # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b.c,
                                         n.g = n.a.b.c,
@@ -516,7 +502,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     ans$n.resample <- n.resample
     ans$resample.method <- method
     ans$quantiles <- quantile(nulldist, test.quantiles)
-    ans$P.empirical <- sum(observed.ln.LR.a.b.c <= nulldist) / n.resample
+    ans$P <- sum(observed.ln.LR.a.b.c <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
     structure(ans, class = c('diversity_test', 'list'))
@@ -532,11 +518,11 @@ alphaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 {
     args <- c()
     if (! inherits(tab.a, "divtable"))
-        args <- c(args, deparse_substitute(tab.a))
+        args <- c(args, deparse(substitute(tab.a)))
     if (! inherits(tab.b, "divtable"))
-        args <- c(args, deparse_substitute(tab.b))
+        args <- c(args, deparse(substitute(tab.b)))
     if (! inherits(tab.c, "divtable"))
-        args <- c(args, deparse_substitute(tab.c))
+        args <- c(args, deparse(substitute(tab.c)))
     stop(paste(collapse = " and ", args),
          " must be of class divtable or class allele_divtables")
 }
@@ -699,7 +685,17 @@ plot.pairwise_mean_test <- function(result, ...)
 #'
 #' @examples
 #'
-#' ## Compare gamma diversity between two datasets
+#' ## Compare gamma diversity between two diversity datasets
+#' ##
+#' data(granaries_2002_Qlob)
+#' data(granaries_2004_Qlob)
+#' par(mfrow = c(1, 2))
+#' plot(gammaAccum(granaries_2002_Qlob))
+#' plot(gammaAccum(granaries_2004_Qlob))
+#' gammaContrastTest(granaries_2002_Qlob, granaries_2004_Qlob)
+#' ##
+#' ## Compare gamma diversity between two allele datasets
+#' ##
 #' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
 #' # dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
 #' # gt1 <- createAlleleTables(dat1)
@@ -771,9 +767,6 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     ans$N.samples <- N
     ans$N.groups <- G
     ans$observed.ln.LR <- observed.ln.LR.a.b
-    # Analytic distribution
-    ans$df.X2 <- DF
-    ans$P.analytic <- pchisq(observed.ln.LR.a.b, df = DF, lower.tail = TRUE)
     # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b,
                                         n.g = n.a.b, g.vardist = a.b.vardist,
@@ -781,7 +774,7 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     ans$n.resample <- n.resample
     ans$resample.method <- method
     ans$quantiles <- quantile(nulldist, test.quantiles)
-    ans$P.empirical <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
+    ans$P <- sum(observed.ln.LR.a.b <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.vardist = a.b.vardist
     structure(ans, class = c('diversity_test', 'list'))
@@ -797,9 +790,9 @@ gammaContrastTest.default <- function(tab.a, tab.b, ...)
 {
     args <- c()
     if (! inherits(tab.a, "divtable"))
-        args <- c(args, deparse_substitute(tab.a))
+        args <- c(args, deparse(substitute(tab.a)))
     if (! inherits(tab.b, "divtable"))
-        args <- c(args, deparse_substitute(tab.b))
+        args <- c(args, deparse(substitute(tab.b)))
     stop(paste(collapse = " and ", args),
          " must be of class divtable or class allele_divtables")
 }
@@ -929,9 +922,6 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     ans$N.samples <- N
     ans$N.groups <- G
     ans$observed.ln.LR <- observed.ln.LR.a.b.c
-    # Analytic distribution
-    ans$df.X2 <- DF
-    ans$P.analytic <- pchisq(observed.ln.LR.a.b.c, df = DF, lower.tail = TRUE)
     # Empirical distribution
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b.c,
                                         n.g = n.a.b.c,
@@ -940,7 +930,7 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     ans$n.resample <- n.resample
     ans$resample.method <- method
     ans$quantiles <- quantile(nulldist, test.quantiles)
-    ans$P.empirical <- sum(observed.ln.LR.a.b.c <= nulldist) / n.resample
+    ans$P <- sum(observed.ln.LR.a.b.c <= nulldist) / n.resample
     ans$empdist <- nulldist
     ans$a.b.c.vardist <- a.b.c.vardist
     structure(ans, class = c('diversity_test', 'list'))
@@ -956,11 +946,11 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 {
     args <- c()
     if (! inherits(tab.a, "divtable"))
-        args <- c(args, deparse_substitute(tab.a))
+        args <- c(args, deparse(substitute(tab.a)))
     if (! inherits(tab.b, "divtable"))
-        args <- c(args, deparse_substitute(tab.b))
+        args <- c(args, deparse(substitute(tab.b)))
     if (! inherits(tab.c, "divtable"))
-        args <- c(args, deparse_substitute(tab.c))
+        args <- c(args, deparse(substitute(tab.c)))
     stop(paste(collapse = " and ", args),
          " must be of class divtable or class allele_divtables")
 }
@@ -1034,7 +1024,7 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 #
 .diversityTest.ZeroVarAdjust <- function(ss.g, n.g)
 {
-    nn <- names(ss.g[ss.g == 0]) # names of ss.g==0 elements
+    nn <- names(ss.g[ss.g == 0 & ! is.na(ss.g)]) # names of ss.g==0 elements
     if (length(nn)) # index by names
         ss.g[nn] <- 1 / (4 * n.g[nn] * n.g[nn] * (n.g[nn] - 1))
     ss.g
@@ -1047,7 +1037,7 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 {
     N <- sum(n.g)
     G <- length(n.g)
-    V.g <- unlist(lapply(g.vardist, sum)) / (n.g - 1)
+    V.g <- sapply(g.vardist, sum) / (n.g - 1)
     if (zero.div.adjust)
         V.g <- .diversityTest.ZeroVarAdjust(V.g, n.g)
     # ss.pooled
@@ -1058,8 +1048,7 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
                        (sum(1 / (n.g - 1)) - (1 / (N - G))))
     ln.LR <- if (.diversityTest.ReverseTerms)
         (term.V.p - term.V.g) / term.denom
-    else
-        (term.V.g - term.V.p) / term.denom
+    else (term.V.g - term.V.p) / term.denom
     DF <- G - 1
     list(V.g = V.g, V.p = V.p, ln.LR = ln.LR, DF = DF)
 }
