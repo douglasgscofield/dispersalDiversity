@@ -65,16 +65,12 @@ install.package("RColorBrewer")
 Input requirements
 ------------------
 
-Most functions take as input a simple data structure: a table of site (rows) by
+Most functions take as input a simple data structure, an object of class
+`divtable` which is a table of site (rows) by
 source (columns) counts, which each cell representing the number of times that
-source/species/type was observed at that site.  The cells need not be integer
-counts, they can be e.g., proportional representations, and *I think* the
-statistics are robust to this, but some summaries expect counts and may not be
-sensible.
+source/species/type was observed at that site.
 
-This table will be converted to class `'matrix'` by each such function.
-
-To create a random matrix:
+One method to create a random `divtable`:
 
 ```R
 n.sites <- 5
@@ -87,15 +83,13 @@ t <- data.frame(site = sample(n.sites, n.samples, replace = TRUE),
 ## site-by-source matrix
 m1 <- do.call(rbind, lapply(split(t, t$site), function(x) table(x$source)))
 # this creates a class c("matrix")
+m1 <- as.divtable(m1)
 
 ## or use xtabs
 m2 <- xtabs(data = t)
 ## this creates a class c("xtabs","table")
+m2 <- as.divtable(m2)
 ```
-
-Both the above methods create a table with rownames of site levels, and column
-names of source levels.  `xtabs` also names the dims after the variables
-(`site` and `source`).
 
 
 
@@ -245,14 +239,14 @@ the same directory, as it provides functions used here.
 A typical workflow using these functions would be:
 
 ````R
-rga.result <- runGammaAccum(tab)
-plotGammaAccum(rga.result)
+rga.result <- gammaAccum(tab)
+plot(rga.result)
 ````
 
-#### runGammaAccum(tab)
+#### gammaAccum(tab)
 
 Perform a &gamma; diversity accumulation on the site-by-source data in `tab`.
-The result is returned in a list, which may be passed to `plotGammaAccum()` to
+The result is returned in a list, which may be passed to `plot` to
 plot the result.  Several arguments control the method of accumulation and
 value of &gamma; calculated.  Only the defaults have been tested; the others were
 developed while exploring the data and must be considered experimental.

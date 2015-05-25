@@ -191,10 +191,11 @@ alphaDiversityTest.divtable <- function(tab, zero.div.adjust = TRUE,
     ...)
 {
     method <- match.arg(method)
+    .checkRowSums(tab)
     ans <- list(method = "Alpha diversity test, contrast among sites in single data set")
     ans$data.name <- deparse(substitute(tab))
     g.vardist <- .diversityTest.directGowerDiag(tab)
-    n.g <- unlist(lapply(g.vardist, length))
+    n.g <- sapply(g.vardist, length)
     N <- sum(n.g)
     G <- length(n.g)
     ans$N.samples <- N
@@ -304,6 +305,8 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
     stopifnot(inherits(tab.b, 'divtable'))
+    .checkRowSums(tab.a)
+    .checkRowSums(tab.b)
     method <- match.arg(method)
     #.RT = .diversityTest.ReverseTerms
     #.diversityTest.ReverseTerms = FALSE
@@ -438,6 +441,9 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
 {
     stopifnot(inherits(tab.b, 'divtable'))
     stopifnot(inherits(tab.c, 'divtable'))
+    .checkRowSums(tab.a)
+    .checkRowSums(tab.b)
+    .checkRowSums(tab.c)
     method <- match.arg(method)
     #.RT <- .diversityTest.ReverseTerms
     #.diversityTest.ReverseTerms <- FALSE
@@ -454,7 +460,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     # V.a.p <- terms.a$V.p
 
     b.vardist <- .diversityTest.directGowerDiag(tab.b)
-    n.b <- unlist(lapply(b.vardist, length))
+    n.b <- sapply(b.vardist, length)
     N.b <- sum(n.b)
     G.b <- length(n.b)
     ans$N.b <- N.b
@@ -463,7 +469,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     # V.b.p <- terms.b$V.p
 
     c.vardist <- .diversityTest.directGowerDiag(tab.c)
-    n.c <- unlist(lapply(c.vardist, length))
+    n.c <- sapply(c.vardist, length)
     N.c <- sum(n.c)
     G.c <- length(n.c)
     ans$N.c <- N.c
@@ -722,6 +728,8 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     ...)
 {
     stopifnot(inherits(tab.b, 'divtable'))
+    .checkRowSums(tab.a)
+    .checkRowSums(tab.b)
     ans <- list(method = "Gamma diversity test, contrast between two data sets")
     ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
         deparse(substitute(tab.b)))
@@ -749,7 +757,7 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
 
     #b.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.b.k))))
     b.vardist <- .diversityTest.directGowerDiag(X.b.k)
-    n.b <- unlist(lapply(b.vardist, length))
+    n.b <- lapply(b.vardist, length)
     stopifnot(sum(n.b) == N.b)
     G.b <- length(n.b)
     ans$N.b <- N.b
@@ -851,6 +859,9 @@ gammaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
 {
     stopifnot(inherits(tab.b, 'divtable'))
     stopifnot(inherits(tab.c, 'divtable'))
+    .checkRowSums(tab.a)
+    .checkRowSums(tab.b)
+    .checkRowSums(tab.c)
     method <- match.arg(method)
     ans <- list(method = "Gamma diversity test, contrast between three data sets")
     ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
@@ -1228,5 +1239,18 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
     # diag(d) is always 0
     # diag(d) + (-rd + -rd) + mean(d)
     (-rd + -rd) + mean(d)
+}
+
+
+
+# Stop if any row contains just one item
+#
+.checkRowSums <- function(tab)
+{
+    if (any(rowSums(tab) == 1)) {
+        stop("row(s) ", paste(names(which(rowSums(tab) == 1))),
+             " contain 1 or fewer items and cannot be included in this analysis",
+             call. = FALSE)
+    }
 }
 

@@ -81,6 +81,7 @@ as.divtable <- function(x, ...) UseMethod("as.divtable")
 as.divtable.table <- function(x, ...)
 {
     mode(x) <- "numeric"
+    .divtableCheckRowSums(x)
     structure(x, class = c('divtable', 'table'))
 }
 
@@ -93,6 +94,7 @@ as.divtable.table <- function(x, ...)
 as.divtable.matrix <- function(x, ...)
 {
     mode(x) <- "numeric"
+    .divtableCheckRowSums(x)
     structure(as.table(x), class = c('divtable', 'table'))
 }
 
@@ -106,6 +108,7 @@ as.divtable.data.frame <- function(x, ...)
 {
     x <- as.matrix(x)
     mode(x) <- "numeric"
+    .divtableCheckRowSums(x)
     structure(as.table(x), class = c('divtable', 'table'))
 }
 
@@ -118,6 +121,7 @@ as.divtable.data.frame <- function(x, ...)
 as.divtable.xtabs <- function(x, ...)
 {
     mode(x) <- "numeric"
+    .divtableCheckRowSums(x)
     if (! is.null(attr(x, "call")))
         attr(x, "call") <- NULL
     structure(as.table(x), class = c('divtable', 'table'))
@@ -134,3 +138,15 @@ as.divtable.default <- function(x, ...)
     stop(deparse(substitute(x)), " cannot be converted to class divtable, ",
          "must be class table, matrix, xtabs or data.frame")
 }
+
+
+
+.divtableCheckRowSums <- function(x)
+{
+    if (any(rowSums(x) == 1)) {
+        warning("row(s) ", paste(names(which(rowSums(x) == 1))),
+                " contain 1 or fewer items and cannot be included in diversity tests",
+                call. = FALSE)
+    }
+}
+

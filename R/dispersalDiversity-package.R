@@ -15,7 +15,7 @@
 #' (2012).  The second dataset is of class \code{\link{allele_divtables}}, which
 #' is a list of \code{\link{divtable}} tables containing sites-by-alleles counts
 #' individual loci.  These data are analysed with extensions of the Scofield
-#' \emph{et al}. methods as described in Sork \emph{et al}. (In press).
+#' \emph{et al}. methods as described in Sork \emph{et al}. (in press).
 #'
 #' The function \code{createAlleleTables} accepts an argument of class
 #' \code{genalex} and creates an object of class \code{allele_divtables}, a
@@ -24,6 +24,9 @@
 #' tests and comparisons.
 #'
 #' @note
+#'
+#' Due to their mathematical structure, the diversity tests cannot accept data
+#' sets with rows (sites) containing a single item.
 #'
 #' These statistical tools were developed in collaboration with Peter E.
 #' Smouse (Rutgers University) and Victoria L. Sork (UCLA) and were funded
