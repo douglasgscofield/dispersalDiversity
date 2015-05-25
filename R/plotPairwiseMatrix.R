@@ -50,7 +50,7 @@
 #' @export plotPairwiseMatrix
 #'
 plotPairwiseMatrix <- function(x, statistic = c("divergence", "overlap"), 
-    pairwise.mean = NULL, mean.position = c(0.45, 0.7),
+    pairwise.mean = NULL, mean.position = c(0.45, 0.3),
     bty = "L", aspect = "iso", 
     col.regions = function(x) gray(c(1, seq(.9, .6, length.out=(x - 2)), 0)),
     colorkey = list(labels = list(cex = 1.0)),
