@@ -5,11 +5,11 @@
 \title{Plot pairwise divergence or overlap as calculated by \code{diversity}}
 \usage{
 plotPairwiseMatrix(x, statistic = c("divergence", "overlap"),
-  pairwise.mean = NULL, mean.position = c(0.45, 0.7), bty = "L",
+  pairwise.mean = NULL, mean.position = c(0.45, 0.3), bty = "L",
   aspect = "iso", col.regions = function(x) gray(c(1, seq(0.9, 0.6,
   length.out = (x - 2)), 0)), colorkey = list(labels = list(cex = 1)),
   at = c(0, 0.01, seq(0.2, 0.8, 0.2), 0.99, 1), scales = list(draw = FALSE,
-  tck = 0, cex = 0.7, x = list(rot = 90)), axis.label = "Species Pool",
+  tck = 0, cex = 0.7, x = list(rot = 90)), axis.label = "Group",
   xlab = list(axis.label, cex = 1), ylab = list(axis.label, cex = 1),
   digits = getOption("digits"), ...)
 }
@@ -17,7 +17,7 @@ plotPairwiseMatrix(x, statistic = c("divergence", "overlap"),
 \item{x}{Pairwise divergence or overlap matrix as found at,
 e.g., \code{diversity()$q$diversity.mat}.  Currently, prior to plotting
 this matrix has its diagonal and upper triangle zeroed, and is then
-rotated prior to passing to \code{\link{lattice::levelplot}}}
+rotated prior to passing to \code{\link{lattice::levelplot}}.}
 
 \item{statistic}{\code{"divergence"} or \code{"overlap"}, indicating
 the statistic being supplied for plotting}
@@ -54,9 +54,9 @@ package.  An example of its use is in Figure 4A-C of Scofield et al.
 }
 \examples{
 data(granaries_2002_Qlob)
-dv <- diversity(granaries_2002_Qlob)
-plotPairwiseMatrix(x = dv$r$divergence.mat,
-                   pairwise.mean = dv$r$divergence,
+d <- diversity(granaries_2002_Qlob)
+plotPairwiseMatrix(x = d$r$divergence.mat,
+                   pairwise.mean = d$r$divergence,
                    statistic = "divergence",
                    axis.label = "Granary")
 }

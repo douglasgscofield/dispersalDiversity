@@ -1,8 +1,6 @@
 TODO for dispersalDiversity
 ---------------------------
 
-* See what happens when a site has just one sample, NaN is generated
-* Continue to straighten out .default cases for diversityTest*.R
 * Sort out test differences
 * That wierdness when converting to as.divtable for the Thamnolia diversity stuff
 * This wierdness:
@@ -27,7 +25,6 @@ TODO for dispersalDiversity
 
 * Update figures with existing code
 * continue generalising allele diversity tests
-* running diversity(granaries_2002_Qlob) produces NaN for L0049-2002, probably because row sum is 1; handle this better
 * Clean up pairwise diversity tests, return values and print and plot methods
 * Make sites/groups/species terminology consistent
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
@@ -45,6 +42,8 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* For all diversity tests, the comparison of the log-likelihood value against an analytic &Chi;<sup>2</sup> distribution is removed; this was rarely if ever an appropriate test
+* Diversity tests now produce an error if any group has just one member, and `as.divtable` produces a warning for the same condition
 * `membershipPlot` writes the plot into a PDF file on option (the EPS option has been removed)
 * The pooled PMI values returned by `diversity` are documented
 * The `divtable` and `allele_divtables` classes have separate documentation

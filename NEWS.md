@@ -1,6 +1,7 @@
 0.9.9001 (development version)
 ------
 
+* Diversity tests no longer compare log-likelihood values against an analytic &Chi;<sup>2</sup> distribution, which was almost always incorrect
 * The calculation of distances for diversity tests is much more efficient in time and space, so tests may be performed on data with very high counts, such as diversity of OTUs quantified via read counts
 * Diversity tests return class `diversity_test`, which has `print` and `plot` methods
 * Gamma accumulation functions return class `gamma_accum`, which has a `plot` method
