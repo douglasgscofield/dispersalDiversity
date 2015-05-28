@@ -32,7 +32,6 @@ TODO for dispersalDiversity
 * Am I happy with `print.divtable` and `plot.divtable` methods?
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
-* Incorporate weighted means and variances equations from Scofield et al. 2011
 * sort out reverseTerms stuff
 * make `diversityMultilocus` function returns match `diversity` function returns
 * Get data permission from VLS
@@ -41,6 +40,7 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* Weighted means and sample variances of `q.gg` for each estimator and of `q.gh` from Scofield *et al*. 2011 *Oecologia* are now included
 * For all diversity tests, the comparison of the log-likelihood value against an analytic &Chi;<sup>2</sup> distribution is removed; this was rarely if ever an appropriate test
 * Diversity tests now produce an error if any group has just one member, and `as.divtable` produces a warning for the same condition
 * `membershipPlot` writes the plot into a PDF file on option (the EPS option has been removed)
