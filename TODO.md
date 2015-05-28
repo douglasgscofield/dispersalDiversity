@@ -28,13 +28,12 @@ TODO for dispersalDiversity
 * Clean up pairwise diversity tests, return values and print and plot methods
 * Make sites/groups/species terminology consistent
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
-* Define `print` and `plot` methods for `allele_divtables`
+* Define `plot` method for `allele_divtables`?
 * Am I happy with `print.divtable` and `plot.divtable` methods?
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
 * Incorporate weighted means and variances equations from Scofield et al. 2011
 * sort out reverseTerms stuff
-* reverseTerms especially with empirical PVAL calculation with pchisq
 * make `diversityMultilocus` function returns match `diversity` function returns
 * Get data permission from VLS
 * Tests

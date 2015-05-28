@@ -38,6 +38,8 @@ NULL
 #'           these are untransformed, while in form \code{r} and
 #'           \code{q.nielsen}, these are transformed accordingly
 #'     \item \code{q.bar.0}, scalar, weighted mean of \code{q.gg} 
+#'     \item \code{q.variance.0}, scalar, weighted sample variance of
+#'           \code{q.bar.0} 
 #'     \item \code{q.unweighted.mean}, mean of \code{q.gg}
 #'     \item \code{alpha.g}, vector of length number of sites, containing
 #'           reciprocals of \code{q.gg}
@@ -74,7 +76,8 @@ NULL
 #'           the number of distinct groups observed in each row of \code{tab}
 #' }
 #' Finally, some additional statistics representing pooled PMI measures
-#' (Scofield \emph{et al}. 2010) are returned:
+#' (Scofield \emph{et al}. 2010) and weighted overlaps (Scofield \emph{et al}.
+#' 2011) are returned:
 #' \itemize{
 #'     \item \code{y.gh}, a pairwise matrix of counts of items in each group
 #'           from any source that are shared with each other group
@@ -84,6 +87,11 @@ NULL
 #'     \item \code{q.0.gh}, a matrix of probabilities that two items drawn
 #'           from group g and h are from any of the sources shared between
 #'           g and h
+#'     \item \code{q.bar.gh}, weighted mean overlap (\eqn{q_{gh}}), 
+#'           probabilities that two items, one drawn from each of groups
+#'           \emph{g} and \emph{h}, are from the same source, weighted by
+#'           sample sizes
+#'     \item \code{q.variance.gh}, weighted sample variance of \code{q.bar.gh}
 #' }
 #'
 #' @references
@@ -183,6 +191,13 @@ diversity.divtable <- function(tab, ...)
         }
     }
 
+    # weighted q.gh (Scofield et al 2011 Oecologia)
+    n.gh <- outer(n.g, n.g, '*'); diag(n.gh) <- 0
+    q.bar.gh <- sum(n.gh * C) / sum(n.gh)
+    # note n.gh is 0 along diagonal so diag(C - q.bar.0) is ignored
+    q.variance.gh <- sum(n.gh) * sum(n.gh * (C - q.bar.gh)) /
+        (sum(n.gh)^2 - sum(n.gh * n.gh))
+
     # Separate lists for standard calculations:
     #     q
     # classical bias correction:
@@ -194,6 +209,7 @@ diversity.divtable <- function(tab, ...)
     #
     #    q.gg                   based on squared frequencies
     #    q.bar.0                weighted mean of q.gg
+    #    q.variance.0           weighted sample variance of q.gg
     #    q.unweighted.mean      unwieghted mean of q.gg
     #    alpha.g                reciprocal of individual q.gg
     #    alpha.unweighted.mean  mean of alpha.g
@@ -210,6 +226,10 @@ diversity.divtable <- function(tab, ...)
 
     q$q.gg <- diag(Q.mat)
     q$q.bar.0 <- sum(n.g * n.g * q$q.gg) / sum(n.g * n.g)
+
+    q$q.variance.0 <- (sum(n.g * n.g) * sum(n.g * n.g * (q$q.gg - q$q.bar.0))) /
+        (sum(n.g * n.g)^2 - sum(n.g * n.g * n.g * n.g))
+
     q$q.unweighted.mean <- mean(q$q.gg)
     q$alpha.g <- 1 / q$q.gg
     q$alpha.unweighted.mean <- sum(q$alpha.g) / G
@@ -229,6 +249,11 @@ diversity.divtable <- function(tab, ...)
 
     q.nielsen$q.gg <- nielsenTransform(diag(Q.mat), n.g)
     q.nielsen$q.bar.0 <- sum(n.g * n.g * q.nielsen$q.gg) / sum(n.g * n.g)
+
+    q.nielsen$q.variance.0 <- (sum(n.g * n.g) * sum(n.g * n.g *
+                                   (q.nielsen$q.gg - q.nielsen$q.bar.0))) /
+        (sum(n.g * n.g)^2 - sum(n.g * n.g * n.g * n.g))
+
     q.nielsen$q.unweighted.mean <- mean(q.nielsen$q.gg)
     q.nielsen$alpha.g <- 1 / q.nielsen$q.gg
     q.nielsen$alpha.unweighted.mean <- sum(q.nielsen$alpha.g) / G
@@ -256,6 +281,11 @@ diversity.divtable <- function(tab, ...)
     r$q.gg <- r.gg
     r$q.bar.0 <- sum((n.g * n.g * r$q.gg) - (n.g * r$q.gg)) / 
                  sum((n.g * n.g) - n.g)
+
+    M.g <- n.g * (n.g - 1)
+    r$q.variance.0 <- (sum(M.g) * sum(M.g * (r$q.gg - r$q.bar.0))) /
+        (sum(M.g)^2 - sum(M.g * M.g))
+
     r$q.unweighted.mean <- mean(r$q.gg)
     r$alpha.g <- 1 / r$q.gg
     r$alpha.unweighted.mean <- sum(r$alpha.g) / G
@@ -285,6 +315,10 @@ diversity.divtable <- function(tab, ...)
                 y.gh        = y.gh,
                 prop.y.0.gh = prop.y.0.gh,
                 q.0.gh      = q.0.gh,
+
+                # Weighted q.gh (Scofield et al 2010 Oecologia)
+                q.bar.gh      = q.bar.gh,
+                q.variance.gh = q.variance.gh,
 
                 # Q matrix, used to reconstruct C matrix in (at least) allele code
                 Q.mat     = Q.mat,

@@ -50,6 +50,8 @@ quantities are included:
           these are untransformed, while in form \code{r} and
           \code{q.nielsen}, these are transformed accordingly
     \item \code{q.bar.0}, scalar, weighted mean of \code{q.gg}
+    \item \code{q.variance.0}, scalar, weighted sample variance of
+          \code{q.bar.0}
     \item \code{q.unweighted.mean}, mean of \code{q.gg}
     \item \code{alpha.g}, vector of length number of sites, containing
           reciprocals of \code{q.gg}
@@ -86,7 +88,8 @@ The list also contains the original \code{\link{divtable}} passed to
           the number of distinct groups observed in each row of \code{tab}
 }
 Finally, some additional statistics representing pooled PMI measures
-(Scofield \emph{et al}. 2010) are returned:
+(Scofield \emph{et al}. 2010) and weighted overlaps (Scofield \emph{et al}.
+2011) are returned:
 \itemize{
     \item \code{y.gh}, a pairwise matrix of counts of items in each group
           from any source that are shared with each other group
@@ -96,6 +99,11 @@ Finally, some additional statistics representing pooled PMI measures
     \item \code{q.0.gh}, a matrix of probabilities that two items drawn
           from group g and h are from any of the sources shared between
           g and h
+    \item \code{q.bar.gh}, weighted mean overlap (\eqn{q_{gh}}),
+          probabilities that two items, one drawn from each of groups
+          \emph{g} and \emph{h}, are from the same source, weighted by
+          sample sizes
+    \item \code{q.variance.gh}, weighted sample variance of \code{q.bar.gh}
 }
 }
 \description{
