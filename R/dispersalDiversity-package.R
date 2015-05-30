@@ -25,8 +25,13 @@
 #'
 #' @note
 #'
-#' Due to their mathematical structure, the diversity tests cannot accept data
-#' sets with rows (sites) containing a single item.
+#' Due to their mathematical structure, the functions testing structure in
+#' diversity cannot accept data sets with rows (sites) containing a single
+#' item and will generate an error if given such data.  The
+#' \code{\link{as.divtable}} function will produce a warning if given such
+#' data.  Descriptive functions such as \code{\link{diversity}} and the
+#' plotting functions will accept such data without warning or error, though
+#' some estimators may produce \code{NA} or \code{NaN}.
 #'
 #' These statistical tools were developed in collaboration with Peter E.
 #' Smouse (Rutgers University) and Victoria L. Sork (UCLA) and were funded

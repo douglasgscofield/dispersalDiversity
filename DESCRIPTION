@@ -24,6 +24,7 @@ Suggests:
     RColorBrewer,
     testthat
 Collate:
+    'divtable-class.R'
     'allele_divtables-class.R'
     'dispersalDiversity-data.R'
     'dispersalDiversity-package.R'
@@ -32,7 +33,6 @@ Collate:
     'diversity-allele_divtables.R'
     'diversityTests-divtable.R'
     'diversityTests-allele_divtables.R'
-    'divtable-class.R'
     'gammaAccum-divtable.R'
     'gammaAccum-allele_divtables.R'
     'membershipPlot.R'

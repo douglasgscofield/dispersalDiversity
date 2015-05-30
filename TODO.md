@@ -1,6 +1,8 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Continue on `diversityMultilocus` function returns match `diversity` function returns
+* Do we need `method = "permute"`? 
 * Sort out test differences
 * That wierdness when converting to as.divtable for the Thamnolia diversity stuff
 * This wierdness:
@@ -33,7 +35,6 @@ TODO for dispersalDiversity
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
 * sort out reverseTerms stuff
-* make `diversityMultilocus` function returns match `diversity` function returns
 * Get data permission from VLS
 * Tests
 

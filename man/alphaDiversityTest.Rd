@@ -54,8 +54,8 @@ press).
 ## Using allele diversity dataset of class allele_divtables.  Compare
 ## allele diversity between sites in the same sample:
 ##
-library(readGenalex)
-data(Qagr_pericarp_genotypes)
+## library(readGenalex)  # already loaded as a prerequisite
+data(Qagr_pericarp_genotypes)  # from readGenalex
 gt <- createAlleleTables(Qagr_pericarp_genotypes)
 alpha.test <- alphaDiversityTest(gt)
 }

@@ -1,6 +1,5 @@
 #' @include diversity-allele_divtables.R
 #' @include gammaAccum-divtable.R
-# for collation
 NULL
 
 
@@ -36,6 +35,7 @@ gammaAccumSimple.allele_divtables <- function(adt, ...)
 {
     gammaAccumStats(gammaAccumWorker.allele_divtables(adt, ...))
 }
+
 
 
 gammaAccumWorker.allele_divtables <- function(adt, n.sites = dim(adt[[1]])[1],

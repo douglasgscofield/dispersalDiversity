@@ -1,5 +1,4 @@
 #' @include nielsenTransform.R
-# for collation
 NULL
 
 #' Calculate a collection of diversity statistics from a site x source matrix

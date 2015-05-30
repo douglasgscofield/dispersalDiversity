@@ -1,5 +1,4 @@
 #' @include diversity-divtable.R
-# for collation
 NULL
 
 
@@ -9,12 +8,15 @@ NULL
 #' Print an object of class \code{diversity_test}, the result of
 #' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
 #' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
-#' \code{\link{gammaContrastTest3}}.
+#' \code{\link{gammaContrastTest3}} when given an argument of class
+#' \code{\link{divtable}}.
 #'
 #' @param x       Object of class \code{diversity_test}, returned by
 #' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
 #' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
-#' \code{\link{gammaContrastTest3}}
+#' \code{\link{gammaContrastTest3}} when given an argument of class
+#' \code{\link{allele_divtables}}.
+#'
 #' @param digits  Number of significant digits to use when printing
 #' numeric values
 #'
@@ -39,8 +41,6 @@ print.diversity_test <- function(x, digits = getOption("digits"), ...)
     out <- .o.x.var(out, "N.c")
     out <- .o.x.var(out, "N.groups")
     cat("Samples", paste(out, collapse = ", "), "\n")
-    #cat("Samples N.a = ", x$N.a, ", N.b = ", x$N.b,
-    #    ", groups = ", x$N.groups, "\n")
     cat("Observed log-likelihood ratio = ",
         format(signif(x$observed.ln.LR, max(1L, digits - 2L))), "\n\n",
         sep = "")
@@ -69,16 +69,22 @@ print.diversity_test <- function(x, digits = getOption("digits"), ...)
 #' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
 #' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
 #' \code{\link{gammaContrastTest3}}
+#'
 #' @param breaks  Number of breaks to use when plotting the histogram of
 #' the empirical distribution, passed to \code{\link{hist(..., plot = FALSE)}}
+#'
 #' @param compress.x  Logical, if \code{TRUE} and the observed value is more
 #' than \code{compress.ratio} times the maximum value of the empirical
 #' distribution, the x-axis is compressed to include the observed value
+#'
 #' @param compress.ration See \code{compress.x}
+#'
 #' @param xlab,ylab,main  Labels added to the plot
+#'
 #' @param legend.text Text to use when printing legend containing the
 #' observed value in the upper right of the plot. Set to \code{NULL} to
 #' suppress printing the legend.
+#'
 #' @param digits  Number of significant digits to use when printing numeric
 #' values
 #'
@@ -166,8 +172,8 @@ plot.diversity_test <- function(x, breaks = 50, compress.x = TRUE,
 #' ## Using allele diversity dataset of class allele_divtables.  Compare
 #' ## allele diversity between sites in the same sample:
 #' ##
-#' library(readGenalex)
-#' data(Qagr_pericarp_genotypes)
+#' ## library(readGenalex)  # already loaded as a prerequisite
+#' data(Qagr_pericarp_genotypes)  # from readGenalex
 #' gt <- createAlleleTables(Qagr_pericarp_genotypes)
 #' alpha.test <- alphaDiversityTest(gt)
 #'
@@ -239,15 +245,21 @@ alphaDiversityTest.default <- function(tab, ...)
 #' (In press).
 #'
 #' @param tab.a Site-by-source table of class \code{\link{divtable}}
+#'
 #' @param tab.b Site-by-source table of class \code{\link{divtable}}
+#'
 #' @param adt.a Allelic diversity dataset of class
 #' \code{\link{allele_divtables}}
+#'
 #' @param adt.b Allelic diversity dataset of class
 #' \code{\link{allele_divtables}}
+#'
 #' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
 #' with 0 within-group diversity are assigned a minimum diversity which is
 #' half the empirical diversity possible given the group size
+#'
 #' @param n.resample Number of iterations for creation of the null distribution
+#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
@@ -396,12 +408,17 @@ alphaContrastTest.default <- function(tab.a, tab.b, ...)
 #' Scofield et al. (2012).
 #'
 #' @param tab.a First site-by-source table, of class \code{\link{divtable}}
+#'
 #' @param tab.b Second site-by-source table, of class \code{\link{divtable}}
+#'
 #' @param tab.c Third site-by-source table, of class \code{\link{divtable}}
+#'
 #' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
 #' with 0 within-group diversity are assigned a minimum diversity which is
 #' half the empirical diversity possible given the group size
+#'
 #' @param n.resample Number of iterations for creation of the null distribution
+#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
@@ -661,15 +678,21 @@ plot.pairwise_mean_test <- function(result, ...)
 #' (in press).
 #'
 #' @param tab.a Site-by-source table of class \code{\link{divtable}}
+#'
 #' @param tab.b Site-by-source table of class \code{\link{divtable}}
+#'
 #' @param adt.a Allelic diversity dataset of class
 #' \code{\link{allele_divtables}}
+#'
 #' @param adt.b Allelic diversity dataset of class
 #' \code{\link{allele_divtables}}
+#'
 #' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
 #' with 0 within-group diversity are assigned a minimum diversity which is
 #' half the empirical diversity possible given the group size
+#'
 #' @param n.resample Number of iterations for creation of the null distribution
+#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement
@@ -814,12 +837,17 @@ gammaContrastTest.default <- function(tab.a, tab.b, ...)
 #' and \code{tab.c}.  The method was described in Scofield et al. (2012).
 #'
 #' @param tab.a Site-by-source table of class \code{\link{divtable}}
+#'
 #' @param tab.b Site-by-source table of class \code{\link{divtable}}
+#'
 #' @param tab.c Site-by-source table of class \code{\link{divtable}}
+#'
 #' @param zero.div.adjust Logical, if \code{TRUE} (the default), then groups
 #' with 0 within-group diversity are assigned a minimum diversity which is
 #' half the empirical diversity possible given the group size
+#'
 #' @param n.resample Number of iterations for creation of the null distribution
+#'
 #' @param method \code{"bootstrap"} or \code{"permute"}, whether to create null
 #' distribution iterations with (\code{"bootstrap"}) or without
 #' (\code{"permute"}) replacement

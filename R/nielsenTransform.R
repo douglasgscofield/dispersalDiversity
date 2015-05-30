@@ -21,7 +21,7 @@
 #' paternity number in social insects and the effective number of alleles in
 #' a population.  \emph{Molecular Ecology} 12:3157-3164.
 #'
-#' @export nielsenTransform
+#' @export
 #'
 nielsenTransform <- function(q.gg, n.g)
 {  

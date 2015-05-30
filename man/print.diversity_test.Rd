@@ -10,7 +10,8 @@
 \item{x}{Object of class \code{diversity_test}, returned by
 \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
 \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
-\code{\link{gammaContrastTest3}}}
+\code{\link{gammaContrastTest3}} when given an argument of class
+\code{\link{allele_divtables}}.}
 
 \item{digits}{Number of significant digits to use when printing
 numeric values}
@@ -22,7 +23,8 @@ numeric values}
 Print an object of class \code{diversity_test}, the result of
 \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
 \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
-\code{\link{gammaContrastTest3}}.
+\code{\link{gammaContrastTest3}} when given an argument of class
+\code{\link{divtable}}.
 }
 \seealso{
 \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}, \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}}, \code{\link{gammaContrastTest3}}

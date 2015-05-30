@@ -1,5 +1,4 @@
 #' @include diversity-divtable.R
-# for collation
 NULL
 
 # # For comparing allele diversity between two different samples:

@@ -40,9 +40,9 @@ package, if there is a method available to perform the conversion.
 
 Although missing alleles may be common in genotypic data, there is no
 provision in \code{\link{diversity}} and other functions in this package
-for missing data.  Missing alleles are recognised if they match one of the
-values in \code{exclude}.  The numbers of missing alleles recognised is
-reported if \code{quiet = FALSE}.
+for missing data.  Missing alleles are recognised and excluded if they
+match one of the values in \code{exclude}.  The numbers of missing alleles
+recognised is reported if \code{quiet = FALSE}.
 }
 \note{
 \code{as.allele_divtables} is a synonym
@@ -53,7 +53,7 @@ data(Qagr_pericarp_genotypes)
 pal <- createAlleleTables(Qagr_pericarp_genotypes)
 str(pal)
 ## The divtable for the first locus
-pal[1]
+pal[[1]]
 ## Some missing data
 data(Qagr_adult_genotypes)
 aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE)

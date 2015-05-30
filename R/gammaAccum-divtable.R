@@ -1,5 +1,4 @@
 #' @include diversity-divtable.R
-# for collation order
 NULL
 
 

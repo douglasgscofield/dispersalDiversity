@@ -1,7 +1,5 @@
-# TODO
-# print method
-# plot method
-
+#' @include divtable-class.R
+NULL
 
 #' List of divtables holding allele diversity data
 #'
@@ -20,8 +18,6 @@
 #' typically, genotype data will be in a class \code{\link{genalex}} object
 #' and then converted to \code{allele_divtables} using
 #' \code{\link{createAlleleTables}}.
-#'
-# @examples
 #'
 #' @name allele_divtables-class
 #' @aliases allele_divtables
@@ -45,9 +41,9 @@ NULL
 #'
 #' Although missing alleles may be common in genotypic data, there is no
 #' provision in \code{\link{diversity}} and other functions in this package
-#' for missing data.  Missing alleles are recognised if they match one of the
-#' values in \code{exclude}.  The numbers of missing alleles recognised is
-#' reported if \code{quiet = FALSE}.
+#' for missing data.  Missing alleles are recognised and excluded if they
+#' match one of the values in \code{exclude}.  The numbers of missing alleles
+#' recognised is reported if \code{quiet = FALSE}.
 #'
 #' @note \code{as.allele_divtables} is a synonym
 #'
@@ -55,6 +51,7 @@ NULL
 #' @param exclude Values in \code{x} that indicate missing alleles, these are
 #' excluded from the \code{divtable} entries for each locus
 #' @param quiet If \code{TRUE}, report the number of missing alleles excluded
+#'
 #' @return Object of class \code{\link{allele_divtable}}
 #'
 #' @examples
@@ -64,7 +61,7 @@ NULL
 #' pal <- createAlleleTables(Qagr_pericarp_genotypes)
 #' str(pal)
 #' ## The divtable for the first locus
-#' pal[1]
+#' pal[[1]]
 #' ## Some missing data
 #' data(Qagr_adult_genotypes)
 #' aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE)
