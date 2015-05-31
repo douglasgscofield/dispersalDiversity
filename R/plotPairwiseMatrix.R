@@ -1,15 +1,21 @@
 #' Plot pairwise divergence or overlap as calculated by \code{diversity}
 #'
-#' Plot pairwise values using \code{levelplot} from the \code{lattice} 
-#' package.  An example of its use is in Figure 4A-C of Scofield et al.
-#' (2012).
+#' Plot lower-triangular matrix of pairwise divergence or overlap values
+#' using a colour scale and \code{levelplot} from the \code{lattice} package.
+#' The mean value may be included.
+#'
+#' The default colour scheme used is grayscale, with black and white used
+#' for values very near the extremes (within 0.01 of 0 and 1).  Options are
+#' available for modifying the colour scheme.
 #'
 #' @param x    Pairwise divergence or overlap matrix as found at,
 #' e.g., \code{diversity()$q$diversity.mat}.  Currently, prior to plotting
 #' this matrix has its diagonal and upper triangle zeroed, and is then
 #' rotated prior to passing to \code{\link{lattice::levelplot}}.
+#'
 #' @param statistic    \code{"divergence"} or \code{"overlap"}, indicating
 #' the statistic being supplied for plotting
+#'
 #' @param pairwise.mean    Mean pairwise divergence or overlap as found at,
 #' e.g., \code{diversity()$q$divergence}.  If provided, this is added to
 #' the plot in the upper triangle, rounded to three digits, with 
@@ -17,18 +23,22 @@
 #' together with '\eqn{\bar{\delta} = }' if \code{statistic} is
 #' \code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is 
 #' \code{"overlap"}.
+#'
 #' @param mean.pos    If \code{pairwise.mean} is given, the relative
 #' X and Y positions within the panel at which the value is plotted, in 
 #' a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
 #' value.
+#'
 #' @param axis.label    Label used for the X and Y axes, the X and Y axis
 #' labels can be changed with \code{xlab} and \code{ylab}
+#'
 #' @param bty,aspect,col.regions,colorkey,at,scales,xlab,ylab    Additional
 #' plot options passed to \code{\link{lattice::levelplot}}
+#'
 #' @param digits        Number of digits to use when printing mean value,
 #' taken from the \code{"digits"} option if not supplied
 #'
-#' @return The lattice plot object is returned invisibly
+#' @return The class \code{\link{lattice}} plot object is returned invisibly
 #'
 #' @references
 #'

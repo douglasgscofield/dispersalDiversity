@@ -45,12 +45,17 @@ a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
 value.}
 }
 \value{
-The lattice plot object is returned invisibly
+The class \code{\link{lattice}} plot object is returned invisibly
 }
 \description{
-Plot pairwise values using \code{levelplot} from the \code{lattice}
-package.  An example of its use is in Figure 4A-C of Scofield et al.
-(2012).
+Plot lower-triangular matrix of pairwise divergence or overlap values
+using a colour scale and \code{levelplot} from the \code{lattice} package.
+The mean value may be included.
+}
+\details{
+The default colour scheme used is grayscale, with black and white used
+for values very near the extremes (within 0.01 of 0 and 1).  Options are
+available for modifying the colour scheme.
 }
 \examples{
 data(granaries_2002_Qlob)

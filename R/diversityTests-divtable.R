@@ -320,8 +320,6 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     .checkRowSums(tab.a)
     .checkRowSums(tab.b)
     method <- match.arg(method)
-    #.RT = .diversityTest.ReverseTerms
-    #.diversityTest.ReverseTerms = FALSE
     ans <- list(method = "Alpha diversity test, contrast between 2 datasets")
     ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
         deparse(substitute(tab.b)))
@@ -462,8 +460,6 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     .checkRowSums(tab.b)
     .checkRowSums(tab.c)
     method <- match.arg(method)
-    #.RT <- .diversityTest.ReverseTerms
-    #.diversityTest.ReverseTerms <- FALSE
     ans <- list(method = "Alpha diversity test, contrast between 3 datasets")
     ans$data.name <- paste(sep = ", ", deparse(substitute(tab.a)),
         deparse(substitute(tab.b)), deparse(substitute(tab.b)))
@@ -1005,11 +1001,6 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
 
 
 
-# Still not quite sure...
-.diversityTest.ReverseTerms <- TRUE
-
-
-
 # Return diagonal of matrix of centroid distances for variances based on Gower (1966)
 # directly from a site-by-source table.
 #
@@ -1085,9 +1076,7 @@ gammaContrastTest3.default <- function(tab.a, tab.b, tab.c, ...)
     term.V.p <- (N - G) * log(V.p)
     term.denom <- 1 + ((1 / (3 * (G - 1))) *
                        (sum(1 / (n.g - 1)) - (1 / (N - G))))
-    ln.LR <- if (.diversityTest.ReverseTerms)
-        (term.V.p - term.V.g) / term.denom
-    else (term.V.g - term.V.p) / term.denom
+    ln.LR <- (term.V.p - term.V.g) / term.denom
     DF <- G - 1
     list(V.g = V.g, V.p = V.p, ln.LR = ln.LR, DF = DF)
 }

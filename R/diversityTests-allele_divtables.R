@@ -17,7 +17,7 @@ NULL
 #' \code{TRUE}, then this is followed by the test result for each locus
 #' individually.
 #'
-#' @param x       Object of class \code{allele_diversity_test}, returned by
+#' @param x   Object of class \code{allele_diversity_test}, returned by
 #' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
 #' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
 #' \code{\link{gammaContrastTest3}} when given an argument of class
