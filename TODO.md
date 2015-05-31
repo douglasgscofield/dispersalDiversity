@@ -1,6 +1,7 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Sort out weirdness with $q.variance.0
 * Continue on `diversityMultilocus` function returns match `diversity` function returns
 * Do we need `method = "permute"`? 
 * Sort out test differences
@@ -41,6 +42,7 @@ TODO for dispersalDiversity
 Completed
 ---------
 
+* `membershipPlot` annotation arguments `l1` and `l2` are placed by an `annotation` function which can be redefined by the user
 * Weighted means and sample variances of `q.gg` for each estimator and of `q.gh` from Scofield *et al*. 2011 *Oecologia* are now included
 * For all diversity tests, the comparison of the log-likelihood value against an analytic &Chi;<sup>2</sup> distribution is removed; this was rarely if ever an appropriate test
 * Diversity tests now produce an error if any group has just one member, and `as.divtable` produces a warning for the same condition

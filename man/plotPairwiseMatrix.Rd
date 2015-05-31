@@ -53,9 +53,9 @@ using a colour scale and \code{levelplot} from the \code{lattice} package.
 The mean value may be included.
 }
 \details{
-The default colour scheme used is grayscale, with black and white used
-for values very near the extremes (within 0.01 of 0 and 1).  Options are
-available for modifying the colour scheme.
+The default colour scheme used is grayscale, with white and black used
+for values very near the extremes (within 0.01 of 0 and 1, respectively).
+Options are available for modifying the colour scheme.
 }
 \examples{
 data(granaries_2002_Qlob)

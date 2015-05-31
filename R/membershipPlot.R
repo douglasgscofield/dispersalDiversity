@@ -48,8 +48,9 @@
 #'
 #' @param x.mar.width  Width of the X-margin, in a bar plot
 #'
-#' @param l1,l2   First and second lines of annotation to appear above
-#' bars in a bar plot
+#' @param l1,l2,annotate   First and second lines of annotation to appear
+#' above bars in a bar plot and the function to place them there.
+#' Alternate annotations may be enabled by redefining \code{annotate}.
 #'
 #' @param header.cex Character expansion factor for plot header
 #'
@@ -107,7 +108,15 @@ membershipPlot.divtable <- function(tab,
     fill.method = c("colour", "bw", "color"), fill.palette = "Dark2",
     distinguish.multiton = FALSE, xlab = "Site", ylab = "Membership",
     las = 1, x.mar.width = ifelse(las >= 2, 4, 3), cex = 0.7,
-    header.cex = 0.9, cex.names = 0.85, l1 = NULL, l2 = NULL,
+    header.cex = 0.9, cex.names = 0.85, 
+    l1 = NULL, l2 = NULL,
+    annotate = function() {
+        xl <- seq(0.8, by = 1.3, length.out = max(length(l1), length(l2)))
+        if (! is.null(l1))
+            mtext(l1, at = xl, line = 1, cex = header.cex, xpd = NA)
+        if (! is.null(l2)) 
+            mtext(l2, at = xl, line = 0.5, cex = header.cex, xpd = NA)
+    },
     file = NULL, file.dim = c(5.25, 2),
     ...)
 {
@@ -204,11 +213,10 @@ membershipPlot.divtable <- function(tab,
     do.call("barplot", c(list(height = tab, space = 0.3, horiz = FALSE), 
         cex.names = cex.names, fill.args, ...))
     title(xlab = , ylab = ylab)
-    xl <- seq(0.8, by = 1.3, length.out = max(length(l1), length(l2)))
-    if (!is.null(l1)) 
-        mtext(l1, at = xl, line = 1, cex = header.cex, xpd = NA)
-    if (!is.null(l2)) 
-        mtext(l2, at = xl, line = 0.5, cex = header.cex, xpd = NA)
+
+    # 
+    if (! is.null(annotate))
+        annotate()
 
     if (! is.null(file)) dev.off()
 }
