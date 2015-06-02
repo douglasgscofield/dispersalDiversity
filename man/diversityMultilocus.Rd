@@ -19,7 +19,9 @@ See \code{\link{diversity}} and Scofield \emph{et al}. (2012),
 Sort \emph{et al}. (in press).}
 }
 \value{
-ans <- list(q.gg               = q.gg,
+A list of class \code{multilocus_diversity}:
+
+  ans <- list(q.gg               = q.gg,
               alpha.gk           = alpha.gk,
               q.k                = q.k,
               alpha.k            = alpha.k,

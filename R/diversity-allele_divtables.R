@@ -1,16 +1,6 @@
 #' @include diversity-divtable.R
 NULL
 
-# # For comparing allele diversity between two different samples:
-#
-#   dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
-#   dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-#   gt1 <- createAlleleTables(dat1)
-#   gt2 <- createAlleleTables(dat2)
-#   alpha.contrast <- allele.alphaContrastTest(gt1, gt2)
-#   gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
-#
-
 
 
 #' Calculate diversity for \code{allele_divtables} object using \code{diversityMultilocus}
@@ -51,7 +41,7 @@ diversity.allele_divtables <- function(x, ...)
 #' See \code{\link{diversity}} and Scofield \emph{et al}. (2012),
 #' Sort \emph{et al}. (in press).
 #'
-#' @return
+#' @return A list of class \code{multilocus_diversity}:
 #'
 #'   ans <- list(q.gg               = q.gg,
 #'               alpha.gk           = alpha.gk,

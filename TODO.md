@@ -2,7 +2,7 @@ TODO for dispersalDiversity
 ---------------------------
 
 * Sort out weirdness with $q.variance.0
-* Continue on `diversityMultilocus` function returns match `diversity` function returns
+* Continue on `diversityMultilocus` function returns match `diversity` function returns, also redo `diversitySingleLocus` returns
 * Do we need `method = "permute"`? 
 * Sort out test differences
 * That wierdness when converting to as.divtable for the Thamnolia diversity stuff

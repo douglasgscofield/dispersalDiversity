@@ -431,8 +431,16 @@ alphaContrastTest.default <- function(tab.a, tab.b, ...)
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
-# @examples
-#
+#' @examples
+#'
+#' #  dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
+#' #  dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
+#' #  dat3 <- readGenalex("file-of-genotypes-sample-3.txt")
+#' #  gt1 <- createAlleleTables(dat1)
+#' #  gt2 <- createAlleleTables(dat2)
+#' #  gt3 <- createAlleleTables(dat3)
+#' #  alphaContrastTest3(gt1, gt2, gt3, n.resample = 1000)
+#'
 #' @export
 #'
 #' @name alphaContrastTest3
