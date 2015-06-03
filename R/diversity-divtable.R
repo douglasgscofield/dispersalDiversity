@@ -194,7 +194,7 @@ diversity.divtable <- function(tab, ...)
     n.gh <- outer(n.g, n.g, '*'); diag(n.gh) <- 0
     q.bar.gh <- sum(n.gh * C) / sum(n.gh)
     # note n.gh is 0 along diagonal so diag(C - q.bar.0) is ignored
-    q.variance.gh <- sum(n.gh) * sum(n.gh * (C - q.bar.gh)) /
+    q.variance.gh <- sum(n.gh) * sum(n.gh * (C - q.bar.gh)^2) /
         (sum(n.gh)^2 - sum(n.gh * n.gh))
 
     # Separate lists for standard calculations:
@@ -221,13 +221,16 @@ diversity.divtable <- function(tab, ...)
     #    overlap                mean overlap  (TODO RENAME?)
     #    divergence             mean divergence  (TODO RENAME?)
 
+    q.variance.weighting <- sum(n.g * n.g) /
+        ((sum(n.g * n.g))^2 - sum(n.g * n.g * n.g * n.g))
+
     q = list()
 
     q$q.gg <- diag(Q.mat)
     q$q.bar.0 <- sum(n.g * n.g * q$q.gg) / sum(n.g * n.g)
 
-    q$q.variance.0 <- (sum(n.g * n.g) * sum(n.g * n.g * (q$q.gg - q$q.bar.0))) /
-        (sum(n.g * n.g)^2 - sum(n.g * n.g * n.g * n.g))
+    q$q.variance.0 <- q.variance.weighting *
+        sum(n.g * n.g * (q$q.gg - q$q.bar.0)^2)
 
     q$q.unweighted.mean <- mean(q$q.gg)
     q$alpha.g <- 1 / q$q.gg
@@ -249,9 +252,8 @@ diversity.divtable <- function(tab, ...)
     q.nielsen$q.gg <- nielsenTransform(diag(Q.mat), n.g)
     q.nielsen$q.bar.0 <- sum(n.g * n.g * q.nielsen$q.gg) / sum(n.g * n.g)
 
-    q.nielsen$q.variance.0 <- (sum(n.g * n.g) * sum(n.g * n.g *
-                                   (q.nielsen$q.gg - q.nielsen$q.bar.0))) /
-        (sum(n.g * n.g)^2 - sum(n.g * n.g * n.g * n.g))
+    q.nielsen$q.variance.0 <- q.variance.weighting * 
+        sum(n.g * n.g * (q.nielsen$q.gg - q.nielsen$q.bar.0)^2)
 
     q.nielsen$q.unweighted.mean <- mean(q.nielsen$q.gg)
     q.nielsen$alpha.g <- 1 / q.nielsen$q.gg
@@ -282,7 +284,7 @@ diversity.divtable <- function(tab, ...)
                  sum((n.g * n.g) - n.g)
 
     M.g <- n.g * (n.g - 1)
-    r$q.variance.0 <- (sum(M.g) * sum(M.g * (r$q.gg - r$q.bar.0))) /
+    r$q.variance.0 <- (sum(M.g) * sum(M.g * (r$q.gg - r$q.bar.0)^2)) /
         (sum(M.g)^2 - sum(M.g * M.g))
 
     r$q.unweighted.mean <- mean(r$q.gg)

@@ -27,7 +27,8 @@ test_that("diversity.divtable gets basic attributes right", {
     # ... q.0.gh
     expect_equal(d$q.0.gh, matrix(c(0,1,1,0,0,1,0,0,0), byrow = TRUE, nrow = 3, ncol = 3,
                                        dimnames = list(G=c("a","b","c"),G=c("a","b","c"))))
-
+    expect_equal(d$q.bar.gh, 0.25)
+    expect_equal(d$q.variance.gh, 0)
     expect_equal(d$Q.mat, matrix(0.25, nrow = 3, ncol = 3,
                                  dimnames = list(G=c("a","b","c"),G=c("a","b","c"))))
 })
@@ -37,6 +38,7 @@ context("Testing diversity.divtable contents of q list")
 test_that("diversity.divtable gets q right for scaled diversity", {
     expect_equal(d$q$q.gg, setNames(c(0.25,0.25,0.25), c("a","b","c")))
     expect_equal(d$q$q.bar.0, 0.25)
+    expect_equal(d$q$q.variance.0, 0)
     expect_equal(d$q$q.unweighted.mean, 0.25)
     expect_equal(d$q$alpha.g, setNames(c(4,4,4), c("a","b","c")))
     expect_equal(d$q$alpha.unweighted.mean, 4)
@@ -58,6 +60,7 @@ context("Testing diversity.divtable contents of r list")
 test_that("diversity.divtable gets r 'right' for scaled diversity, a = 1 makes r Inf there", {
     expect_equal(d$r$q.gg, setNames(c(0,0.1428571429,0.1818181818), c("a","b","c")))
     expect_equal(d$r$q.bar.0, 0.16)
+    expect_equal(d$r$q.variance.0, 0.004005944304)
     expect_equal(d$r$q.unweighted.mean, 0.1082251082)
     expect_equal(d$r$alpha.g, setNames(c(Inf,7,5.5), c("a","b","c")))
     expect_equal(d$r$alpha.unweighted.mean, Inf)
@@ -79,6 +82,7 @@ context("Testing diversity.divtable contents of q.nielsen list")
 test_that("diversity.divtable gets q.nielsen right for scaled diversity, low-sample-size problems here as well", {
     expect_equal(d$q.nielsen$q.gg, setNames(c(0.1666666667,0.1734693878,0.1942148760), c("a","b","c")))
     expect_equal(d$q.nielsen$q.bar.0, 0.1863198644)
+    expect_equal(d$q.nielsen$q.variance.0, 0.0002296811513)
     expect_equal(d$q.nielsen$q.unweighted.mean, 0.1781169768)
     expect_equal(d$q.nielsen$alpha.g, setNames(c(6,5.764705882,5.148936170), c("a","b","c")))
     expect_equal(d$q.nielsen$alpha.unweighted.mean, 5.637880684)
