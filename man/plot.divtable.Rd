@@ -4,7 +4,8 @@
 \alias{plot.divtable}
 \title{Plot \code{divtable} object using \code{membershipPlot}}
 \usage{
-\method{plot}{divtable}(x, l2 = paste("N =", rowSums(x)), ...)
+\method{plot}{divtable}(x, ..., l2 = paste("N =", rowSums(x)),
+  main = deparse(substitute(x)))
 }
 \arguments{
 \item{x}{Object of class \code{\link{divtable}}}

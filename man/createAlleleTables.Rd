@@ -52,9 +52,11 @@ recognised is reported if \code{quiet = FALSE}.
 data(Qagr_pericarp_genotypes)
 pal <- createAlleleTables(Qagr_pericarp_genotypes)
 str(pal)
+
 ## The divtable for the first locus
 pal[[1]]
-## Some missing data
+
+## allele_divtables when presented with some missing data
 data(Qagr_adult_genotypes)
 aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE)
 }

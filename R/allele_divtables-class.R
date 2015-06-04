@@ -19,6 +19,16 @@ NULL
 #' and then converted to \code{allele_divtables} using
 #' \code{\link{createAlleleTables}}.
 #'
+#' @examples
+#'
+#' ## One possible way to plot an \code{allele_divtables} object, plotting
+#' ## each locus as a separate divtable
+#'
+#' data(Qagr_pericarp_genotypes)
+#' pal <- createAlleleTables(Qagr_pericarp_genotypes)
+#' par(mfrow = c(round(length(pal) / 2), 2))
+#' lapply(names(pal), function(n) plot(pal[[n]], main = n, l2 = NULL, las = 2))
+#'
 #' @name allele_divtables-class
 #' @aliases allele_divtables
 #'
@@ -48,8 +58,10 @@ NULL
 #' @note \code{as.allele_divtables} is a synonym
 #'
 #' @param x Object of class \code{genalex} holding genotypes to be converted
+#'
 #' @param exclude Values in \code{x} that indicate missing alleles, these are
 #' excluded from the \code{divtable} entries for each locus
+#'
 #' @param quiet If \code{TRUE}, report the number of missing alleles excluded
 #'
 #' @return Object of class \code{\link{allele_divtable}}
@@ -60,9 +72,11 @@ NULL
 #' data(Qagr_pericarp_genotypes)
 #' pal <- createAlleleTables(Qagr_pericarp_genotypes)
 #' str(pal)
+#'
 #' ## The divtable for the first locus
 #' pal[[1]]
-#' ## Some missing data
+#'
+#' ## allele_divtables when presented with some missing data
 #' data(Qagr_adult_genotypes)
 #' aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE)
 #'

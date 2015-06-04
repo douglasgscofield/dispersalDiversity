@@ -22,4 +22,13 @@ typically, genotype data will be in a class \code{\link{genalex}} object
 and then converted to \code{allele_divtables} using
 \code{\link{createAlleleTables}}.
 }
+\examples{
+## One possible way to plot an \\code{allele_divtables} object, plotting
+## each locus as a separate divtable
+
+data(Qagr_pericarp_genotypes)
+pal <- createAlleleTables(Qagr_pericarp_genotypes)
+par(mfrow = c(round(length(pal) / 2), 2))
+lapply(names(pal), function(n) plot(pal[[n]], main = n, l2 = NULL, las = 2))
+}
 

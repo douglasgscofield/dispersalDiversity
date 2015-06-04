@@ -58,8 +58,8 @@ NULL
 #'
 #' @export
 #'
-plot.divtable <- function(x, l2 = paste("N =", rowSums(x)), ...) {
-    membershipPlot(x, l2 = l2, ...)
+plot.divtable <- function(x, ..., l2 = paste("N =", rowSums(x)), main = deparse(substitute(x))) {
+    membershipPlot(x, ..., l2 = l2, main = main)
 }
 
 

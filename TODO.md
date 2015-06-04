@@ -1,36 +1,14 @@
 TODO for dispersalDiversity
 ---------------------------
 
+* Include a plotting method for the `allele_divtables` class in the examples
 * Continue on `diversityMultilocus` function returns match `diversity` function returns, also redo `diversitySingleLocus` returns
 * Do we need `method = "permute"`? 
-* Sort out test differences
-* That wierdness when converting to as.divtable for the Thamnolia diversity stuff
-* This wierdness:
-
-    mitchell-clustering> m = do.reads.matrix(subset(dat200, Site == "Iceland"), "Species")
-    mitchell-clustering> m
-               OTU
-    Species     OTU 1 OTU 2 OTU 3 OTU 4 OTU 5 OTU 6 OTU 7
-      Cetraria      5 26483    23     0     0     0     0
-      Thamnolia    19 12637     0     0     0     0     0
-    mitchell-clustering> alphaDiversityTest(m)
-    Error in UseMethod("alphaDiversityTest") : 
-      no applicable method for 'alphaDiversityTest' applied to an object of class "c('matrix', 'integer', 'numeric')"
-    mitchell-clustering> as.divtable(m)
-               OTU
-    Species     OTU 1 OTU 2 OTU 3 OTU 4 OTU 5 OTU 6 OTU 7
-      Cetraria      5 26483    23     0     0     0     0
-      Thamnolia    19 12637     0     0     0     0     0
-    mitchell-clustering> alphaDiversityTest(as.divtable(m))
-    Alpha diversity test, contrast among sites in single data set
-    ....
-
 * Update figures with existing code
 * continue generalising allele diversity tests
 * Clean up pairwise diversity tests, return values and print and plot methods
 * Make sites/groups/species terminology consistent
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
-* Define `plot` method for `allele_divtables`?
 * Am I happy with `print.divtable` and `plot.divtable` methods?
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
@@ -41,10 +19,9 @@ TODO for dispersalDiversity
 Completed
 ---------
 
-* Corrected missing `^2` in `q.variance.0` calculations
 * `membershipPlot` annotation arguments `l1` and `l2` are placed by an `annotation` function which can be redefined by the user
-* Weighted means and sample variances of `q.gg` for each estimator and of `q.gh` from Scofield *et al*. 2011 *Oecologia* are now included
-* For all diversity tests, the comparison of the log-likelihood value against an analytic &Chi;<sup>2</sup> distribution is removed; this was rarely if ever an appropriate test
+* Weighted means and sample variances of `q.gg` for each estimator and of `q.gh`, all as defined in Scofield *et al*. 2011 *Oecologia*, are now included in the results returned by `diversity` for `divtable` objects
+* For all diversity tests, the comparison of the log-likelihood value against an analytic &Chi;<sup>2</sup> distribution is removed; this was likely never an appropriate test
 * Diversity tests now produce an error if any group has just one member, and `as.divtable` produces a warning for the same condition
 * `membershipPlot` writes the plot into a PDF file on option (the EPS option has been removed)
 * The pooled PMI values returned by `diversity` are documented
