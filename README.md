@@ -1,5 +1,6 @@
-`dispersalDiversity`: Statistics and Tests
-------------------------------------------
+dispersalDiversity
+==================
+
 
 This is a collection of [R](http://www.r-project.org) functions to facilitate
 analysis of dispersal in biological communities.  The bulk of the functions
@@ -127,14 +128,14 @@ versions of this code can be seen Scofield _et al._ 2010, 2011, 2012.
 Diversity statistics
 --------------------
 
-To calculate PMI statistics ([Grivet _et al._
+The function `diversity` calculates PMI statistics ([Grivet _et al._
 2005](http://dx.doi.org/10.1111/j.1365-294X.2005.02680.x), [Scofield _et al._
 2010](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x), [Scofield _et al._
 2011](http://dx.doi.org/10.1007/s00442-010-1828-5)) and dispersal diversity
 statistics([Scofield _et al._
 2012](http://www.jstor.org/stable/10.1086/668202)) statistics
-(<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.), the function
-`diversity()` has you covered.  It takes a site-by-source table and
+(<i>q<sub>gg</sub></i>, <i>&alpha;<sub>g</sub></i>, etc.).
+For a `divtable` table holding site-by-species counts, the function
 calculates PMI and diversity statistics three different ways, each of
 which treats possible bias differently and each of which is returned in
 an otherwise identical sublist:
@@ -151,36 +152,7 @@ an otherwise identical sublist:
   sample sizes (Grivet _et al._ 2005, Scofield _et al._ 2012)
 
 
-
-```R
-source("diversityTests.R")
-```
-
-Additional source files are provided to perform other tasks.
-`plotPairwiseMatrix.R` is available for plotting pairwise divergence/overlap
-matrices.  More information is available below.  This file requires the
-`pmiDiversity.R` source file to be available within the same directory:
-
-```R
-source("plotPairwiseMatrix.R")
-```
-
-`gammaAccum.R` is available for collecting &gamma; diversity accumulation
-information and plotting this.  More information is avaialble below.  This file
-requires the `pmiDiversity.R` source file to be available within the same
-directory:
-
-```R
-source("gammaAccum.R")
-```
-
-### diversityTests.R
-
-Defines several R functions which, like `pmiDiversity()`, take a site-by-source
-table (one or more) and test diversity statistics within and among them.  See
-(Scofield _et al._ 2012) for methodological details.  The file `pmiDiversity.R`
-(see above) is required to be in the same directory, as it provides functions
-used here.
+Several additional functions are provided.
 
 Function | Description
 -------- | -----------
@@ -191,6 +163,7 @@ Function | Description
 `plotPairwiseMeanTest()` | Plot the list returned from the above test for evaluation
 `gammaContrastTest(tab.a, tab.b)` | Test whether there is a difference in the &gamma; diversity between two datasets
 `gammaContrastTest3(tab.a, tab.b, tab.c)` | Test whether there is a difference in the &gamma; diversity among three datasets
+`gammaAccum(tab)` |  Permute species among sites and accumulate gamma diversity across permutations
 
 An example of the output of `plotAlphaTest()`:
 
