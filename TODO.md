@@ -1,7 +1,6 @@
 TODO for dispersalDiversity
 ---------------------------
 
-* Include a plotting method for the `allele_divtables` class in the examples
 * Continue on `diversityMultilocus` function returns match `diversity` function returns, also redo `diversitySingleLocus` returns
 * Do we need `method = "permute"`? 
 * Update figures with existing code
@@ -21,14 +20,14 @@ Completed
 
 * `membershipPlot` annotation arguments `l1` and `l2` are placed by an `annotation` function which can be redefined by the user
 * Weighted means and sample variances of `q.gg` for each estimator and of `q.gh`, all as defined in Scofield *et al*. 2011 *Oecologia*, are now included in the results returned by `diversity` for `divtable` objects
-* For all diversity tests, the comparison of the log-likelihood value against an analytic &Chi;<sup>2</sup> distribution is removed; this was likely never an appropriate test
+* For all diversity tests, the comparison of the log-likelihood value against an analytic &Chi;<sup>2</sup> distribution is removed as this was not an appropriate test
 * Diversity tests now produce an error if any group has just one member, and `as.divtable` produces a warning for the same condition
 * `membershipPlot` writes the plot into a PDF file on option (the EPS option has been removed)
 * The pooled PMI values returned by `diversity` are documented
 * The `divtable` and `allele_divtables` classes have separate documentation
 * Export and document the `nielsenTransform` function
 * Production of pie plots and the `method` argument are removed from `membershipPlot`
-* Optimisation of Gower distance matrix diagonal generation
+* The Gower distance matrix diagonal generation is much, much faster
 * Removed `accum.method` and `distance.file` arguments from `gammaAccum` functions.  The `proximity` method was never well thought through; a proximity-based method could be valuable but not in the way it was implemented here.
 * For alpha and gamma diversity tests, all return class `'diversity_test'` object which is handled by common `print.diversity_test` and `plot.diversity_test` methods
 * New `as.divtable` generic, with methods `as.divtable.table`, `as.divtable.xtabs`, `as.divtable.matrix` and `as.divtable.data.frame`, the latter of which first converts to `matrix`, then to `divtable`
@@ -37,9 +36,9 @@ Completed
 * Quantiles checked are now richer and symmetric
 * Renamed `allele.createTableList` to S3 generic and method `createAlleleTables` and `createAlleleTables.genalex`.  Added the synonym generic `as.allele_divtables`.
 * Stabilised function interfaces using S3 classes.
-* Incorporated random distance matrix creation in to README.
+* An example of random distance matrix creation is added to the README.
+* Reworked return value from `diversity` to return separate lists for `q`, `q.nielsen` and `r`
 * Changes function name of `pmiDiversity` to `diversity`
 * For data, added 2002 and 2004 granary assignments for *Q. lobata*
 * Worked out how to deal with `library(RColorBrewer)` use in `membershipPlot`.  If `RColorBrewer` is available then it is used, with the new option `fill.palette = "Dark2"` selecting the palette.  If it is not available, `rainbow` is used.
-* Reworked return value from `pmiDiversity` to return separate lists for `q`, `q.nielsen` and `r`
 

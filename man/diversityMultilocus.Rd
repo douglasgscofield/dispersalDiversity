@@ -19,7 +19,61 @@ See \code{\link{diversity}} and Scofield \emph{et al}. (2012),
 Sort \emph{et al}. (in press).}
 }
 \value{
-A list of class \code{multilocus_diversity}:
+A list of class \code{multilocus_diversity}.  Elements of the
+list are calculated from values returned by
+\code{\link{diversitySingleLocus}} and include:
+\itemize{
+    \item \code{q.gg}, matrix of \code{allele.alpha.g} values across sites
+          (rows), for each locus (columns)
+    \item \code{alpha.gk}, matrix of \code{allele.alpha.g} values across
+          sites (rows), for each locus (columns) (\emph{are these simply
+          reciprocals of q.gg?})
+    \item \code{q.k}, vector of mean \code{q.gg} values across loci, the
+          mean values of the rows of \code{q.gg}
+    \item \code{alpha.k}, vector of mean \code{allele.alpha.g} values
+          across loci, the mean values of the rows of \code{alpha.gk}
+    \item \code{q.bar.weighted.a}, vector of \code{allele.q.bar.weighted}
+          for each locus
+    \item \emph{\code{alpha.bar.weighted.a}, vector of
+          \code{allele.alpha.bar.weighted} for each locus ????}
+    \item \emph{\code{overlap.a}, vector of \code{allele.overlap} for each locus ????}
+    \item \emph{\code{divergence.a}, vector of \code{allele.divergence} for each locus ????}
+    \item \code{Q.0.a}, vector of \code{allele.Q.0} values for each locus
+    \item \code{q.bar.weighted}, mean of \code{q.bar.weighted.a}
+    \item \code{alpha.bar.weighted}, reciprocal of \code{q.bar.weighted}
+    \item \emph{\code{Q.0}, mean of \code{Q.0.a} ????}
+    \item \code{gamma}, reciprocal of mean of \code{Q.0.a}, \emph{Q.0 ????}
+    \item \code{beta}, \code{gamma} divided by \code{alpha.bar.weighted}
+    \item \code{G}, number of loci
+    \item \code{N}, allele count for in each locus
+    \item \code{K}, number of sites
+    \item \code{alpha.scaled}, \code{alpha.bar.weighted} scaled to fall
+          in the interval [0, 1]
+    \item \code{gamma.scaled}, \code{gamma} scaled to fall in the interval
+          [0, 1]
+    \item \code{beta.scaled}, \code{beta} scaled to fall in the interval
+          [0, 1]
+    \item \code{q.gh}, site-by-site matrix of mean of \code{q.gh} values
+          across all loci
+    \item \code{overlap}, sum of \code{q.gh} divided by \code{K} - 1 times
+          the sum of \code{q.k}
+    \item \code{divergence}, 1 - \code{overlap}
+    \item \code{overlap.mean}, mean of \code{allele.divergence} values
+          for each locus (\emph{\code{overlap.a} ???})
+    \item \code{divergence.mean}, mean of \code{allele.overlap} values
+          for each locus (\emph{\code{divergence.a} ???})
+}
+
+These items were left out for no apparent reason or are confusing:
+\itemize{
+    \item \code{Q.0}
+    \item \code{alpha.bar.weighted.a}
+    \item \code{G}
+    \item \code{N}
+    \item \code{K}
+    \item \code{overlap.a}
+    \item \code{divergence.a}
+}
 
   ans <- list(q.gg               = q.gg,
               alpha.gk           = alpha.gk,

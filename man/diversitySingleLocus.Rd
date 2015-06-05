@@ -16,11 +16,61 @@ names and column names being the names given to the individual alleles}
 See \code{\link{diversity}}.}
 }
 \value{
-List containing diversity estimates for the locus
+A list of class \code{singlelocus_diversity}, containing values
+returned by \code{\link{diversity}} or derived from them:
+\itemize{
+    \item \code{allele.table}, class \code{\link{divtable}} table of sites
+          by alleles
+    \item \code{allele.N}, the total allele count
+    \item \code{allele.G}, the number of unique alleles
+    \item \code{allele.q.gg}, vector of length number of sites, containing
+          squared frequencies of alleles in each site
+    \item \code{allele.n.g}, vector of the number of alleles in each site
+    \item \code{allele.n.k}, vector of allele counts for each unique allele
+    \item \code{allele.alpha.g}, \code{alpha.g} values for each site (EXPAND from diversity)
+    \item \code{allele.q.bar.weighted}, weighted mean allele frequency
+          calculated across sites; must this always be an "r" type mean?
+    \item \code{allele.alpha.bar.weighted}, reciprocal of
+          \code{allele.q.bar.weighted}
+    \item \code{allele.Q.0}, reciprocal of \code{allele.gamma}
+    \item \code{allele.q.gh}, site-by-site matrix of \code{q.gh} values
+          across all loci
+    \item \code{allele.overlap}, mean site-by-site overlap as calculated by
+          \code{diversity}
+    \item \code{allele.divergence}, mean site-by-site divergence as
+          calculated by \code{diversity}
+    \item \code{allele.gamma}, gamma diversity across sites as calculated
+          by \code{diversity}
+    \item \code{allele.beta}, \code{allele.gamma} divided by
+          \code{allele.alpha.bar.weighted}
+    \item \code{allele.func.scale.alpha}, function for scaling
+          \code{allele.alpha.g} and \code{allele.alpha.bar.weighted} with
+          given \code{allele.N} and \code{allele.G} and arbitrary ploidy
+    \item \code{allele.func.scale.gamma}, function for scaling
+          \code{allele.gamma} with
+          given \code{allele.N} and \code{allele.G} and arbitrary ploidy
+    \item \code{allele.func.scale.beta}, function for scaling
+          \code{allele.beta} with given \code{allele.G} and arbitrary ploidy
+    \item \code{allele.scaled.ploidy1}, a list containing values for
+          \code{allele.alpha.g}, \code{allele.alpha.bar.weighted},
+          \code{allele.gamma} and \code{allele.beta} scaled using the above
+          functions and ploidy of 1
+    \item \code{allele.scaled.ploidy2}, a list containing values for
+          \code{allele.alpha.g}, \code{allele.alpha.bar.weighted},
+          \code{allele.gamma} and \code{allele.beta} scaled using the above
+          functions and ploidy of 2
+}
+
+\emph{Do we want to generalise allele.q.bar.weighted to compute whatever
+form of mean is appropriate for \code{method}???}
 }
 \description{
 The single argument is, for a single locus, a table of site-by-allele
 counts, with row names being the site names, and column names being the
 names given to the individual alleles.
+}
+\details{
+For specific formulas and discussion of each statistic, see
+Scofield \emph{et al}. (2015).
 }
 

@@ -41,7 +41,61 @@ diversity.allele_divtables <- function(x, ...)
 #' See \code{\link{diversity}} and Scofield \emph{et al}. (2012),
 #' Sort \emph{et al}. (in press).
 #'
-#' @return A list of class \code{multilocus_diversity}:
+#' @return A list of class \code{multilocus_diversity}.  Elements of the
+#' list are calculated from values returned by
+#' \code{\link{diversitySingleLocus}} and include:
+#' \itemize{
+#'     \item \code{q.gg}, matrix of \code{allele.alpha.g} values across sites
+#'           (rows), for each locus (columns)
+#'     \item \code{alpha.gk}, matrix of \code{allele.alpha.g} values across
+#'           sites (rows), for each locus (columns) (\emph{are these simply
+#'           reciprocals of q.gg?})
+#'     \item \code{q.k}, vector of mean \code{q.gg} values across loci, the
+#'           mean values of the rows of \code{q.gg}
+#'     \item \code{alpha.k}, vector of mean \code{allele.alpha.g} values
+#'           across loci, the mean values of the rows of \code{alpha.gk}
+#'     \item \code{q.bar.weighted.a}, vector of \code{allele.q.bar.weighted}
+#'           for each locus
+#'     \item \emph{\code{alpha.bar.weighted.a}, vector of
+#'           \code{allele.alpha.bar.weighted} for each locus ????}
+#'     \item \emph{\code{overlap.a}, vector of \code{allele.overlap} for each locus ????}
+#'     \item \emph{\code{divergence.a}, vector of \code{allele.divergence} for each locus ????}
+#'     \item \code{Q.0.a}, vector of \code{allele.Q.0} values for each locus
+#'     \item \code{q.bar.weighted}, mean of \code{q.bar.weighted.a}
+#'     \item \code{alpha.bar.weighted}, reciprocal of \code{q.bar.weighted}
+#'     \item \emph{\code{Q.0}, mean of \code{Q.0.a} ????}
+#'     \item \code{gamma}, reciprocal of mean of \code{Q.0.a}, \emph{Q.0 ????}
+#'     \item \code{beta}, \code{gamma} divided by \code{alpha.bar.weighted}
+#'     \item \code{G}, number of loci
+#'     \item \code{N}, allele count for in each locus 
+#'     \item \code{K}, number of sites
+#'     \item \code{alpha.scaled}, \code{alpha.bar.weighted} scaled to fall
+#'           in the interval [0, 1]
+#'     \item \code{gamma.scaled}, \code{gamma} scaled to fall in the interval
+#'           [0, 1]
+#'     \item \code{beta.scaled}, \code{beta} scaled to fall in the interval
+#'           [0, 1]
+#'     \item \code{q.gh}, site-by-site matrix of mean of \code{q.gh} values
+#'           across all loci
+#'     \item \code{overlap}, sum of \code{q.gh} divided by \code{K} - 1 times
+#'           the sum of \code{q.k}
+#'     \item \code{divergence}, 1 - \code{overlap}
+#'     \item \code{overlap.mean}, mean of \code{allele.divergence} values
+#'           for each locus (\emph{\code{overlap.a} ???})
+#'     \item \code{divergence.mean}, mean of \code{allele.overlap} values
+#'           for each locus (\emph{\code{divergence.a} ???})
+#' }
+#'
+#' These items were left out for no apparent reason or are confusing:
+#' \itemize{
+#'     \item \code{Q.0}
+#'     \item \code{alpha.bar.weighted.a}
+#'     \item \code{G}
+#'     \item \code{N}
+#'     \item \code{K}
+#'     \item \code{overlap.a}
+#'     \item \code{divergence.a}
+#' }
 #'
 #'   ans <- list(q.gg               = q.gg,
 #'               alpha.gk           = alpha.gk,
@@ -204,13 +258,62 @@ diversityMultilocus.allele_divtables <- function(x, ploidy = 2,
 #' counts, with row names being the site names, and column names being the
 #' names given to the individual alleles.
 #'
+#' For specific formulas and discussion of each statistic, see
+#' Scofield \emph{et al}. (2015).
+#'
 #' @param tab    Table of site-by-allele counts, with row names being the site
 #' names and column names being the names given to the individual alleles
 #'
 #' @param method   Method to use when calculating diversity within the locus.
 #' See \code{\link{diversity}}.
 #'
-#' @return List containing diversity estimates for the locus
+#' @return A list of class \code{singlelocus_diversity}, containing values
+#' returned by \code{\link{diversity}} or derived from them:
+#' \itemize{
+#'     \item \code{allele.table}, class \code{\link{divtable}} table of sites
+#'           by alleles
+#'     \item \code{allele.N}, the total allele count
+#'     \item \code{allele.G}, the number of unique alleles
+#'     \item \code{allele.q.gg}, vector of length number of sites, containing
+#'           squared frequencies of alleles in each site
+#'     \item \code{allele.n.g}, vector of the number of alleles in each site
+#'     \item \code{allele.n.k}, vector of allele counts for each unique allele
+#'     \item \code{allele.alpha.g}, \code{alpha.g} values for each site (EXPAND from diversity)
+#'     \item \code{allele.q.bar.weighted}, weighted mean allele frequency
+#'           calculated across sites; must this always be an "r" type mean?
+#'     \item \code{allele.alpha.bar.weighted}, reciprocal of
+#'           \code{allele.q.bar.weighted}
+#'     \item \code{allele.Q.0}, reciprocal of \code{allele.gamma}
+#'     \item \code{allele.q.gh}, site-by-site matrix of \code{q.gh} values
+#'           across all loci
+#'     \item \code{allele.overlap}, mean site-by-site overlap as calculated by
+#'           \code{diversity}
+#'     \item \code{allele.divergence}, mean site-by-site divergence as
+#'           calculated by \code{diversity}
+#'     \item \code{allele.gamma}, gamma diversity across sites as calculated
+#'           by \code{diversity}
+#'     \item \code{allele.beta}, \code{allele.gamma} divided by
+#'           \code{allele.alpha.bar.weighted}
+#'     \item \code{allele.func.scale.alpha}, function for scaling
+#'           \code{allele.alpha.g} and \code{allele.alpha.bar.weighted} with
+#'           given \code{allele.N} and \code{allele.G} and arbitrary ploidy
+#'     \item \code{allele.func.scale.gamma}, function for scaling
+#'           \code{allele.gamma} with
+#'           given \code{allele.N} and \code{allele.G} and arbitrary ploidy
+#'     \item \code{allele.func.scale.beta}, function for scaling
+#'           \code{allele.beta} with given \code{allele.G} and arbitrary ploidy
+#'     \item \code{allele.scaled.ploidy1}, a list containing values for
+#'           \code{allele.alpha.g}, \code{allele.alpha.bar.weighted},
+#'           \code{allele.gamma} and \code{allele.beta} scaled using the above
+#'           functions and ploidy of 1
+#'     \item \code{allele.scaled.ploidy2}, a list containing values for
+#'           \code{allele.alpha.g}, \code{allele.alpha.bar.weighted},
+#'           \code{allele.gamma} and \code{allele.beta} scaled using the above
+#'           functions and ploidy of 2
+#' }
+#'
+#' \emph{Do we want to generalise allele.q.bar.weighted to compute whatever
+#' form of mean is appropriate for \code{method}???}
 #'
 #' @export
 #'
@@ -221,10 +324,12 @@ NULL
 diversitySingleLocus <- function(tab, ...) UseMethod("diversitySingleLocus")
 
 
+
 diversitySingleLocus.default <- function(tab, ...)
 {
-    stop("intended to operate on an allele divtable for a single locus")
+    stop("intended to operate on an object of class allele_divtable describing a single locus")
 }
+
 
 
 #' @rdname diversitySingleLocus
