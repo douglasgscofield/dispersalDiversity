@@ -17,9 +17,8 @@ for column headings}
 }
 \description{
 Plot object of class \code{\link{divtable}} using
-\code{\link{membershipPlot}}.  This function specifies
-\code{method = "bar"} and sets \code{l2} to be the site (row) sums of
-\code{x}.  If you desire other values for these parameters, simply use
-\code{\link{membershipPlot}} directly.
+\code{\link{membershipPlot}}.  This function sets \code{l2} to be the
+row sums of \code{x}.  Other arguments will be passed to
+\code{\link{membershipPlot}}.
 }
 

@@ -8,16 +8,15 @@ TODO for dispersalDiversity
 * Clean up pairwise diversity tests, return values and print and plot methods
 * Make sites/groups/species terminology consistent
 * Consider adding other methods to `createAlleleTables` using the `as.genalex` functionality available to make conversions
-* Am I happy with `print.divtable` and `plot.divtable` methods?
 * copy chunks of `diversity` docs to `diversityMultilocus` and `diversitySingleLocus`
 * Note README includes several examples and more documentation on parameters and functions
-* sort out reverseTerms stuff
 * Get data permission from VLS
 * Tests
 
 Completed
 ---------
 
+* Added a `plot.divtable` method which produces an annotated `membershipPlot`
 * `membershipPlot` annotation arguments `l1` and `l2` are placed by an `annotation` function which can be redefined by the user
 * Weighted means and sample variances of `q.gg` for each estimator and of `q.gh`, all as defined in Scofield *et al*. 2011 *Oecologia*, are now included in the results returned by `diversity` for `divtable` objects
 * For all diversity tests, the comparison of the log-likelihood value against an analytic &Chi;<sup>2</sup> distribution is removed as this was not an appropriate test

@@ -3,7 +3,6 @@ Type: Package
 Title: Analyse individual and genetic diversity of dispersal processes in
     biological populations
 Version: 0.9.9001
-Date: 2015-05-16
 Authors@R: person(c("Douglas", "G."), "Scofield", email = "douglasgscofield@gmail.com", role = c("aut", "cre"))
 Maintainer: Douglas G. Scofield <douglasgscofield@gmail.com>
 Description: A collection of R functions to analyse individual and genetic

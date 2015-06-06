@@ -2,20 +2,27 @@
 % Please edit documentation in R/allele_divtables-class.R
 \name{createAlleleTables}
 \alias{as.allele_divtables}
+\alias{as.allele_divtables.allele_divtables}
 \alias{as.allele_divtables.default}
 \alias{as.allele_divtables.genalex}
+\alias{as.allele_divtables.list}
 \alias{createAlleleTables}
+\alias{createAlleleTables.allele_divtables}
 \alias{createAlleleTables.default}
 \alias{createAlleleTables.genalex}
 \title{Generate an \code{\link{allele_divtables}} object from a class \code{genalex} object}
 \usage{
 \method{createAlleleTables}{default}(x, ...)
 
+\method{createAlleleTables}{allele_divtables}(x, ...)
+
 \method{createAlleleTables}{genalex}(x, exclude = c(NA, "0"), quiet = TRUE,
   ...)
 }
 \arguments{
-\item{x}{Object of class \code{genalex} holding genotypes to be converted}
+\item{x}{Object of class \code{genalex} holding genotypes to be converted,
+or of a class and format that can be converted to \code{genalex} using
+\code{\link[readGenalex]{as.genalex}}}
 
 \item{exclude}{Values in \code{x} that indicate missing alleles, these are
 excluded from the \code{divtable} entries for each locus}
@@ -33,10 +40,16 @@ so that other methods might be written to convert other genetic
 formats.
 }
 \details{
-Another option for converting genotypes to \code{\link{allele_divtables}}
-objects is to convert using \code{\link[readGenalex]{as.genalex}} from the
+If \code{x} is not of class \code{genalex}, an attempt is made to convert
+it to class \code{genalex} using \code{\link[readGenalex]{as.genalex}}
+from the
 \href{http://cran.r-project.org/web/packages/readGenalex/index.html}{readGenalex}
-package, if there is a method available to perform the conversion.
+package.  An error will be produced if \code{x} is of a class or format
+that cannot be converted to class \code{genalex}.
+
+Another option for converting genotypes to \code{\link{allele_divtables}}
+objects is to convert to one of the formats recognised by
+\code{\link[readGenalex]{as.genalex}}.
 
 Although missing alleles may be common in genotypic data, there is no
 provision in \code{\link{diversity}} and other functions in this package
@@ -45,7 +58,11 @@ match one of the values in \code{exclude}.  The numbers of missing alleles
 recognised is reported if \code{quiet = FALSE}.
 }
 \note{
-\code{as.allele_divtables} is a synonym
+\code{as.allele_divtables} is a synonym, unless \code{x} is of class
+\code{list}.  If so, if the class of each element of \code{x} is of class
+\code{\link{divtable}}, then the class of \code{x} is changed to
+\code{\link{allele_divtable}}.  If \code{x} is of class
+\code{allele_divtables} it is returned unchanged.
 }
 \examples{
 ## Use genotype data from readGenalex package, already loaded

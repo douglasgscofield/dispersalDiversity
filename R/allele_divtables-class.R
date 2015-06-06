@@ -16,7 +16,7 @@ NULL
 #'
 #' Assembling an \code{allele_divtables} by hand is labourious.  More
 #' typically, genotype data will be in a class \code{\link{genalex}} object
-#' and then converted to \code{allele_divtables} using
+#' and then converted to \code{\link{allele_divtables}} using
 #' \code{\link{createAlleleTables}}.
 #'
 #' @examples
@@ -30,6 +30,7 @@ NULL
 #' lapply(names(pal), function(n) plot(pal[[n]], main = n, l2 = NULL, las = 2))
 #'
 #' @name allele_divtables-class
+#'
 #' @aliases allele_divtables
 #'
 NULL
@@ -44,10 +45,16 @@ NULL
 #' so that other methods might be written to convert other genetic
 #' formats.
 #'
-#' Another option for converting genotypes to \code{\link{allele_divtables}}
-#' objects is to convert using \code{\link[readGenalex]{as.genalex}} from the
+#' If \code{x} is not of class \code{genalex}, an attempt is made to convert
+#' it to class \code{genalex} using \code{\link[readGenalex]{as.genalex}}
+#' from the
 #' \href{http://cran.r-project.org/web/packages/readGenalex/index.html}{readGenalex}
-#' package, if there is a method available to perform the conversion.
+#' package.  An error will be produced if \code{x} is of a class or format
+#' that cannot be converted to class \code{genalex}.
+#'
+#' Another option for converting genotypes to \code{\link{allele_divtables}}
+#' objects is to convert to one of the formats recognised by
+#' \code{\link[readGenalex]{as.genalex}}.
 #'
 #' Although missing alleles may be common in genotypic data, there is no
 #' provision in \code{\link{diversity}} and other functions in this package
@@ -55,9 +62,15 @@ NULL
 #' match one of the values in \code{exclude}.  The numbers of missing alleles
 #' recognised is reported if \code{quiet = FALSE}.
 #'
-#' @note \code{as.allele_divtables} is a synonym
+#' @note \code{as.allele_divtables} is a synonym, unless \code{x} is of class
+#' \code{list}.  If so, if the class of each element of \code{x} is of class
+#' \code{\link{divtable}}, then the class of \code{x} is changed to
+#' \code{\link{allele_divtable}}.  If \code{x} is of class
+#' \code{allele_divtables} it is returned unchanged.
 #'
-#' @param x Object of class \code{genalex} holding genotypes to be converted
+#' @param x Object of class \code{genalex} holding genotypes to be converted,
+#' or of a class and format that can be converted to \code{genalex} using
+#' \code{\link[readGenalex]{as.genalex}}
 #'
 #' @param exclude Values in \code{x} that indicate missing alleles, these are
 #' excluded from the \code{divtable} entries for each locus
@@ -80,9 +93,9 @@ NULL
 #' data(Qagr_adult_genotypes)
 #' aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE)
 #'
-#' @export createAlleleTables as.allele_divtables as.allele_divtables.default as.allele_divtables.genalex
+#' @export createAlleleTables as.allele_divtables as.allele_divtables.default as.allele_divtables.genalex as.allele_divtables.list as.allele_divtables.allele_divtables
 #'
-#' @aliases createAlleleTables as.allele_divtables as.allele_divtables.default as.allele_divtables.genalex
+#' @aliases createAlleleTables as.allele_divtables as.allele_divtables.default as.allele_divtables.genalex as.allele_divtables.list as.allele_divtables.allele_divtables
 #'
 #' @name createAlleleTables
 #'
@@ -98,9 +111,24 @@ createAlleleTables <- function(x, ...) UseMethod("createAlleleTables")
 #'
 createAlleleTables.default <- function(x, ...)
 {
-    stop("Cannot create allele divtables, perhaps ", deparse(substitute(x)),
-         " be converted to class 'genalex'.  See '?readGenalex::as.genalex'.")
+    if (inherits(x, 'data.frame') || inherits(x, 'loci')) {
+        x <- as.genalex(x)
+        return(createAlleleTables.genalex(x))
+    } else {
+        stop("Cannot convert to class 'allele_divtables', perhaps ",
+             deparse(substitute(x)), " can be converted to class 'genalex'?",
+             " See '?readGenalex::as.genalex'.")
+    }
 }
+
+
+
+#' @rdname createAlleleTables
+#'
+#' @export
+#'
+createAlleleTables.allele_divtables <- function(x, ...)
+    x
 
 
 
@@ -141,4 +169,17 @@ as.allele_divtables.default <- function(x, ...)
 
 as.allele_divtables.genalex <- function(x, ...)
     createAlleleTables.genalex(x, ...)
+
+# These are not synonyms but are still documented in createAlleleTables above
+#
+as.allele_divtables.list <- function(x, ...)
+{
+    if (all(sapply(x, inherits, 'divtable')))
+        structure(x, class('allele_divtables', 'list'))
+    else stop(deparse(substitute(x)),
+              " cannot be converted to class allele_divtables")
+}
+
+as.allele_divtables.allele_divtables <- function(x, ...)
+    x
 

@@ -19,7 +19,7 @@ in the structure of genetic diversity.
 \details{
 Assembling an \code{allele_divtables} by hand is labourious.  More
 typically, genotype data will be in a class \code{\link{genalex}} object
-and then converted to \code{allele_divtables} using
+and then converted to \code{\link{allele_divtables}} using
 \code{\link{createAlleleTables}}.
 }
 \examples{

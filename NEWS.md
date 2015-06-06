@@ -1,6 +1,7 @@
 0.9.9001 (development version)
 ------
 
+* `createAlleleTables` will create a class `allele_divtables` object from genotype data in a class `genalex` object, and will attempt to convert other objects to class `genalex` using `as.genalex` from the `readGenalex` package prior to creating the allele tables
 * Diversity tests no longer compare log-likelihood values against an analytic &Chi;<sup>2</sup> distribution, which was almost always incorrect
 * The calculation of distances for diversity tests is much more efficient in time and space, so tests may be performed on data with very high counts, such as diversity of OTUs quantified via read counts
 * Diversity tests return class `diversity_test`, which has `print` and `plot` methods

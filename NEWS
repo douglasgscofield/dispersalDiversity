@@ -1,6 +1,10 @@
 0.9.9001 (development version)
 ------------------------------
 
+-   createAlleleTables will create a class allele_divtables object from
+    genotype data in a class genalex object, and will attempt to convert
+    other objects to class genalex using as.genalex from the readGenalex
+    package prior to creating the allele tables
 -   Diversity tests no longer compare log-likelihood values against an
     analytic Χ2 distribution, which was almost always incorrect
 -   The calculation of distances for diversity tests is much more
