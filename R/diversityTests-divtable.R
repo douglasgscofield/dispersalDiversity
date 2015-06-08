@@ -244,6 +244,8 @@ alphaDiversityTest.default <- function(tab, ...)
 #' \code{link{allele_divtables}} was described in Sork \emph{et al}.
 #' (In press).
 #'
+#' @note \code{adt.a} and \code{adt.b} must contain the same loci
+#'
 #' @param tab.a Site-by-source table of class \code{\link{divtable}}
 #'
 #' @param tab.b Site-by-source table of class \code{\link{divtable}}
@@ -289,7 +291,7 @@ alphaDiversityTest.default <- function(tab, ...)
 #' membershipPlot(granaries_2002_Qlob)
 #' membershipPlot(granaries_2004_Qlob)
 #' alphaContrastTest(granaries_2002_Qlob, granaries_2004_Qlob)
-#' ##
+#'
 #' ## Comparing allele diversity between two different samples:
 #' ##
 #' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
@@ -396,9 +398,8 @@ alphaContrastTest.default <- function(tab.a, tab.b, ...)
 #' diversity between the three sets of datasets sites represented in \code{tab}
 #' and \code{tab}, or or \code{adt.a} and \code{adt.b}.  The method for the
 #' initial class \code{\link{divtable}} version of this was described in
-#' Scofield et al. (2012), while the allelic (class
-#' \code{link{allele_divtables}} extension was described in Sork \emph{et al}.
-#' (In press).
+#' Scofield et al. (2012).
+#' There currently is no support for contrasting allelic data.
 #'
 #' The null hypothesis for this tests is that there is no difference in alpha
 #' diversity between the three sets of datasets sites represented in 
@@ -431,15 +432,9 @@ alphaContrastTest.default <- function(tab.a, tab.b, ...)
 #' Use of alpha, beta and gamma diversity measures to characterize seed
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
-#' @examples
-#'
-#' #  dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
-#' #  dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-#' #  dat3 <- readGenalex("file-of-genotypes-sample-3.txt")
-#' #  gt1 <- createAlleleTables(dat1)
-#' #  gt2 <- createAlleleTables(dat2)
-#' #  gt3 <- createAlleleTables(dat3)
-#' #  alphaContrastTest3(gt1, gt2, gt3, n.resample = 1000)
+# @examples
+#
+# # Suitable examples would require three datasets
 #'
 #' @export
 #'
@@ -681,6 +676,8 @@ plot.pairwise_mean_test <- function(result, ...)
 #' \code{link{allele_divtables}} was described in Sork \emph{et al}.
 #' (in press).
 #'
+#' @note \code{adt.a} and \code{adt.b} must contain the same loci
+#'
 #' @param tab.a Site-by-source table of class \code{\link{divtable}}
 #'
 #' @param tab.b Site-by-source table of class \code{\link{divtable}}
@@ -726,7 +723,7 @@ plot.pairwise_mean_test <- function(result, ...)
 #' plot(gammaAccum(granaries_2002_Qlob))
 #' plot(gammaAccum(granaries_2004_Qlob))
 #' gammaContrastTest(granaries_2002_Qlob, granaries_2004_Qlob)
-#' ##
+#'
 #' ## Compare gamma diversity between two allele datasets
 #' ##
 #' # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
@@ -839,6 +836,7 @@ gammaContrastTest.default <- function(tab.a, tab.b, ...)
 #' The null hypothesis for this tests is that there is no difference in gamma
 #' diversity between the three datasets in \code{tab.a}, \code{tab.b} and
 #' and \code{tab.c}.  The method was described in Scofield et al. (2012).
+#' There currently is no support for contrasting allelic data.
 #'
 #' @param tab.a Site-by-source table of class \code{\link{divtable}}
 #'

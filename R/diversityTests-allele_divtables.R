@@ -7,9 +7,8 @@ NULL
 #' Print the result of a allele diversity test (alpha or gamma)
 #'
 #' Print an object of class \code{allele_diversity_test}, the result of
-#' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
-#' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
-#' \code{\link{gammaContrastTest3}} when given an argument of class
+#' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}} and
+#' \code{\link{gammaContrastTest}} when given an argument of class
 #' \code{\link{allele_divtables}}.
 #'
 #' The result of the test printed is the summed effect across all loci;
@@ -18,10 +17,9 @@ NULL
 #' individually.
 #'
 #' @param x   Object of class \code{allele_diversity_test}, returned by
-#' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
-#' \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
-#' \code{\link{gammaContrastTest3}} when given an argument of class
-#' \code{\link{allele_divtables}}.
+#' \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}} and
+#' \code{\link{gammaContrastTest}} when given an argument of class
+#' \code{\link{allele_divtables}}
 #'
 #' @param digits  Number of significant digits to use when printing
 #' numeric values.  Defaults to the value of the \code{"digits"} option.
@@ -31,7 +29,7 @@ NULL
 #'
 #' @return \code{x}, returned invisibly
 #'
-#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}, \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}}, \code{\link{gammaContrastTest3}}
+#' @seealso \code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}, \code{\link{gammaContrastTest}}
 #'
 #' @references
 #'
@@ -174,7 +172,9 @@ alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
     if (! inherits(adt.b, 'allele_divtables'))
         stop("both ", name.a, " and ", name.b, " must be of class 'allele_divtables'")
     method <- match.arg(method)
-    stopifnot(length(adt.a) == length(adt.b) && all(names(adt.a) == names(adt.b)))
+    if (! setequal(names(adt.a), names(adt.b)))
+        stop(name.a, " and ", name.b, " must contain the same loci")
+
     nm <- names(adt.a)
 
     ans <- list(method = "Alpha diversity test, contrast between two multilocus data sets",
@@ -281,8 +281,9 @@ gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
     if (! inherits(adt.b, 'allele_divtables'))
         stop("both ", name.a, " and ", name.b, " must be of class 'allele_divtables'")
     method <- match.arg(method)
-    stopifnot(length(adt.a) == length(adt.b) && 
-              all(names(adt.a) == names(adt.b)))
+    if (! setequal(names(adt.a), names(adt.b)))
+        stop(name.a, " and ", name.b, " must contain the same loci")
+
     nm <- names(adt.a)
 
     ans <- list(method = "Gamma diversity test, contrast between two multilocus data sets",
