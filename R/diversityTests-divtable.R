@@ -113,7 +113,7 @@ plot.diversity_test <- function(x, breaks = 50, compress.x = TRUE,
         xlim <- range(c(h$breaks, x$empdist[x$n.resample]))
     }
     ylim <- range(c(0, h$count))
-    plot(h, xlim = xlim, ylim = ylim, freq = TRUE, 
+    plot(h, xlim = xlim, ylim = ylim, freq = TRUE,
          xlab = ylab, ylab = ylab, main = main, ...)
     lines(rep(plotted.observed.ln.LR, 2), c(ylim[1], ylim[2]*0.5),
           col = "darkgray", lty = 1, lwd = 2)
@@ -161,8 +161,8 @@ plot.diversity_test <- function(x, breaks = 50, compress.x = TRUE,
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
 #' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
-#' Impact of asymmetric male and female gamete dispersal on allelic 
-#' diversity and spatial genetic structure in valley oak 
+#' Impact of asymmetric male and female gamete dispersal on allelic
+#' diversity and spatial genetic structure in valley oak
 #' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 #'
 #' @examples
@@ -209,7 +209,7 @@ alphaDiversityTest.divtable <- function(tab, zero.div.adjust = TRUE,
     terms = .diversityTest.CalcTerms(n.g, g.vardist, zero.div.adjust)
     ans$observed.ln.LR <- terms$ln.LR
     # Empirical distribution
-    nulldist <- .diversityTest.NullDist(obs = terms$ln.LR, n.g = n.g, 
+    nulldist <- .diversityTest.NullDist(obs = terms$ln.LR, n.g = n.g,
         g.vardist = g.vardist, zero.div.adjust = zero.div.adjust,
         method = method, n.resample=n.resample)
     ans$n.resample <- n.resample
@@ -277,8 +277,8 @@ alphaDiversityTest.default <- function(tab, ...)
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
 #' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
-#' Impact of asymmetric male and female gamete dispersal on allelic 
-#' diversity and spatial genetic structure in valley oak 
+#' Impact of asymmetric male and female gamete dispersal on allelic
+#' diversity and spatial genetic structure in valley oak
 #' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 #'
 #' @examples
@@ -342,15 +342,15 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     ans$G.b <- G.b
     terms.b = .diversityTest.CalcTerms(n.b, b.vardist, zero.div.adjust)
     # V.b.p = terms.b$V.p
-    V.a.b.p <- (((N.a - G.a) * terms.a$V.p) + ((N.b - G.b) * terms.b$V.p)) / 
+    V.a.b.p <- (((N.a - G.a) * terms.a$V.p) + ((N.b - G.b) * terms.b$V.p)) /
               (N.a + N.b - G.a - G.b)
-    observed.ln.LR.a.b <- ((N.a + N.b - G.a - G.b) * log(V.a.b.p)) - 
-                          ((N.a - G.a) * log(terms.a$V.p)) - 
+    observed.ln.LR.a.b <- ((N.a + N.b - G.a - G.b) * log(V.a.b.p)) -
+                          ((N.a - G.a) * log(terms.a$V.p)) -
                           ((N.b - G.b) * log(terms.b$V.p))
 
     # Combine A and B into strata for comparison
     n.a.b <- c(a = N.a, b = N.b)
-    a.b.vardist <- list(a = unlist(a.vardist, use.names=FALSE), 
+    a.b.vardist <- list(a = unlist(a.vardist, use.names=FALSE),
                         b = unlist(b.vardist, use.names=FALSE))
     N <- sum(n.a.b)
     G <- length(n.a.b)
@@ -362,7 +362,7 @@ alphaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     nulldist <- .diversityTest.NullDist(obs=observed.ln.LR.a.b,
                                         n.g = n.a.b,
                                         g.vardist = a.b.vardist,
-                                        zero.div.adjust, method, 
+                                        zero.div.adjust, method,
                                         n.resample)
     ans$n.resample <- n.resample
     ans$resample.method <- method
@@ -402,7 +402,7 @@ alphaContrastTest.default <- function(tab.a, tab.b, ...)
 #' There currently is no support for contrasting allelic data.
 #'
 #' The null hypothesis for this tests is that there is no difference in alpha
-#' diversity between the three sets of datasets sites represented in 
+#' diversity between the three sets of datasets sites represented in
 #' \code{tab.a}, \code{tab.b} and \code{tab.c}.  The method was described in
 #' Scofield et al. (2012).
 #'
@@ -493,14 +493,14 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     terms.c <- .diversityTest.CalcTerms(n.c, c.vardist, zero.div.adjust)
     # V.c.p <- terms.c$V.p
 
-    V.a.b.c.p <- (((N.a - G.a) * terms.a$V.p) + 
-                  ((N.b - G.b) * terms.b$V.p) + 
-                  ((N.c - G.c) * terms.c$V.p)) / 
+    V.a.b.c.p <- (((N.a - G.a) * terms.a$V.p) +
+                  ((N.b - G.b) * terms.b$V.p) +
+                  ((N.c - G.c) * terms.c$V.p)) /
                  (N.a + N.b + N.c - G.a - G.b - G.c)
-    observed.ln.LR.a.b.c <- 
-        ((N.a + N.b + N.c - G.a - G.b - G.c) * log(V.a.b.c.p)) - 
-        ((N.a - G.a) * log(terms.a$V.p)) - 
-        ((N.b - G.b) * log(terms.b$V.p)) - 
+    observed.ln.LR.a.b.c <-
+        ((N.a + N.b + N.c - G.a - G.b - G.c) * log(V.a.b.c.p)) -
+        ((N.a - G.a) * log(terms.a$V.p)) -
+        ((N.b - G.b) * log(terms.b$V.p)) -
         ((N.c - G.c) * log(terms.c$V.p))
 
 
@@ -519,7 +519,7 @@ alphaContrastTest3.divtable <- function(tab.a, tab.b, tab.c,
     nulldist <- .diversityTest.NullDist(obs = observed.ln.LR.a.b.c,
                                         n.g = n.a.b.c,
                                         g.vardist = a.b.c.vardist,
-                                        zero.div.adjust, method, 
+                                        zero.div.adjust, method,
                                         n.resample)
     ans$n.resample <- n.resample
     ans$resample.method <- method
@@ -709,8 +709,8 @@ plot.pairwise_mean_test <- function(result, ...)
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
 #' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
-#' Impact of asymmetric male and female gamete dispersal on allelic 
-#' diversity and spatial genetic structure in valley oak 
+#' Impact of asymmetric male and female gamete dispersal on allelic
+#' diversity and spatial genetic structure in valley oak
 #' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 #'
 #' @examples
@@ -766,8 +766,8 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
     V.a.tot <- 1 - R.a.0
     V.b.tot <- 1 - R.b.0
     V.a.b.tot <- ((N.a - 1) * V.a.tot + (N.b - 1) * V.b.tot) / (N.a + N.b - 2)
-    observed.ln.LR.a.b <- ((N.a + N.b - 2) * log(V.a.b.tot)) - 
-                          ((N.a - 1) * log(V.a.tot)) - 
+    observed.ln.LR.a.b <- ((N.a + N.b - 2) * log(V.a.b.tot)) -
+                          ((N.a - 1) * log(V.a.tot)) -
                           ((N.b - 1) * log(V.b.tot))
     #a.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.a.k))))
     a.vardist <- .diversityTest.directGowerDiag(X.a.k)
@@ -872,7 +872,7 @@ gammaContrastTest.default <- function(tab.a, tab.b, ...)
 #'
 NULL
 
-gammaContrastTest3 <- function(tab.a, tab.b, ...) 
+gammaContrastTest3 <- function(tab.a, tab.b, ...)
     UseMethod("gammaContrastTest3")
 
 

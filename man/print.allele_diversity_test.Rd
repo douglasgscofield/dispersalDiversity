@@ -9,10 +9,9 @@
 }
 \arguments{
 \item{x}{Object of class \code{allele_diversity_test}, returned by
-\code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
-\code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
-\code{\link{gammaContrastTest3}} when given an argument of class
-\code{\link{allele_divtables}}.}
+\code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}} and
+\code{\link{gammaContrastTest}} when given an argument of class
+\code{\link{allele_divtables}}}
 
 \item{digits}{Number of significant digits to use when printing
 numeric values.  Defaults to the value of the \code{"digits"} option.}
@@ -25,9 +24,8 @@ individual locus.  Defaults to \code{FALSE}.}
 }
 \description{
 Print an object of class \code{allele_diversity_test}, the result of
-\code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}},
-\code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}} and
-\code{\link{gammaContrastTest3}} when given an argument of class
+\code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}} and
+\code{\link{gammaContrastTest}} when given an argument of class
 \code{\link{allele_divtables}}.
 }
 \details{
@@ -50,6 +48,6 @@ diversity and spatial genetic structure in valley oak
 (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 }
 \seealso{
-\code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}, \code{\link{alphaContrastTest3}}, \code{\link{gammaContrastTest}}, \code{\link{gammaContrastTest3}}
+\code{\link{alphaDiversityTest}}, \code{\link{alphaContrastTest}}, \code{\link{gammaContrastTest}}
 }
 

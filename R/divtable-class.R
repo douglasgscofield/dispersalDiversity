@@ -49,10 +49,10 @@ NULL
 
 #' Plot \code{divtable} object using \code{membershipPlot}
 #'
-#' Plot object of class \code{\link{divtable}} using 
+#' Plot object of class \code{\link{divtable}} using
 #' \code{\link{membershipPlot}}.  This function sets \code{l2} to be the
 #' row sums of \code{x}.  Other arguments will be passed to
-#' \code{\link{membershipPlot}}.  
+#' \code{\link{membershipPlot}}.
 #'
 #' @param x     Object of class \code{\link{divtable}}
 #'

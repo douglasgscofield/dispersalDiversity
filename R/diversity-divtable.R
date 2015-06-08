@@ -5,7 +5,7 @@ NULL
 #'
 #' Given a site-by-source matrix, calculate a collection of diversity
 #' statistics.  Statistics include PMI (probability of maternal inheritance)
-#' from Grivet \emph{et al}. (2005) and Scofield \emph{et al}. (2010, 2011) 
+#' from Grivet \emph{et al}. (2005) and Scofield \emph{et al}. (2010, 2011)
 #' as well as alpha, beta, gamma and delta/omega from classical ecology and
 #' applied to a dispersal context by Scofield \emph{et al}. (2012).
 #'
@@ -19,7 +19,7 @@ NULL
 #' diversity statistics, each returned as lists under separate named
 #' elements:
 #' \itemize{
-#'     \item \code{q}, based on squared frequencies, known to be biased at 
+#'     \item \code{q}, based on squared frequencies, known to be biased at
 #'           smaller sample sizes
 #'     \item \code{r}, unbiased versions of \code{q} (Simpson, 1949), but
 #'           singletons are dropped and values are nonsensical if a site
@@ -28,17 +28,17 @@ NULL
 #'           following Nielsen \emph{et al}. (2003) that does not have the
 #'           singleton properties of \code{r}
 #' }
-#' Each such list \code{q}, \code{r} and \code{q.nielsen} contains several 
-#' elements representing different diversity statistics.  Several 
+#' Each such list \code{q}, \code{r} and \code{q.nielsen} contains several
+#' elements representing different diversity statistics.  Several
 #' quantities are included:
 #' \itemize{
 #'     \item \code{q.gg}, vector of length number of sites, containing
 #'           squared frequencies of groups in each site.  In form \code{q},
 #'           these are untransformed, while in form \code{r} and
 #'           \code{q.nielsen}, these are transformed accordingly
-#'     \item \code{q.bar.0}, scalar, weighted mean of \code{q.gg} 
+#'     \item \code{q.bar.0}, scalar, weighted mean of \code{q.gg}
 #'     \item \code{q.variance.0}, scalar, weighted sample variance of
-#'           \code{q.bar.0} 
+#'           \code{q.bar.0}
 #'     \item \code{q.unweighted.mean}, mean of \code{q.gg}
 #'     \item \code{alpha.g}, vector of length number of sites, containing
 #'           reciprocals of \code{q.gg}
@@ -86,7 +86,7 @@ NULL
 #'     \item \code{q.0.gh}, a matrix of probabilities that two items drawn
 #'           from group g and h are from any of the sources shared between
 #'           g and h
-#'     \item \code{q.bar.gh}, weighted mean overlap (\eqn{q_{gh}}), 
+#'     \item \code{q.bar.gh}, weighted mean overlap (\eqn{q_{gh}}),
 #'           probabilities that two items, one drawn from each of groups
 #'           \emph{g} and \emph{h}, are from the same source, weighted by
 #'           sample sizes
@@ -98,7 +98,7 @@ NULL
 #' Simpson, E. D. (1949) Measurement of diversity. \emph{Nature} 163:688.
 #'
 #' Chao, A., Jost, L., Chiang, S. C., Jiang, Y. H., and Chazdon, R. L. (2008)
-#' A two-stage probabilistic approach to multiple-community similarity 
+#' A two-stage probabilistic approach to multiple-community similarity
 #' indices.  \emph{Biometrics} 64:1178-1186.
 #'
 #' Grivet, D., Smouse, P. E. and Sork, V. L. (2005) A novel approach to an old
@@ -135,7 +135,7 @@ NULL
 #' ## diversity accepts table via default method, which applies as.divtable
 #' div <- diversity(table(t))
 #' div$q
-#' 
+#'
 #' @export
 #'
 #' @name diversity
@@ -238,7 +238,7 @@ diversity.divtable <- function(tab, ...)
     q$d.alpha <- 1 / q$q.unweighted.mean
     q$d.gamma <- 1 / sum(Q.k * Q.k)
     q$d.beta <- q$d.gamma / q$d.alpha
-    q$diversity.mat <- (2 * Q.mat) / 
+    q$diversity.mat <- (2 * Q.mat) /
                        outer(q$q.gg, q$q.gg, FUN="+")
     diag(q$diversity.mat) <- q$alpha.g
     q$divergence.mat <- 1 - q$diversity.mat
@@ -252,7 +252,7 @@ diversity.divtable <- function(tab, ...)
     q.nielsen$q.gg <- nielsenTransform(diag(Q.mat), n.g)
     q.nielsen$q.bar.0 <- sum(n.g * n.g * q.nielsen$q.gg) / sum(n.g * n.g)
 
-    q.nielsen$q.variance.0 <- q.variance.weighting * 
+    q.nielsen$q.variance.0 <- q.variance.weighting *
         sum(n.g * n.g * (q.nielsen$q.gg - q.nielsen$q.bar.0)^2)
 
     q.nielsen$q.unweighted.mean <- mean(q.nielsen$q.gg)
@@ -261,7 +261,7 @@ diversity.divtable <- function(tab, ...)
     q.nielsen$d.alpha <- 1 / q.nielsen$q.unweighted.mean
     q.nielsen$d.gamma <- 1 / nielsenTransform(sum(Q.k * Q.k), N)
     q.nielsen$d.beta <- q.nielsen$d.gamma / q.nielsen$d.alpha
-    q.nielsen$diversity.mat <- (2 * Q.mat) / 
+    q.nielsen$diversity.mat <- (2 * Q.mat) /
                                outer(q.nielsen$q.gg, q.nielsen$q.gg, FUN="+")
     diag(q.nielsen$diversity.mat) <- q.nielsen$alpha.g
     q.nielsen$divergence.mat <- 1 - q.nielsen$diversity.mat
@@ -280,7 +280,7 @@ diversity.divtable <- function(tab, ...)
     }
     names(r.gg) <- names(q$q.gg)
     r$q.gg <- r.gg
-    r$q.bar.0 <- sum((n.g * n.g * r$q.gg) - (n.g * r$q.gg)) / 
+    r$q.bar.0 <- sum((n.g * n.g * r$q.gg) - (n.g * r$q.gg)) /
                  sum((n.g * n.g) - n.g)
 
     M.g <- n.g * (n.g - 1)
@@ -293,7 +293,7 @@ diversity.divtable <- function(tab, ...)
     r$d.alpha <- 1 / r$q.unweighted.mean
     r$d.gamma <- 1/sum((n.k * (n.k - 1)) / (N * (N - 1)))
     r$d.beta <- r$d.gamma / r$d.alpha
-    r$diversity.mat <- (2 * Q.mat) / 
+    r$diversity.mat <- (2 * Q.mat) /
                        outer(r$q.gg, r$q.gg, FUN="+")
     diag(r$diversity.mat) <- r$alpha.g
     r$divergence.mat <- 1 - r$diversity.mat
@@ -306,7 +306,7 @@ diversity.divtable <- function(tab, ...)
     ans <- list(table       = orig.tab, # table passed in
                 num.groups  = G,   # number of rows (sites)
                 num.sources = K,   # number of columns (sources)
-                num.samples = N, 
+                num.samples = N,
                 num.samples.group  = n.g,
                 num.sources.group  = apply(tab, 1, function(x) sum(x > 0)),
                 num.samples.source = n.k,
@@ -326,7 +326,7 @@ diversity.divtable <- function(tab, ...)
 
                 # diversity calculations
                 q         = q,
-                r         = r, 
+                r         = r,
                 q.nielsen = q.nielsen)
     structure(ans, class = c('diversity', 'list'))
 }

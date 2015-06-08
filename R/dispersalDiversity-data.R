@@ -1,10 +1,10 @@
 #' Source tree assignments for acorns harvested from acorn woodpecker granaries in 2002
 #'
 #' A dataset containing seed source tree assignments for acorns of
-#' valley oak (\emph{Quercus lobata}), harvested in 2002 from acorn 
+#' valley oak (\emph{Quercus lobata}), harvested in 2002 from acorn
 #' woodpecker (\emph{Melanerpes formicivorus}) granaries. Data were collected
-#' in oak savanna habitat in central California.  Acorn woodpeckers store 
-#' acorns in central granaries, and different woodpecker social groups 
+#' in oak savanna habitat in central California.  Acorn woodpeckers store
+#' acorns in central granaries, and different woodpecker social groups
 #' maintain different granaries.
 #'
 #' The dataset is stored as a matrix, with the variables are as follows:
@@ -48,10 +48,10 @@ NULL
 #' Source tree assignments for acorns harvested from acorn woodpecker granaries in 2004
 #'
 #' A dataset containing seed source tree assignments for acorns of
-#' valley oak (\emph{Quercus lobata}), harvested in 2004 from acorn 
+#' valley oak (\emph{Quercus lobata}), harvested in 2004 from acorn
 #' woodpecker (\emph{Melanerpes formicivorus}) granaries. Data were collected
-#' in oak savanna habitat in central California.  Acorn woodpeckers store 
-#' acorns in central granaries, and different woodpecker social groups 
+#' in oak savanna habitat in central California.  Acorn woodpeckers store
+#' acorns in central granaries, and different woodpecker social groups
 #' maintain different granaries.
 #'
 #' The dataset is stored as a matrix, with the variables are as follows:

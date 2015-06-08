@@ -37,6 +37,7 @@ Class \code{diversity_test} object with the result of the test
 The null hypothesis for this tests is that there is no difference in gamma
 diversity between the three datasets in \code{tab.a}, \code{tab.b} and
 and \code{tab.c}.  The method was described in Scofield et al. (2012).
+There currently is no support for contrasting allelic data.
 }
 \references{
 Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)

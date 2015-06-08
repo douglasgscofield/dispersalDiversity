@@ -3,7 +3,7 @@ NULL
 
 #' List of divtables holding allele diversity data
 #'
-#' An object of class \code{allele_divtables} is a list of 
+#' An object of class \code{allele_divtables} is a list of
 #' \code{\link{divtable}} objects, each representing allele count
 #' data for a single genetic locus across sites/groups.  Row names are
 #' the site/group names, while column names are the individual alleles.
@@ -11,13 +11,16 @@ NULL
 #' \code{\link{dispersalDiversity}} package, and is accepted by the
 #' function \code{\link{diversity}}, which generates descriptive statistics,
 #' and the functions \code{\link{alphaDiversityTest}},
-#' \code{\link{gammaContrastTest}} and many others that test for differences
+#' \code{\link{gammaContrastTest}} and others that test for differences
 #' in the structure of genetic diversity.
 #'
 #' Assembling an \code{allele_divtables} by hand is labourious.  More
 #' typically, genotype data will be in a class \code{\link{genalex}} object
 #' and then converted to \code{\link{allele_divtables}} using
-#' \code{\link{createAlleleTables}}.
+#' \code{\link{createAlleleTables}}.  The \code{\link{createAlleleTables}}
+#' and \code{\link{as.allele_divtables}} functions will attempt to convert
+#' non-\code{\link{genalex}} objects using to \code{\link{genalex}} format
+#' using \code{\link[readGenalex]{as.genalex}}, but this may not be successful.
 #'
 #' @examples
 #'
@@ -89,7 +92,7 @@ NULL
 #' ## The divtable for the first locus
 #' pal[[1]]
 #'
-#' ## allele_divtables when presented with some missing data
+#' ## allele_divtables removes and can report missing data
 #' data(Qagr_adult_genotypes)
 #' aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE)
 #'
@@ -152,7 +155,7 @@ createAlleleTables.genalex <- function(x, exclude = c(NA, "0"),
         ans[[ ln[il] ]] <- as.divtable(table(pop, alleles, exclude = exclude))
     }
     if (sum(unlist(ex)) && ! quiet)
-        cat(sprintf("Excluding %d entries based on 'exclude = c(%s)'\n", 
+        cat(sprintf("Excluding %d entries based on 'exclude = c(%s)'\n",
                     sum(unlist(ex)), paste(collapse = ", ", exclude)))
     structure(ans, class = c('allele_divtables', 'list'))
 }
@@ -177,7 +180,8 @@ as.allele_divtables.list <- function(x, ...)
     if (all(sapply(x, inherits, 'divtable')))
         structure(x, class('allele_divtables', 'list'))
     else stop(deparse(substitute(x)),
-              " cannot be converted to class allele_divtables")
+              " cannot be converted to class allele_divtables,",
+              " all members must be class 'divtable'")
 }
 
 as.allele_divtables.allele_divtables <- function(x, ...)

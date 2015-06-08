@@ -38,24 +38,14 @@ The null hypothesis for this tests is that there is no difference in alpha
 diversity between the three sets of datasets sites represented in \code{tab}
 and \code{tab}, or or \code{adt.a} and \code{adt.b}.  The method for the
 initial class \code{\link{divtable}} version of this was described in
-Scofield et al. (2012), while the allelic (class
-\code{link{allele_divtables}} extension was described in Sork \emph{et al}.
-(In press).
+Scofield et al. (2012).
+There currently is no support for contrasting allelic data.
 }
 \details{
 The null hypothesis for this tests is that there is no difference in alpha
 diversity between the three sets of datasets sites represented in
 \code{tab.a}, \code{tab.b} and \code{tab.c}.  The method was described in
 Scofield et al. (2012).
-}
-\examples{
-#  dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
-#  dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-#  dat3 <- readGenalex("file-of-genotypes-sample-3.txt")
-#  gt1 <- createAlleleTables(dat1)
-#  gt2 <- createAlleleTables(dat2)
-#  gt3 <- createAlleleTables(dat3)
-#  alphaContrastTest3(gt1, gt2, gt3, n.resample = 1000)
 }
 \references{
 Scofield, D. G., Smouse, P. E., Karubian, J. and Sork, V. L. (2012)

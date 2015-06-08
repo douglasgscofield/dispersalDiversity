@@ -73,7 +73,7 @@ str(pal)
 ## The divtable for the first locus
 pal[[1]]
 
-## allele_divtables when presented with some missing data
+## allele_divtables removes and can report missing data
 data(Qagr_adult_genotypes)
 aal <- createAlleleTables(Qagr_adult_genotypes, quiet = FALSE)
 }

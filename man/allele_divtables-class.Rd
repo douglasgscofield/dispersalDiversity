@@ -13,14 +13,17 @@ This is the basic genetic data object of the
 \code{\link{dispersalDiversity}} package, and is accepted by the
 function \code{\link{diversity}}, which generates descriptive statistics,
 and the functions \code{\link{alphaDiversityTest}},
-\code{\link{gammaContrastTest}} and many others that test for differences
+\code{\link{gammaContrastTest}} and others that test for differences
 in the structure of genetic diversity.
 }
 \details{
 Assembling an \code{allele_divtables} by hand is labourious.  More
 typically, genotype data will be in a class \code{\link{genalex}} object
 and then converted to \code{\link{allele_divtables}} using
-\code{\link{createAlleleTables}}.
+\code{\link{createAlleleTables}}.  The \code{\link{createAlleleTables}}
+and \code{\link{as.allele_divtables}} functions will attempt to convert
+non-\code{\link{genalex}} objects using to \code{\link{genalex}} format
+using \code{\link[readGenalex]{as.genalex}}, but this may not be successful.
 }
 \examples{
 ## One possible way to plot an \\code{allele_divtables} object, plotting

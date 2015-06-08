@@ -6,7 +6,7 @@
 #' low sample sizes (the \code{r} estimates provided here) involve a
 #' subtraction of 1 from observed counts and produce no values for 1-sized
 #' groups.  This function starts with squared frequencies and group sizes
-#' and transforms them into approximately unbiased estimates using the 
+#' and transforms them into approximately unbiased estimates using the
 #' method described by Nielsen \emph{et al}. (2003).
 #'
 #' @param q.gg Vector of squared frequencies
@@ -24,7 +24,7 @@
 #' @export
 #'
 nielsenTransform <- function(q.gg, n.g)
-{  
+{
     (((q.gg * (n.g+1) * (n.g - 2)) + (3 - n.g)) / ((n.g - 1)^2))
 }
 

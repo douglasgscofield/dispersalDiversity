@@ -52,6 +52,9 @@ Scofield et al. (2012), while that for the allelic extension as class
 \code{link{allele_divtables}} was described in Sork \emph{et al}.
 (in press).
 }
+\note{
+\code{adt.a} and \code{adt.b} must contain the same loci
+}
 \examples{
 ## Compare gamma diversity between two diversity datasets
 ##
@@ -61,7 +64,7 @@ par(mfrow = c(1, 2))
 plot(gammaAccum(granaries_2002_Qlob))
 plot(gammaAccum(granaries_2004_Qlob))
 gammaContrastTest(granaries_2002_Qlob, granaries_2004_Qlob)
-##
+
 ## Compare gamma diversity between two allele datasets
 ##
 # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")

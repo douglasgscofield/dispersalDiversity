@@ -15,7 +15,7 @@
 #' = "bw"} or \code{distinguish.multiton = FALSE}.  Singleton groups, those with
 #' just one member, are coloured white within their respective sites.
 #'
-#' Examples of membership plots in publications can be found in 
+#' Examples of membership plots in publications can be found in
 #' Scofield \emph{et al}. (2010), Scofield \emph{et al}. (2011) and Scofield
 #' \emph{et al}. (2012).
 #'
@@ -26,26 +26,26 @@
 #' normalized to sum to 1 within each site so values may be counts or
 #' proportions.
 #'
-#' @param fill.method   \code{"colour"} (the default, with synonym 
-#' \code{"color"}), or \code{"bw"}, for the method of colouring different 
+#' @param fill.method   \code{"colour"} (the default, with synonym
+#' \code{"color"}), or \code{"bw"}, for the method of colouring different
 #' species within the plots.  For \code{"colour"}, no more than eight separate
 #' colours are chosen; if there are more than eight species, the
 #' colours for lower-frequency groups are modified by hatching lines of
 #' varying angles and densities.  For \code{"bw"}, fewer grades of grey are
 #' used, together with black-and-white patterns and hatching.
-#' For \code{"colour"}, if the package \code{\link{RColorBrewer}} is 
+#' For \code{"colour"}, if the package \code{\link{RColorBrewer}} is
 #' available, colours will be chosen from the pallete designated by the
 #' \code{fill.pallete} option.
 #' The aesthetics of colour choice are important for distinguishing among
 #' species in membership plots.  If \code{\link{RColorBrewer}} is not
 #' available, colours are chosen using \code{\link{rainbow}}.
 #'
-#' @param fill.palette   For \code{fill.method = "colour"}, if the 
+#' @param fill.palette   For \code{fill.method = "colour"}, if the
 #' package \code{\link{RColorBrewer}} is available, use this palette to
 #' choose the base colours to use.  Default is \code{"Dark2"}.
 #'
-#' @param distinguish.multiton   For \code{fill.method = "colour"}, whether 
-#' to distinguish multiton groups (see Description) with grey rather than 
+#' @param distinguish.multiton   For \code{fill.method = "colour"}, whether
+#' to distinguish multiton groups (see Description) with grey rather than
 #' the default white colour.  Default is \code{TRUE}.
 #'
 #' @param file   If specified, produce PDF output to \code{file}, using
@@ -129,7 +129,7 @@ membershipPlot.divtable <- function(tab,
     fill.method = c("colour", "bw", "color"), fill.palette = "Dark2",
     distinguish.multiton = TRUE, xlab = "Site", ylab = "Membership",
     las = 1, x.mar.width = ifelse(las >= 2, 4, 3), cex = 0.7, cex.names = 0.85,
-    l1 = NULL, l2 = NULL, annotate.cex = 0.9, 
+    l1 = NULL, l2 = NULL, annotate.cex = 0.9,
     annotate = function() {
         xl <- seq(0.8, by = 1.3, length.out = max(length(l1), length(l2)))
         if (!is.null(l1)) mtext(l1, at = xl, line = 0.8, cex = annotate.cex, xpd = NA)
@@ -140,12 +140,12 @@ membershipPlot.divtable <- function(tab,
 {
     fill.method <- match.arg(fill.method)
     if (fill.method == "color") fill.method <- "colour"
-    
+
     # data comes in 'backwards' to what we expect when organising for the plot
     tab <- tab[rev(1:nrow(tab)), , drop = FALSE]
     tab <- t(tab)
     # so now types are along the rows, groups along the columns
-    
+
     # Generate colours: white for singleton types, grayscale for types that
     # appear in a single site, colour for multi-site types.  Sort the types in
     # descending order of number of appearances of type
@@ -160,11 +160,11 @@ membershipPlot.divtable <- function(tab,
     singleton.idx <- n.types == 1
     multiton.idx <- n.sites == 1 & n.types > 1
     multisite.idx <- n.sites > 1
-    
+
     if (fill.method == "colour") {
-        
+
         fill.colours[singleton.idx] <- "white"
-        fill.colours[multiton.idx] <- if (distinguish.multiton) 
+        fill.colours[multiton.idx] <- if (distinguish.multiton)
             gray(seq(from = 0.5, to = 0.8, length = sum(multiton.idx)))
         else "white"
         ang <- dens <- numeric(nrow(tab))
@@ -180,16 +180,16 @@ membershipPlot.divtable <- function(tab,
             else rainbow(n.cols)
             lo <- n.multisite - n.cols
             # calculate hatching angles and densities
-            ang[multisite.idx] <- c(rep(90, n.cols), 
+            ang[multisite.idx] <- c(rep(90, n.cols),
                                     rep(c(45, 75, 105, 135), each = n.cols / 2,
                                         length.out = lo))
-            dens[multisite.idx] <- c(rep(-1, n.cols), 
-                                     rep(c(40, 25), each = n.cols / 2, 
+            dens[multisite.idx] <- c(rep(-1, n.cols),
+                                     rep(c(40, 25), each = n.cols / 2,
                                          length.out = lo))
             fill.colours[multisite.idx] <- c(colours, rep(colours, length.out = lo))
         }
         fill.args <- list(angle = ang, density = dens, col = fill.colours)
-        
+
     } else if (fill.method == "bw") {
 
         # White for singleton types and for types that appear in a single site;
@@ -204,38 +204,38 @@ membershipPlot.divtable <- function(tab,
         if (n.multisite) {
             lo <- sum(multisite.idx) - 2
             ang[multisite.idx] <- c(90, 90, rep(c(90, 45, 135), length.out = lo))
-            dens[multisite.idx] <- c(-1, -1, rep(c(40, 25), each = 3, 
+            dens[multisite.idx] <- c(-1, -1, rep(c(40, 25), each = 3,
                                                  length.out = lo))
-            fill.colours[multisite.idx] <- c("black", gray(0.5), rep(c(gray(0.5), 
+            fill.colours[multisite.idx] <- c("black", gray(0.5), rep(c(gray(0.5),
                 "black"), each = 3, length.out = lo))
         }
         fill.args <- list(angle = ang, density = dens, col = fill.colours)
-        
+
     }
-    
+
     # adjust to proportions so they sum to 1
     tab <- scale(tab, scale = apply(tab, 2, sum), center = FALSE)
-    if (any(abs(apply(tab, 2, sum) - 1) > (.Machine$double.eps^0.5))) 
+    if (any(abs(apply(tab, 2, sum) - 1) > (.Machine$double.eps^0.5)))
         stop("didn't scale tab correctly")
-    
+
     if (! is.null(file)) {
         pdf(file = file, width = file.dim[1], height = file.dim[2],
             onefile = FALSE, paper = "special")
-        par(mar = c(x.mar.width, 3, 3, 0), mgp = c(1.9, 0.4, 0), 
+        par(mar = c(x.mar.width, 3, 3, 0), mgp = c(1.9, 0.4, 0),
             bty = "n", xpd = NA, las = las, tcl = -0.25, cex = cex)
     } else {
         par(mar = c(x.mar.width, 4, 3, 1), bty = "n", xpd = NA, las = las)
     }
-    
+
     tab <- tab[, rev(1:ncol(tab)), drop = FALSE]
-    do.call("barplot", c(list(height = tab, space = 0.3, horiz = FALSE), 
+    do.call("barplot", c(list(height = tab, space = 0.3, horiz = FALSE),
         cex.names = cex.names, fill.args, ...))
     title(xlab = , ylab = ylab)
 
-    # 
+    #
     if (! is.null(annotate))
         annotate()
 
     if (! is.null(file)) dev.off()
 }
- 
+

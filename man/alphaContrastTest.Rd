@@ -51,6 +51,9 @@ Scofield et al. (2012), while that for the allelic extension as class
 \code{link{allele_divtables}} was described in Sork \emph{et al}.
 (In press).
 }
+\note{
+\code{adt.a} and \code{adt.b} must contain the same loci
+}
 \examples{
 ## Comparing alpha diversity between two different sites:
 ##
@@ -60,7 +63,7 @@ par(mfcol = c(2, 1))
 membershipPlot(granaries_2002_Qlob)
 membershipPlot(granaries_2004_Qlob)
 alphaContrastTest(granaries_2002_Qlob, granaries_2004_Qlob)
-##
+
 ## Comparing allele diversity between two different samples:
 ##
 # dat1 <- readGenalex("file-of-genotypes-sample-1.txt")

@@ -18,14 +18,14 @@
 #'
 #' @param pairwise.mean    Mean pairwise divergence or overlap as found at,
 #' e.g., \code{diversity()$q$divergence}.  If provided, this is added to
-#' the plot in the upper triangle, rounded to three digits, with 
-#' positions specified by \code{mean.pos}.  The value is plotted 
+#' the plot in the upper triangle, rounded to three digits, with
+#' positions specified by \code{mean.pos}.  The value is plotted
 #' together with '\eqn{\bar{\delta} = }' if \code{statistic} is
-#' \code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is 
+#' \code{"divergence"}, and '\eqn{\bar{\omega} = }' if \code{statistic} is
 #' \code{"overlap"}.
 #'
 #' @param mean.pos    If \code{pairwise.mean} is given, the relative
-#' X and Y positions within the panel at which the value is plotted, in 
+#' X and Y positions within the panel at which the value is plotted, in
 #' a two-element vector.  \code{adj = c(0, 0)} is used when plotting the
 #' value.
 #'
@@ -50,18 +50,18 @@
 #'
 #' data(granaries_2002_Qlob)
 #' d <- diversity(granaries_2002_Qlob)
-#' plotPairwiseMatrix(x = d$r$divergence.mat, 
-#'                    pairwise.mean = d$r$divergence, 
-#'                    statistic = "divergence", 
+#' plotPairwiseMatrix(x = d$r$divergence.mat,
+#'                    pairwise.mean = d$r$divergence,
+#'                    statistic = "divergence",
 #'                    axis.label = "Granary")
 #'
 #' @seealso \code{\link{diversity}}, \code{\link{lattice::levelplot}}
 #'
 #' @export plotPairwiseMatrix
 #'
-plotPairwiseMatrix <- function(x, statistic = c("divergence", "overlap"), 
+plotPairwiseMatrix <- function(x, statistic = c("divergence", "overlap"),
     pairwise.mean = NULL, mean.position = c(0.45, 0.3),
-    bty = "L", aspect = "iso", 
+    bty = "L", aspect = "iso",
     col.regions = function(x) gray(c(1, seq(.9, .6, length.out=(x - 2)), 0)),
     colorkey = list(labels = list(cex = 1.0)),
     at = c(0, 0.01, seq(0.2, 0.8, 0.2), 0.99, 1.0),
@@ -80,7 +80,7 @@ plotPairwiseMatrix <- function(x, statistic = c("divergence", "overlap"),
     rotateMatrix <- function(.x) t(.x[nrow(.x):1, , drop = FALSE])
     x = rotateMatrix(x)
     opa <- par(mar = c(0, 0, 0, 5), ps = 10, xpd = NA)
-    lp <- lattice::levelplot(x, bty = bty, aspect = aspect, 
+    lp <- lattice::levelplot(x, bty = bty, aspect = aspect,
         regions = TRUE, col.regions = col.regions, colorkey = colorkey,
         at = at, scales = scales, xlab = xlab, ylab = ylab, ...)
     plot(lp, ...)
@@ -91,7 +91,7 @@ plotPairwiseMatrix <- function(x, statistic = c("divergence", "overlap"),
         xpr <- if (statistic == "divergence")
             substitute(bar(delta) == OBS, list(OBS = val))
         else substitute(bar(omega) == OBS, list(OBS = val))
-        lattice::panel.text(xpr, x = mean.position[1] * rr[1], 
+        lattice::panel.text(xpr, x = mean.position[1] * rr[1],
                             y = mean.position[2] * rr[2], adj = c(0, 0),
                             cex = 1.0)
     }

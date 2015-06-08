@@ -9,23 +9,23 @@ NULL
 #'
 #' @param g  Object of class \code{'gamma_accum'} returned by
 #' \code{\link{gammaAccum}}
-#' 
+#'
 #' @param xmax   Maximum extent of the X-axis in the plot
-#' 
+#'
 #' @param ymax   Maximum extent of the Y-axis in the plot
-#' 
+#'
 #' @param obs.omega   If provided, the observed omega value for the
-#' data underlying the gamma accumulation curve; this value is added to 
+#' data underlying the gamma accumulation curve; this value is added to
 #' the plot
-#' 
+#'
 #' @param omega.pos  If \code{obs.omega} is given, the location at
 #' which it is plotted, relative to \code{xmax} and \code{ymax},
 #' in a two-element vector.  1 is added to each dimension.
-#' 
+#'
 #' @param pch  Plotting character used for mean gamma values accumulated,
 #' see \code{?pch}
 #'
-#' @param pch.gamma  Plotting character used for total gamma value, 
+#' @param pch.gamma  Plotting character used for total gamma value,
 #' \code{?pch}
 #'
 #' @param xlab,ylab,col,bty,lwd,bg  Options passed to \code{\link{plot}},
@@ -66,8 +66,8 @@ NULL
 #'
 #' @export
 #'
-plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns), 
-    ymax = max(g$simple.results$mns + g$simple.results$SE), 
+plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
+    ymax = max(g$simple.results$mns + g$simple.results$SE),
     obs.omega = NULL, omega.pos = c(0.15, 0.97),
     xlab = "Number of groups",
     ylab = expression("Accumulated  " * gamma * "  diversity"),
@@ -83,7 +83,7 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
     xlim <- c(1, xmax)
     ylim <- c(1, ymax)
 
-    opa <- par(mar = c(2.7, 2.7, 0.5, 0.5), mgp = c(1.7, 0.4, 0), 
+    opa <- par(mar = c(2.7, 2.7, 0.5, 0.5), mgp = c(1.7, 0.4, 0),
                las = 1, ps = 10, tcl = -0.4, xpd = NA)
     plot.separate.gamma <- FALSE
     if (abs(gtr$mns[axis.xmax] - obs.gamma) < 0.1) {
@@ -92,15 +92,15 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
     } else {
         plot.separate.gamma <- TRUE
     }
-    plot(x, gtr$mns, pch = pch, col = col, bty = bty, xlim = xlim, 
+    plot(x, gtr$mns, pch = pch, col = col, bty = bty, xlim = xlim,
          ylim = ylim, lwd = lwd, xlab = xlab, ylab = ylab, bg = bg, ...)
     lines(x, gtr$mns + gtr$SE, lty = lty, ...)
     lines(x, gtr$mns - gtr$SE, lty = lty, ...)
     if (plot.separate.gamma)
-        points(axis.xmax, obs.gamma, pch = pch.gamma, lwd = lwd, bg = bg, 
+        points(axis.xmax, obs.gamma, pch = pch.gamma, lwd = lwd, bg = bg,
                cex = 1.2, ...)
     if (! is.null(obs.omega)) {
-        text(x = (omega.pos[1] * xlim[2]) + 1, 
+        text(x = (omega.pos[1] * xlim[2]) + 1,
              y = (omega.pos[2] * ylim[2]) + 1,
              substitute(bar(omega) == OMEGA, list(OMEGA = obs.omega)),
              cex = 1.2)
@@ -148,8 +148,8 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
 #' dispersal by animals.  \emph{American Naturalist} 180:719-732.
 #'
 #' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
-#' Impact of asymmetric male and female gamete dispersal on allelic 
-#' diversity and spatial genetic structure in valley oak 
+#' Impact of asymmetric male and female gamete dispersal on allelic
+#' diversity and spatial genetic structure in valley oak
 #' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 #'
 #' @seealso \code{\link{plot.gamma_accum}}, \code{\link{gammaAccumSimple}}
@@ -185,7 +185,7 @@ gammaAccum <- function(x, ...) UseMethod("gammaAccum")
 #'
 #' @export
 #'
-gammaAccum.divtable <- function(tab, 
+gammaAccum.divtable <- function(tab,
     resample.method = c("permute", "bootstrap"), n.resample = 1000,
     gamma.method = c("q", "r", "q.nielsen"), ...)
 {

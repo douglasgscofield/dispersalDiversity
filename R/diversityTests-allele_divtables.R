@@ -34,8 +34,8 @@ NULL
 #' @references
 #'
 #' Sork, V. L., Smouse, P. E., Grivet, D. and Scofield, D. G. (In press)
-#' Impact of asymmetric male and female gamete dispersal on allelic 
-#' diversity and spatial genetic structure in valley oak 
+#' Impact of asymmetric male and female gamete dispersal on allelic
+#' diversity and spatial genetic structure in valley oak
 #' (\emph{Quercus lobata} N\'{e}e).  \emph{Evolutionary Ecology}.
 #'
 #' @examples
@@ -89,7 +89,7 @@ print.allele_diversity_test <- function(x, digits = getOption("digits"),
 #'
 #' @export
 #'
-alphaDiversityTest.allele_divtables <- function(adt, zero.div.adjust = TRUE, 
+alphaDiversityTest.allele_divtables <- function(adt, zero.div.adjust = TRUE,
     n.resample = 10000, method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999),
     ...)
@@ -127,10 +127,10 @@ alphaDiversityTest.allele_divtables <- function(adt, zero.div.adjust = TRUE,
         this.ans$N.groups <- G
         terms <- .diversityTest.CalcTerms(n.g, g.vardist, zero.div.adjust)
         this.ans$observed.ln.LR <- terms$ln.LR
-        nulldist <- .diversityTest.NullDist(obs = terms$ln.LR, 
-                                            n.g = n.g, g.vardist = g.vardist, 
-                                            zero.div.adjust = zero.div.adjust, 
-                                            method = method, 
+        nulldist <- .diversityTest.NullDist(obs = terms$ln.LR,
+                                            n.g = n.g, g.vardist = g.vardist,
+                                            zero.div.adjust = zero.div.adjust,
+                                            method = method,
                                             n.resample = n.resample)
         this.ans$n.resample <- n.resample
         this.ans$resample.method <- method
@@ -162,7 +162,7 @@ alphaDiversityTest.allele_divtables <- function(adt, zero.div.adjust = TRUE,
 #' @export
 #'
 alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
-    zero.div.adjust = TRUE, n.resample = 10000, 
+    zero.div.adjust = TRUE, n.resample = 10000,
     method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
@@ -216,15 +216,15 @@ alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
         this.ans$N.b <- N.b
         this.ans$G.b <- G.b
         terms.b <- .diversityTest.CalcTerms(n.b, b.vardist, zero.div.adjust)
-        V.a.b.p <- (((N.a - G.a) * terms.a$V.p) + 
+        V.a.b.p <- (((N.a - G.a) * terms.a$V.p) +
                     ((N.b - G.b) * terms.b$V.p)) / (N.a + N.b - G.a - G.b)
-        observed.ln.LR.a.b <- ((N.a + N.b - G.a - G.b) * log(V.a.b.p)) - 
-                              ((N.a - G.a) * log(terms.a$V.p)) - 
+        observed.ln.LR.a.b <- ((N.a + N.b - G.a - G.b) * log(V.a.b.p)) -
+                              ((N.a - G.a) * log(terms.a$V.p)) -
                               ((N.b - G.b) * log(terms.b$V.p))
 
         # Combine A and B into strata for comparison
         n.a.b <- c(a = N.a, b = N.b)
-        a.b.vardist <- list(a = unlist(a.vardist, use.names = FALSE), 
+        a.b.vardist <- list(a = unlist(a.vardist, use.names = FALSE),
                             b = unlist(b.vardist, use.names = FALSE))
         N <- sum(n.a.b)
         G <- length(n.a.b)
@@ -272,7 +272,7 @@ alphaContrastTest.allele_divtables <- function(adt.a, adt.b,
 #' @export
 #'
 gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
-    zero.div.adjust = TRUE, n.resample = 10000, 
+    zero.div.adjust = TRUE, n.resample = 10000,
     method = c("bootstrap", "permute"),
     test.quantiles = c(0.001, 0.01, 0.05, 0.1, 0.5, 0.9, 0.95, 0.99, 0.999))
 {
@@ -320,11 +320,11 @@ gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
         R.b.0 <- sum((X.b.k * (X.b.k - 1)) / (N.b * (N.b - 1)))
         V.a.tot <- 1 - R.a.0
         V.b.tot <- 1 - R.b.0
-        V.a.b.tot <- ((N.a - 1) * V.a.tot + (N.b - 1) * V.b.tot) / 
+        V.a.b.tot <- ((N.a - 1) * V.a.tot + (N.b - 1) * V.b.tot) /
                      (N.a + N.b - 2)
-        observed.ln.LR.a.b <- ((N.a + N.b - 2) * log(V.a.b.tot)) - 
-                              ((N.a - 1) * log(V.a.tot)) - 
-                              ((N.b - 1) * log(V.b.tot)) 
+        observed.ln.LR.a.b <- ((N.a + N.b - 2) * log(V.a.b.tot)) -
+                              ((N.a - 1) * log(V.a.tot)) -
+                              ((N.b - 1) * log(V.b.tot))
 
         #a.distmat <- .diversityTest.distmat(X.a.k)
         #a.vardist <- list(a = diag(.diversityTest.gower(a.distmat)))
@@ -352,7 +352,7 @@ gammaContrastTest.allele_divtables <- function(adt.a, adt.b,
 
         # Combine A and B into stratta for comparison
         n.a.b <- c(a = N.a, b = N.b)
-        a.b.vardist <- list(a = unlist(a.vardist, use.names = FALSE), 
+        a.b.vardist <- list(a = unlist(a.vardist, use.names = FALSE),
                             b = unlist(b.vardist, use.names = FALSE))
         N <- sum(n.a.b)
         G <- length(n.a.b)
