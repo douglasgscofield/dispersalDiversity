@@ -6,11 +6,11 @@
 \title{List of divtables holding allele diversity data}
 \description{
 An object of class \code{allele_divtables} is a list of
-\code{\link{divtable}} objects, each representing allele count
-data for a single genetic locus across sites/groups.  Row names are
-the site/group names, while column names are the individual alleles.
-This is the basic genetic data object of the
-\code{\link{dispersalDiversity}} package, and is accepted by the
+\code{\link{divtable}} objects, each representing sites-by-allele counts
+data for a single genetic locus.  Row and column names are
+the site names and individual alleles, respectively.
+This is the basic data object for analysis of genetic data using the
+\code{\link{dispersalDiversity}} package.  It is accepted by the
 function \code{\link{diversity}}, which generates descriptive statistics,
 and the functions \code{\link{alphaDiversityTest}},
 \code{\link{gammaContrastTest}} and others that test for differences
@@ -27,7 +27,7 @@ using \code{\link[readGenalex]{as.genalex}}, but this may not be successful.
 }
 \examples{
 ## One possible way to plot an \\code{allele_divtables} object, plotting
-## each locus as a separate divtable
+## each locus as a separate divtable in a two-column format
 
 data(Qagr_pericarp_genotypes)
 pal <- createAlleleTables(Qagr_pericarp_genotypes)

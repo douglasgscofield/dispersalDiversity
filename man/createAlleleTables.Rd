@@ -35,7 +35,7 @@ Object of class \code{\link{allele_divtable}}
 \description{
 S3 method to convert an object of class \code{genalex} to an object of
 class \code{\link{allele_divtables}}.  a list of \code{\link{divtable}}
-objects representing site-specific allele counts.  This is an S3 generic
+objects representing sites-by-allele counts.  This is an S3 generic
 so that other methods might be written to convert other genetic
 formats.
 }

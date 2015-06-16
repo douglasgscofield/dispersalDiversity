@@ -16,7 +16,7 @@
 \arguments{
 \item{x}{Object of class \code{\link{allele_divtables}}}
 
-\item{tab}{\code{\link{divtable}} of sites-by-sources counts.  An
+\item{tab}{\code{\link{divtable}} of sites-by-counts data.  An
 attempt is make to convert it to class \code{\link{divtable}} if it is not
 already.  Rows are not reordered.}
 
@@ -109,7 +109,7 @@ Finally, some additional statistics representing pooled PMI measures
 \description{
 Calculate diversity for \code{allele_divtables} object using \code{diversityMultilocus}
 
-Given a site-by-source matrix, calculate a collection of diversity
+Given a sites-by-counts matrix, calculate a collection of diversity
 statistics.  Statistics include PMI (probability of maternal inheritance)
 from Grivet \emph{et al}. (2005) and Scofield \emph{et al}. (2010, 2011)
 as well as alpha, beta, gamma and delta/omega from classical ecology and

@@ -7,32 +7,36 @@
 \description{
 A collection of R functions to analyse individual and genetic diversity in
 biological populations, primarily in the context of studying dispersal
-processes.  The basic data format is a types x sites matrix.  Functions are
+processes.  The basic data format is a sites-by-counts matrix.  Functions are
 provided for calculating alpha, beta, delta/omega and gamma diversity using a
 variety of measures; calculating alpha, beta, delta/omega and gamma diversity
 of allelic variation; and comparing diversity measures between samples.
 }
 \details{
-A similar set of functions provides analyses for individual and genetic
-diversity of data held within one of two data set structures.  The first is
-sites-by-counts data, with counts being of species, parents, haplotypes,
-etc., and is held within a table of class \code{\link{divtable}}.  The
-methods underlying these analyses are described in Scofield \emph{et al}.
-(2012).  The second dataset is of class \code{\link{allele_divtables}}, which
-is a list of \code{\link{divtable}} tables containing sites-by-alleles counts
-individual loci.  These data are analysed with extensions of the Scofield
-\emph{et al}. methods as described in Sork \emph{et al}. (in press).
+A similar set of functions provides analyses for either of two types of data
+sets.  The first is sites-by-counts data, with sites representing some form
+of aggregation including groupings, hosts, seed caches, etc., and counts
+being of species, parents, haplotypes, etc.  Sites-by-counts data is held
+within a table of class \code{\link{divtable}}.  The methods underlying
+these analyses are derived from classical biodiversity measures and are
+described in Scofield \emph{et al}. (2012).
+
+The second data set accepted describes similar patterns but for genetic
+diversity coded as alleles.  An object of class
+\code{\link{allele_divtables}} is a list of tables of class
+\code{\link{divtable}}, one table per locus under study.  Each such
+table contains sites-by-alleles counts for individual loci.  These data
+are analysed with extensions of the Scofield \emph{et al}. (2012) methods
+as described in Sork \emph{et al}. (in press).
 
 The function \code{createAlleleTables} accepts an argument of class
-\code{genalex} and creates an object of class \code{allele_divtables}, a
-list of site-by-allele count tables, one per locus.  Further analyses may be
-applied to objects of class \code{allele_divtables}, including structural
-tests and comparisons.
+\code{genalex} or of a class and format convertable to class
+\code{genalex} using \code{\link[readGenalex]{as.genalex}}.
 }
 \note{
 Due to their mathematical structure, the functions testing structure in
 diversity cannot accept data sets with rows (sites) containing a single
-item and will generate an error if given such data.  The
+item.  The functions will generate an error if given such data.  The
 \code{\link{as.divtable}} function will produce a warning if given such
 data.  Descriptive functions such as \code{\link{diversity}} and the
 plotting functions will accept such data without warning or error, though

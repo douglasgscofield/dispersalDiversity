@@ -1,15 +1,15 @@
 #' @include nielsenTransform.R
 NULL
 
-#' Calculate a collection of diversity statistics from a site x source matrix
+#' Calculate a collection of diversity statistics from a sites-by-counts matrix
 #'
-#' Given a site-by-source matrix, calculate a collection of diversity
+#' Given a sites-by-counts matrix, calculate a collection of diversity
 #' statistics.  Statistics include PMI (probability of maternal inheritance)
 #' from Grivet \emph{et al}. (2005) and Scofield \emph{et al}. (2010, 2011)
 #' as well as alpha, beta, gamma and delta/omega from classical ecology and
 #' applied to a dispersal context by Scofield \emph{et al}. (2012).
 #'
-#' @param tab     \code{\link{divtable}} of sites-by-sources counts.  An
+#' @param tab     \code{\link{divtable}} of sites-by-counts data.  An
 #' attempt is make to convert it to class \code{\link{divtable}} if it is not
 #' already.  Rows are not reordered.
 #'
