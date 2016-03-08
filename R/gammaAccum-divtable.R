@@ -3,7 +3,7 @@ NULL
 
 
 
-#' Plot the gamma accumulation result from \code{gammaAccum}
+#' Plot the gamma accumulation result from gammaAccum
 #'
 #' For an example of its use see Figure 4D-F of Scofield \emph{et al}. (2012).
 #'
@@ -110,7 +110,7 @@ plot.gamma_accum <- function(g, xmax = length(g$simple.results$mns),
 
 
 
-#' Perform gamma diversity accumulation on \code{divtable} or \code{allele_divtables} objects
+#' Perform gamma diversity accumulation on divtable or allele_divtables objects
 #'
 #' Perform a gamma diversity accumulation on site-by-source data in \code{tab},
 #' an object of class \code{\link{divtable}}, or a set of site-by-alleles count

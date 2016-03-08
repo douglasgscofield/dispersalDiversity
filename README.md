@@ -3,23 +3,22 @@ dispersalDiversity
 
 
 This is a collection of [R](http://www.r-project.org) functions to facilitate
-analysis of dispersal in biological communities.  The bulk of the functions
-calculate dispersal diversity statistics and allow for comparison of diversity
-statistics, as described in Scofield _et al._ 2012 [_American Naturalist_ 180:
-719-732](http://www.jstor.org/stable/10.1086/668202).  We originally developed
-the diversity tests to understand seed dispersal in plant populations, but the
-tests themselves should be useful for biodiversity data or any other
-diversity-like data that can be expressed with this same data structure.
+the analysis of structure in biological communities.  We originally developed
+these functions to describe and compare parental structure for dispersed seeds
+(Scofield _et al._ 2012 [_American Naturalist_ 180:
+719-732](http://www.jstor.org/stable/10.1086/668202)), but their usefulness
+extents to biodiversity data or any other diversity-like data that can be
+expressed with this same data structure.
 
-There are also new functions for calculating allelic diversity using these same
-conceptual and statistical principles, and for comparing allele diversity
-statistics.
+When genotypes are available for individuals under study, allelic diversity
+may be described and compared using functions having similar 
+conceptual and statistical principles, as described in Sork *et al.* (in press).
 
-**NOTE: This version has major changes to the interface.  For the version used in Scofield et al. (2012) with the previous interface, get the [release tagged 0.1](https://github.com/douglasgscofield/dispersalDiversity/releases), but simply `source` the files you are interested in... release 0.1 does not have an R package structure.**
+**NOTE: The version used for Scofield et al. (2012) has a different interface and lacks an R package structure.  To use this version, get the [release tagged 0.1](https://github.com/douglasgscofield/dispersalDiversity/releases), and simply `source` the files of interest.**
 
 * * *
 
-These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](https://www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
+These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](https://www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded in part by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
 
 * * *
 
@@ -53,9 +52,7 @@ a prerequisite for this package and will be installed by default.
 
 For producing plots, many find aesthetic colour choices to be available through
 palettes in the `RColorBrewer` package.  `membershipPlot` (see below) will use
-this package if it is available.  You may already have it installed, and the
-metadata for `dispersalDiversity` lists it as a suggested package.  If it is
-not installed, get it from CRAN:
+this package if it is available.  If it is not installed, get it from CRAN with:
 
 ```R
 install.package("RColorBrewer")
@@ -381,4 +378,8 @@ Scofield DG, Sork VL, Smouse PE. 2010. Influence of acorn
 woodpecker social behaviour on transport of coast live oak (<i>Quercus agrifolia</i>)
 acorns in a southern California oak savanna. [_Journal of Ecology_ 98: 561-572](http://dx.doi.org/10.1111/j.1365-2745.2010.01649.x),
 [supplement](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2010.01649.x/suppinfo).
+
+Sork VL, Smouse PE, Grivet D, Scofield DG. (In press) Impact of asymmetric male
+and female gamete dispersal on allelic diversity and spatial genetic structure
+in valley oak (*Quercus lobata* N&eacute;e).  *Evolutionary Ecology*.
 

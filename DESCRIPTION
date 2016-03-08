@@ -36,3 +36,4 @@ Collate:
     'gammaAccum-allele_divtables.R'
     'membershipPlot.R'
     'plotPairwiseMatrix.R'
+RoxygenNote: 5.0.1

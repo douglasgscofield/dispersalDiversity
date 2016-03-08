@@ -40,7 +40,7 @@ NULL
 
 
 
-#' Generate an \code{\link{allele_divtables}} object from a class \code{genalex} object
+#' Generate an allele_divtables object from a class genalex object
 #'
 #' S3 method to convert an object of class \code{genalex} to an object of
 #' class \code{\link{allele_divtables}}.  a list of \code{\link{divtable}}

@@ -1,4 +1,4 @@
-#' Plot pairwise divergence or overlap as calculated by \code{diversity}
+#' Plot pairwise divergence or overlap as calculated by diversity
 #'
 #' Plot lower-triangular matrix of pairwise divergence or overlap values
 #' using a colour scale and \code{levelplot} from the \code{lattice} package.

@@ -47,7 +47,7 @@ NULL
 
 
 
-#' Plot \code{divtable} object using \code{membershipPlot}
+#' Plot divtable object using membershipPlot
 #'
 #' Plot object of class \code{\link{divtable}} using
 #' \code{\link{membershipPlot}}.  This function sets \code{l2} to be the
@@ -69,7 +69,7 @@ plot.divtable <- function(x, ..., l2 = paste("N =", rowSums(x)), main = deparse(
 
 
 
-#' Convert to class \code{'divtable'}
+#' Convert to class divtable
 #'
 #' @name as.divtable
 #'
