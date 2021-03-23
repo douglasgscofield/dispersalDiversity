@@ -291,73 +291,62 @@ The list of tables is analysed as a unit by `allele.pmiDiversity()`, and can be 
 The workflow to calculate basic allelic diversity statistics:
 
 ```R
-library(readGenalex)
-source("allelePmiDiversity.R")
 dat <- readGenalex("GenAlEx-format-file-of-genotypes.txt")
-gt <- allele.createTableList(dat)
-div <- allele.pmiDiversity(gt)
+gt <- createAlleleTables(dat)
+div <- diversityMultilocus(gt)
 ```
 
 For comparing allele diversity between two different samples:
 
 ```R
-library(readGenalex)
-source("allelePmiDiversity.R")
-source("alleleDiversityTests.R")
 dat1 <- readGenalex("file-of-genotypes-sample-1.txt")
 dat2 <- readGenalex("file-of-genotypes-sample-2.txt")
-gt1 <- allele.createTableList(dat1)
-gt2 <- allele.createTableList(dat2)
-alpha.contrast <- allele.alphaContrastTest(gt1, gt2)
-gamma.contrast <- allele.gammaContrastTest(gt1, gt2)
+gt1 <- createAlleleTables(dat1)
+gt2 <- createAlleleTables(dat2)
+alpha.contrast <- alphaContrastTest(gt1, gt2)
+gamma.contrast <- gammaContrastTest(gt1, gt2)
 ```
 
 For calculating and plotting gamma accumulation curves across all loci:
 
 ```R
-library(readGenalex)
-source("allelePmiDiversity.R")
-source("alleleGammaAccum.R")
 dat <- readGenalex("genotypes.txt")
-lst <- allele.createTableList(dat)
-allele.rga.result <- allele.runGammaAccum(lst)
-plotGammaAccum(allele.rga.result)
+lst <- createAlleleTables(dat)
+allele.rga.result <- gammaAccum(lst)
+plot(allele.rga.result)
 ```
 
-#### Functions in `allelePmiDiversity.R`
+#### Functions
 
-`allele.pmiDiversity()`
-: The function calculating diversity for a set of loci.  The single argument is a list produced by `allele.createTableList()`, and it uses the function `allele.pmiDiversitySingleLocus()`.
+`diversityMultilocus()`
+: The function calculating diversity for a set of loci.  The single argument is a list produced by `createAlleleTables()`, and it uses the function `diversitySingleLocus()`.
 
-`allele.createTableList()`
-: Take a data.frame of genotypes read by readGenalex(), produce a list of allele count tables used by the other functions.  Each entry of the list is, for each locus, a table of site x allele counts, with row names being the site names, and column names being the names given to the individual alleles.
+`createAlleleTables()`
+: Take genotypes read by readGenalex(), produce a list of allele count tables used by the other functions.  Each entry of the list is, for each locus, a table of site x allele counts, with row names being the site names, and column names being the names given to the individual alleles.
 
-`allele.pmiDiversitySingleLocus()`
+`diversitySingleLocus()`
 : The single argument is, for a single locus, a table of site &times; allele counts, with row names being the site names, and column names being the names given to the individual alleles.
 
-#### Functions in `alleleDiversityTests.R`
-
-`allele.alphaDiversityTest(lst)`
+`alphaDiversityTest(lst)`
 : Test whether there is a difference in the alpha diversity among patches in an allele diversity dataset, that is, whether &beta; = 1 or &delta; = 0 across a collection of patches at a site (see Sork et al.).
 
-`allele.alphaContrastTest(lst.a, lst.b)`
+`alphaContrastTest(lst.a, lst.b)`
 : Test whether there is a difference in the alpha diversity between two lists of allele diversity datasets.
 
-`allele.gammaContrastTest(lst.a, lst.b)`
+`gammaContrastTest(lst.a, lst.b)`
 : Test whether there is a difference in the gamma diversity between two allele diversity datasets.
 
-#### Functions in `alleleGammaAccum.R`
 
-`allele.runGammaAccum(lst)`
-: Perform a gamma diversity accumulation on the site-by-source data in tab.  Several arguments control the method of accumulation and value of gamma calculated.  Other arguments are identical to `gammaAccum()`.  Only the defaults have been tested; the others were developed while exploring the data and must be considered experimental.  The result is returned in a list, which may be passed to `plotGammaAccum()` to plot the result.
+`gammaAccum(lst)`
+: Perform a gamma diversity accumulation on the site-by-source data in tab.  Several arguments control the method of accumulation and value of gamma calculated.  Other arguments are identical to `gammaAccum()`.  Only the defaults have been tested; the others were developed while exploring the data and must be considered experimental.  The result is returned in a custom class which may be passed to `plot()` to plot the result.
 
-* * *
+* * * * * *
 
 We also provide the datasets `granaries_2002_Qlob` and `granaries_2004_Qlob`,
 which include assignments of *Quercus lobata* acorns harvested from acorn
 woodpecker granaries in 2002 and 2004 to seed source trees.
 
-* * *
+* * * * * *
 
 # References
 
