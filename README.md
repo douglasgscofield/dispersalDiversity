@@ -16,18 +16,18 @@ conceptual and statistical principles, as described in Sork *et al.* (in press).
 
 **NOTE: The version used for Scofield et al. (2012) has a different interface and lacks an R package structure.  To use this version, get the [release tagged 0.1](https://github.com/douglasgscofield/dispersalDiversity/releases), and simply `source` the files of interest.**
 
-* * *
+* * * * * *
 
 These statistical tools were developed in collaboration with Peter Smouse ([Rutgers University](http://www.rci.rutgers.edu/~deenr/PES.html)) and  Victoria Sork ([UCLA](https://www.eeb.ucla.edu/Faculty/Sork/Sorklab/)) and were funded in part by U.S. National Science Foundation awards NSF-DEB-0514956 and NSF-DEB-0516529.
 
-* * *
+* * * * * *
 
-The **Mann-Whitney-Wilcoxon nested ranks test** we originally provided here has been made an R package:
+The **Mann-Whitney-Wilcoxon nested ranks test** we originally provided here has been made into an R package and is available in [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
+It can be installed via Github:
 ```R
-install.packages("nestedRanksTest")
+devtools::install_github("douglasgscofield/nestedRanksTest")
 vignette("nestedRanksTest")
 ```
-and has been moved to [its own repository](https://github.com/douglasgscofield/nestedRanksTest).
 
 
 
@@ -96,8 +96,13 @@ Membership plots
 
 One of the first things you may want to do is produce a membership plot.
 Membership plots provide a visual representation of the site-by-source table.
+Note that the plot shown below does not match that produced by the example statements.
 
-**change these to plots from a random matrix**
+```R
+    data(granaries_2004_qlob)
+    plot(granaries_2004_qlob)
+```
+
 
 ![membershipPlot output in black and white](membershipPlot_example_BW.png)
 
@@ -157,25 +162,25 @@ Function | Description
 `alphaContrastTest(tab.a, tab.b)` | Test whether there is a difference in the &alpha; diversity between two datasets
 `alphaContrastTest3(tab.a, tab.b, tab.c)` | Test whether there is a difference in the &alpha; diversity among three datasets
 `pairwiseMeanTest(tab)` | Test whether mean pairwise divergence/overlap among sites is different from the null espectation
-`plotPairwiseMeanTest()` | Plot the list returned from the above test for evaluation
 `gammaContrastTest(tab.a, tab.b)` | Test whether there is a difference in the &gamma; diversity between two datasets
 `gammaContrastTest3(tab.a, tab.b, tab.c)` | Test whether there is a difference in the &gamma; diversity among three datasets
 `gammaAccum(tab)` |  Permute species among sites and accumulate gamma diversity across permutations
 
-An example of the output of `plotAlphaTest()`:
+`plot()` methods are provided for the results of the above tests.
+For example, using `plot()` on the result of `alphaDiversityTest()` might look like
 
 ![plotAlphaTest example](plotAlphaTest_example.png)
 
-and of `plotPairwiseMeanTest()`:
+Using `plot()` on the result of `pairwiseMeanTest()` might look like:
 
 ![plotPairwiseMeanTest example](plotPairwiseMeanTest_example.png)
 
 
 
-### plotPairwiseMatrix.R
+### plotPairwiseMatrix()
 
 Provides a function for plotting pairwise diversity matrices as returned by the
-`pmiDiversity()` function, examples of which can be seen in Figure 4A-C of
+`diversity()` function, examples of which can be seen in Figure 4A-C of
 Scofield _et al._ <I>Am Nat</I>.
 
 `plotPairwiseMatrix()`
@@ -188,9 +193,9 @@ following code:
 
 
 ````R
-pmiD <- pmiDiversity(tab)
-plotPairwiseMatrix(pairwise.mat = pmiD$r$divergence.mat,
-                   pairwise.mean = pmiD$r$divergence,
+d <- diversity(tab)
+plotPairwiseMatrix(d$r$divergence.mat,
+                   pairwise.mean = d$r$divergence,
                    statistic = "divergence",
                    axis.label = "Seed Pool")
 ````
@@ -198,12 +203,11 @@ plotPairwiseMatrix(pairwise.mat = pmiD$r$divergence.mat,
 ![plotPairwiseMatrix example](plotPairwiseMatrix_example.png)
 
 
-### gammaAccum.R
+### Gamma accumulation
 
-Provides functions for calculating &gamma; accumulation across sites, and
+dispersalDiversity provides functions for calculating &gamma; accumulation across sites, and
 plotting the result, examples of which can be seen in Figure 4D-F of Scofield
-_et al._ <I>Am Nat</I>.  The file `pmiDiversity.R` (see above) is required to be in
-the same directory, as it provides functions used here.
+_et al._ <I>Am Nat</I>.
 
 A typical workflow using these functions would be:
 
@@ -242,9 +246,9 @@ locations of the seed pools named in the row names of tab; only used with
 `accum.method="proximity"`
 
 
-#### plotGammaAccum(rga.result)
+#### plot(rga.result)
 
-Create a visual plot of &gamma; accumulation results from `runGammaAccum()`.
+Create a visual plot of &gamma; accumulation results from `gammaAccum()`.
 
 ![plotGammaAccum example](plotGammaAccum_example.png)
 
@@ -270,10 +274,10 @@ These functions calculate allelic alpha, beta and gamma diversity as described b
 
 ### Input requirements
 
-Input begins as a file of genotypes in [GenAlEx](http://biology-assets.anu.edu.au/GenAlEx) format, which is read using the [`readGenalex`] R package (<https://github.com/douglasgscofield/readGenalex>) available via CRAN:
+Input begins as a file of genotypes in [GenAlEx](http://biology-assets.anu.edu.au/GenAlEx) format, which is read using the [`readGenalex`] R package (<https://github.com/douglasgscofield/readGenalex>) available via Github:
 
 ```R
-install.packages("readGenalex")
+devtools::install_github("douglasgscofield/readGenalex")
 ```
 
 ### Usage

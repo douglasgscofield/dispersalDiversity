@@ -781,7 +781,7 @@ gammaContrastTest.divtable <- function(tab.a, tab.b, zero.div.adjust = TRUE,
 
     #b.vardist <- list(b = diag(.diversityTest.gower(.diversityTest.distmat(X.b.k))))
     b.vardist <- .diversityTest.directGowerDiag(X.b.k)
-    n.b <- lapply(b.vardist, length)
+    n.b <- sapply(b.vardist, length)
     stopifnot(sum(n.b) == N.b)
     G.b <- length(n.b)
     ans$N.b <- N.b
