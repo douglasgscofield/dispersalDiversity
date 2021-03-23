@@ -603,7 +603,7 @@ pairwiseMeanTest.divtable <- function(tab, n.iter = 10000,
     nulldist[n.iter] <- obs
     P.lower <- sum(obs >= nulldist) / n.iter
     P.upper <- sum(obs <= nulldist) / n.iter
-    q2 <- quantile(nulldist, test.quantiles)
+    q1 <- quantile(nulldist, test.quantiles)
     ans <- list(n.cache = G, n.source = K, n.seed = sum(n.g),
                 obs = obs, n.iter = n.iter, nulldist = nulldist,
                 P.lower = P.lower, P.upper = P.upper,
